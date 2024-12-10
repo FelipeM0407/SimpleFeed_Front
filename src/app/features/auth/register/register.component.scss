@@ -1,0 +1,71 @@
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #ff8a65, #ffcc80);
+  padding: 1rem;
+}
+
+.register-card {
+  max-width: 450px;
+  width: 100%;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+}
+
+mat-card-title {
+  text-align: center;
+  font-size: 1.8rem;
+  color: #333333;
+}
+
+.subtitle {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  color: #666666;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 0.7rem;
+}
+
+mat-form-field {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+mat-form-field.mat-form-field-appearance-outline .mat-form-field-outline {
+  color: rgba(0, 0, 0, 0.12);
+}
+
+.register-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+button {
+  padding: 0.75rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+}
+
+button[mat-raised-button] {
+  width: 48%;
+}
+
+button[mat-button] {
+  width: 48%;
+  color: #ff5252;
+}
+
+button[mat-button]:hover {
+  background: rgba(255, 82, 82, 0.1);
+}
