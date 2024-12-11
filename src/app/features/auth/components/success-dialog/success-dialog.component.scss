@@ -1,0 +1,24 @@
+mat-dialog-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+  
+  mat-dialog-actions button {
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 8px;
+    width: auto; /* Para manter o mesmo estilo do botão "Registrar" */
+  }
+  
+  mat-dialog-actions button[mat-raised-button] {
+    background-color: #1976d2; /* Azul padrão do Angular Material */
+    color: #fff;
+    transition: background-color 0.3s ease;
+  }
+  
+  mat-dialog-actions button[mat-raised-button]:hover {
+    background-color: #115293; /* Azul mais escuro ao passar o mouse */
+  }
+  

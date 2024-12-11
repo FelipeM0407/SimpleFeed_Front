@@ -10,14 +10,19 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-
+import { HttpClientModule } from '@angular/common/http';
+import { MatIconModule } from '@angular/material/icon';
+import { SuccessDialogComponent } from './components/success-dialog/success-dialog.component'; 
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 
 @NgModule({
   declarations: [
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    SuccessDialogComponent,
+    SuccessDialogComponent
   ],
   imports: [
     CommonModule,
@@ -28,7 +33,10 @@ import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    NgxMaskDirective 
+    NgxMaskDirective,
+    HttpClientModule,
+    MatIconModule,
+    MatDialogModule
   ],
   providers: [provideNgxMask()] // Configure o provedor para máscaras
 
