@@ -8,6 +8,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+
+
 
 
 @NgModule({
@@ -22,7 +26,11 @@ import { MatInputModule } from '@angular/material/input';
     ReactiveFormsModule,
     MatCardModule,
     MatFormFieldModule,
-    MatInputModule
-  ]
+    MatInputModule,
+    MatSelectModule,
+    NgxMaskDirective 
+  ],
+  providers: [provideNgxMask()] // Configure o provedor para máscaras
+
 })
 export class AuthModule { }

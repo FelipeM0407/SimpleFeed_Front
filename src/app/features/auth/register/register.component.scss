@@ -8,7 +8,7 @@
 }
 
 .register-card {
-  max-width: 450px;
+  max-width: 600px;
   width: 100%;
   padding: 2rem;
   border-radius: 12px;
@@ -16,37 +16,23 @@
   background-color: #ffffff;
 }
 
-mat-card-title {
-  text-align: center;
-  font-size: 1.8rem;
-  color: #333333;
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
-.subtitle {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  font-size: 1rem;
-  color: #666666;
-}
-
-.full-width {
-  width: 100%;
-  margin-bottom: 0.7rem;
+.form-field {
+  flex: 1;
 }
 
 mat-form-field {
-  background-color: #f9f9f9;
-  border-radius: 8px;
-}
-
-mat-form-field.mat-form-field-appearance-outline .mat-form-field-outline {
-  color: rgba(0, 0, 0, 0.12);
+  width: 100%;
 }
 
 .register-actions {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  justify-content: space-between; /* Alinha os botões aos lados */
   margin-top: 1rem;
 }
 
@@ -58,14 +44,21 @@ button {
 }
 
 button[mat-raised-button] {
-  width: 48%;
+  width: auto;
 }
 
-button[mat-button] {
-  width: 48%;
-  color: #ff5252;
-}
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column; /* Alinha campos na vertical em dispositivos menores */
+    gap: 0;
+  }
 
-button[mat-button]:hover {
-  background: rgba(255, 82, 82, 0.1);
+  .register-actions {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  button[mat-raised-button] {
+    width: 100%; /* O botão ocupa toda a largura no mobile */
+  }
 }
