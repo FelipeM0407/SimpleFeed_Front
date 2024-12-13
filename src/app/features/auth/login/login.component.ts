@@ -25,22 +25,22 @@ export class LoginComponent {
 
   onLogin() {
     if (this.loginForm.valid) {
-      const { email, password } = this.loginForm.value;
+      this.authService.login(this.loginForm.value).subscribe({
+        next: (response: any) => {
+          const token = response.token;
+          localStorage.setItem('authToken', token); // Salva o token no LocalStorage
+          console.log('Login bem-sucedido');
 
-      this.authService.login({ email, password }).subscribe({
-        next: () => {
-          // Login bem-sucedido, redirecionar para o dashboard ou outra página
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/dashboard']); // Redireciona para o Dashboard
         },
-        error: (err: any) => {
-          this.errorMessage = 'Email ou senha inválidos.';
-          console.error(err);
-        },
+        error: (err) => {
+          console.error('Erro no login', err);
+          this.errorMessage = 'Usuário ou senha incorretos.';
+        }
       });
-    } else {
-      this.errorMessage = 'Por favor, preencha todos os campos corretamente.';
     }
   }
+
 
   goToRegister() {
     this.router.navigate(['/register']);
