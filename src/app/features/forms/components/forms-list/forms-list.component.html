@@ -1,0 +1,42 @@
+<div class="forms-list-container">
+  <mat-card *ngIf="isLoading">
+    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    <p>Carregando formulários...</p>
+  </mat-card>
+
+  <mat-card *ngIf="errorMessage">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ errorMessage }}</p>
+  </mat-card>
+
+  <div class="forms-wrapper" *ngIf="!isLoading && !errorMessage">
+    <div *ngFor="let form of forms; let i = index" [ngClass]="{'form-color-a': i % 2 === 0, 'form-color-b': i % 2 !== 0}" class="form-item mat-elevation-z8">
+      <div class="form-content">
+        <div>
+          <p><strong>Nome:</strong> {{ form.formName }}</p>
+          <p><strong>Respostas:</strong> {{ form.responseCount }}</p>
+          <p><strong>Última Atualização:</strong> {{ form.lastUpdated | date: 'short' }}</p>
+        </div>
+        <div class="form-actions">
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item>
+              <mat-icon>visibility</mat-icon>
+              <span>Visualizar Respostas</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon>edit</mat-icon>
+              <span>Editar Formulário</span>
+            </button>
+            <button mat-menu-item>
+              <mat-icon>delete</mat-icon>
+              <span>Excluir Formulário</span>
+            </button>
+          </mat-menu>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

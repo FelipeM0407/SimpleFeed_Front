@@ -1,31 +1,52 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/core/auth.service';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { FormsListComponent } from './../forms/components/forms-list/forms-list.component';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss']
+  styleUrls: ['./dashboard.component.scss'],
+    standalone: true,
+    imports: [ FormsListComponent, MatDividerModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule],
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   userName: string | null = null;
   userEmail: string | null = null;
 
-  constructor(private router: Router,
-    private authService: AuthService
-  ) { }
+  constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit() {
     this.userName = this.authService.getUserName();
     this.userEmail = this.authService.getUserEmail();
+
+    const userGuid = this.authService.getUserGuid();
+    if (userGuid) {
+      this.authService.fetchClientData(userGuid).subscribe({
+        next: (data) => {
+          this.authService.setClientData(data);
+        },
+        error: (err) => {
+          console.error('Erro ao buscar os dados do cliente:', err);
+          this.logout(); 
+        },
+      });
+    } else {
+      this.logout(); 
+    }
   }
 
   goToAccount() {
-    this.router.navigate(['/account']); // Redirecionar para a tela de "Minha conta"
+    this.router.navigate(['/account']);
   }
 
   logout(): void {
-    localStorage.removeItem('authToken'); // Remove o token do localStorage
-    this.router.navigate(['/login']); // Redireciona para a tela de login
+    localStorage.removeItem('authToken'); 
+    this.router.navigate(['/login']);
   }
 }

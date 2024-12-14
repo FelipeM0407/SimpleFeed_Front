@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import jwt_decode from 'jwt-decode';
 
 
@@ -11,8 +11,10 @@ import jwt_decode from 'jwt-decode';
 })
 export class AuthService {
   private apiUrl = `${environment.apiUrl}`;
+  private clientDataSubject = new BehaviorSubject<any>(null); // Mantém e emite os dados do cliente
 
-  constructor(private http: HttpClient) {}
+
+  constructor(private http: HttpClient) { }
 
   getDecodedToken() {
     const token = localStorage.getItem('authToken');
@@ -21,7 +23,11 @@ export class AuthService {
     }
     return null;
   }
-  
+
+  getUserGuid() {
+    const decodedToken: any = this.getDecodedToken();
+    return decodedToken?.id || null;
+  }
 
   getUserName() {
     const decodedToken: any = this.getDecodedToken();
@@ -31,6 +37,18 @@ export class AuthService {
   getUserEmail() {
     const decodedToken: any = this.getDecodedToken();
     return decodedToken?.sub || null;
+  }
+
+  setClientData(data: any): void {
+    this.clientDataSubject.next(data);
+  }
+
+  getClientData(): Observable<any> {
+    return this.clientDataSubject.asObservable();
+  }
+
+  fetchClientData(userId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/client/${userId}`);
   }
 
   login(data: any): Observable<any> {
