@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormDashboard } from '../../models/FormDashboard';
 import { FormsService } from '../../services/forms.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -9,8 +9,9 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from 'src/app/core/auth.service';
 import { Subscription } from 'rxjs';
 import { MatMenuModule } from '@angular/material/menu';
-import {MatButtonModule} from '@angular/material/button';
-
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 
 @Component({
@@ -18,24 +19,24 @@ import {MatButtonModule} from '@angular/material/button';
   templateUrl: './forms-list.component.html',
   styleUrls: ['./forms-list.component.scss',],
   standalone: true,
-  imports: [ CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
+  imports: [MatProgressBarModule, MatDividerModule, CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
 })
-export class FormsListComponent implements OnInit {
+export class FormsListComponent implements OnInit, OnDestroy {
   forms: FormDashboard[] = [];
   isLoading = true;
   errorMessage: string | null = null;
+  maxResponses = 500; // Limite temporário de respostas
   private clientDataSubscription: Subscription | null = null;
 
 
   constructor(private formsService: FormsService, private authService: AuthService) { }
 
   ngOnInit(): void {
-    // Aguarda os dados do cliente
     this.clientDataSubscription = this.authService.getClientData().subscribe({
       next: (clientData) => {
         if (clientData) {
           const clientId = clientData.id;
-          this.loadForms(clientId); // Carrega os formulários assim que os dados do cliente estão disponíveis
+          this.loadForms(clientId);
         }
       },
     });
@@ -52,6 +53,19 @@ export class FormsListComponent implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+
+  getTotalResponses(): number {
+    return this.forms.reduce((total, form) => total + form.responseCount, 0);
+  }
+
+  getTotalResponsesPercentage(): number {
+    return Math.min((this.getTotalResponses() / this.maxResponses) * 100, 100);
+  }
+
+  onCreateForm(): void {
+    // Implementar lógica para criar formulário
+    console.log('Criar Formulário');
   }
 
   ngOnDestroy(): void {
