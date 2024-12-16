@@ -25,7 +25,7 @@ export class FormsListComponent implements OnInit, OnDestroy {
   forms: FormDashboard[] = [];
   isLoading = true;
   errorMessage: string | null = null;
-  maxResponses = 500; // Limite temporário de respostas
+  maxResponses = 10; // Limite temporário de respostas
   private clientDataSubscription: Subscription | null = null;
 
 

@@ -1,40 +1,64 @@
-<div class="forms-list-container">
-  <mat-card *ngIf="isLoading">
-    <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
-    <p>Carregando formulários...</p>
-  </mat-card>
+<div class="forms-container">
+  <!-- Seção lateral com o botão e o progresso -->
+  <section class="side-section">
+    <div class="button-center">
+      <!-- Botão de criar formulário -->
+      <button mat-raised-button color="primary" class="create-form-button" (click)="onCreateForm()">
+        <mat-icon class="button-icon">add</mat-icon>
+        Criar Formulário
+      </button>
+      
+    </div>
 
-  <mat-card *ngIf="errorMessage">
-    <mat-icon color="warn">error</mat-icon>
-    <p>{{ errorMessage }}</p>
-  </mat-card>
+    <!-- Divider -->
+    <mat-divider></mat-divider>
+    <!-- Barra de progresso -->
+    <div class="progress-section">
+      <p><strong>Total de Respostas:</strong> {{ getTotalResponses() }}/{{ maxResponses }}</p>
+      <mat-progress-bar mode="determinate" [bufferValue]="maxResponses" [value]="getTotalResponsesPercentage()"></mat-progress-bar>
+    </div>
+  </section>
 
-  <div class="forms-wrapper" *ngIf="!isLoading && !errorMessage">
-    <div *ngFor="let form of forms; let i = index" [ngClass]="{'form-color-a': i % 2 === 0, 'form-color-b': i % 2 !== 0}" class="form-item mat-elevation-z8">
-      <div class="form-content">
-        <div>
-          <p><strong>Nome:</strong> {{ form.formName }}</p>
-          <p><strong>Respostas:</strong> {{ form.responseCount }}</p>
-          <p><strong>Última Atualização:</strong> {{ form.lastUpdated | date: 'short' }}</p>
-        </div>
-        <div class="form-actions">
-          <button mat-icon-button [matMenuTriggerFor]="menu">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item>
-              <mat-icon>visibility</mat-icon>
-              <span>Visualizar Respostas</span>
+  <!-- Lista de formulários -->
+  <div class="forms-list-container">
+    <mat-card *ngIf="isLoading">
+      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+      <p>Carregando formulários...</p>
+    </mat-card>
+
+    <mat-card *ngIf="errorMessage">
+      <mat-icon color="warn">error</mat-icon>
+      <p>{{ errorMessage }}</p>
+    </mat-card>
+
+    <div class="forms-wrapper" *ngIf="!isLoading && !errorMessage">
+      <div *ngFor="let form of forms; let i = index"
+        [ngClass]="{'form-color-a': i % 2 === 0, 'form-color-b': i % 2 !== 0}" class="form-item mat-elevation-z8">
+        <div class="form-content">
+          <div>
+            <p><strong>Nome:</strong> {{ form.formName }}</p>
+            <p><strong>Respostas:</strong> {{ form.responseCount }}</p>
+            <p><strong>Últ. Atualização:</strong> {{ form.lastUpdated | date: 'short' }}</p>
+          </div>
+          <div class="form-actions">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
             </button>
-            <button mat-menu-item>
-              <mat-icon>edit</mat-icon>
-              <span>Editar Formulário</span>
-            </button>
-            <button mat-menu-item>
-              <mat-icon>delete</mat-icon>
-              <span>Excluir Formulário</span>
-            </button>
-          </mat-menu>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item>
+                <mat-icon>visibility</mat-icon>
+                <span>Visualizar Respostas</span>
+              </button>
+              <button mat-menu-item>
+                <mat-icon>edit</mat-icon>
+                <span>Editar Formulário</span>
+              </button>
+              <button mat-menu-item>
+                <mat-icon>delete</mat-icon>
+                <span>Excluir Formulário</span>
+              </button>
+            </mat-menu>
+          </div>
         </div>
       </div>
     </div>
