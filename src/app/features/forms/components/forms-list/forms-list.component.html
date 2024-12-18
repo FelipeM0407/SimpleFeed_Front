@@ -21,10 +21,9 @@
 
   <!-- Lista de formulários -->
   <div class="forms-list-container">
-    <mat-card *ngIf="isLoading">
-      <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
-      <p>Carregando formulários...</p>
-    </mat-card>
+    <div *ngIf="isLoading" class="spinner-container">
+      <mat-spinner></mat-spinner>
+    </div>
 
     <mat-card *ngIf="errorMessage">
       <mat-icon color="warn">error</mat-icon>
@@ -45,10 +44,10 @@
               <mat-icon>more_vert</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-              <button mat-menu-item>
+              <button mat-menu-item (click)="onViewResponses(form.id)">
                 <mat-icon>visibility</mat-icon>
                 <span>Visualizar Respostas</span>
-              </button>
+              </button>              
               <button mat-menu-item>
                 <mat-icon>edit</mat-icon>
                 <span>Editar Formulário</span>

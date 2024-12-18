@@ -6,14 +6,14 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { FormsListComponent } from './../forms/components/forms-list/forms-list.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
     standalone: true,
-    imports: [ FormsListComponent, MatDividerModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule],
+    imports: [ RouterModule, MatDividerModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule],
 })
 export class DashboardComponent implements OnInit {
   userName: string | null = null;

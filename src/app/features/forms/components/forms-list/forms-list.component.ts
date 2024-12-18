@@ -12,6 +12,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -29,7 +30,7 @@ export class FormsListComponent implements OnInit, OnDestroy {
   private clientDataSubscription: Subscription | null = null;
 
 
-  constructor(private formsService: FormsService, private authService: AuthService) { }
+  constructor(private formsService: FormsService, private authService: AuthService, private router: Router ) { }
 
   ngOnInit(): void {
     this.clientDataSubscription = this.authService.getClientData().subscribe({
@@ -71,4 +72,10 @@ export class FormsListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.clientDataSubscription?.unsubscribe();
   }
+
+  onViewResponses(id: number): void {
+    this.router.navigate(['/dashboard/feedbacks', id]); // Direciona para a rota de feedbacks com formId
+  }
 }
+
+
