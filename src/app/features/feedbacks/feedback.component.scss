@@ -1,13 +1,15 @@
 .table-container {
     width: 80%;
     margin: 0 auto;
-    /* Centraliza a tabela */
+    max-height: calc(100vh - 100px);
+    /* Define o limite máximo baseado na altura da janela menos 100px para margem */
+    overflow: auto;
+    /* Adiciona rolagem quando necessário */
     box-shadow:
         0px 5px 5px -3px rgba(0, 0, 0, 0.2),
         0px 8px 10px 1px rgba(0, 0, 0, 0.14),
         0px 3px 14px 2px rgba(0, 0, 0, 0.12);
 }
-
 
 th,
 td {
@@ -16,15 +18,9 @@ td {
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: center;
+    border: 1px solid rgba(0, 0, 0, 0.12);
 }
 
-th.mat-header-cell {
-    font-weight: bold;
-}
-
-.table-container::-webkit-scrollbar {
-    height: 8px;
-}
 
 .table-container::-webkit-scrollbar-thumb {
     background-color: #888;
@@ -33,6 +29,57 @@ th.mat-header-cell {
 
 .table-container::-webkit-scrollbar-track {
     background-color: #f1f1f1;
+}
+
+/* Alinha texto à direita para todas as outras colunas */
+.align-right {
+    text-align: left;
+}
+
+/* Contêiner da Action Bar */
+.action-bar-container {
+    position: fixed;
+    bottom: 20px;
+    /* Distância do rodapé */
+    left: 50%;
+    transform: translateX(-50%);
+    /* Centraliza horizontalmente */
+    z-index: 1000;
+}
+
+/* Estilo da Action Bar */
+.action-bar {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #fff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 25px;
+    /* Bordas arredondadas */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    /* Borda leve */
+}
+
+/* Estilo do texto de seleção */
+.action-bar span {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    white-space: nowrap;
+    /* Garante que o texto não quebre */
+
+}
+
+/* Botões */
+button.mat-icon-button {
+    color: #666;
+    /* Cor padrão dos ícones */
+    transition: color 0.2s ease-in-out;
+}
+
+button.mat-icon-button:hover {
+    color: #000;
+    /* Cor ao passar o mouse */
 }
 
 /* Responsividade */
@@ -44,19 +91,9 @@ th.mat-header-cell {
         overflow-x: auto;
     }
 
-    /* Estilo para tornar a primeira coluna fixa */
-    .sticky-column {
-        position: sticky;
-        left: 0;
-        background-color: white;
-        /* Garante que a coluna fixa não desapareça em layouts coloridos */
-        z-index: 2;
-        /* Garante que a coluna fixa fique acima de outras linhas ao rolar */
-    }
-
-    .sticky-column th {
-        z-index: 3;
-        /* Garante que o cabeçalho fixe corretamente */
+    th,
+    td {
+        padding: 4px 8px;
     }
 
 }
