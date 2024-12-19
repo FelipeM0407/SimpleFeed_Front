@@ -27,7 +27,7 @@ th.mat-header-cell {
 }
 
 .table-container::-webkit-scrollbar-thumb {
-    background-color: #3f51b5;
+    background-color: #888;
     border-radius: 10px;
 }
 
@@ -42,6 +42,21 @@ th.mat-header-cell {
     .table-container {
         width: 100%;
         overflow-x: auto;
+    }
+
+    /* Estilo para tornar a primeira coluna fixa */
+    .sticky-column {
+        position: sticky;
+        left: 0;
+        background-color: white;
+        /* Garante que a coluna fixa não desapareça em layouts coloridos */
+        z-index: 2;
+        /* Garante que a coluna fixa fique acima de outras linhas ao rolar */
+    }
+
+    .sticky-column th {
+        z-index: 3;
+        /* Garante que o cabeçalho fixe corretamente */
     }
 
 }
