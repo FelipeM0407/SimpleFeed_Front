@@ -1,5 +1,4 @@
 <div class="table-container">
-  <!-- Tabela de Feedbacks -->
   <table mat-table [dataSource]="feedbacks" class="mat-elevation-z8 fixed-table">
     <!-- Coluna de Checkbox -->
     <ng-container matColumnDef="select" sticky>
@@ -7,20 +6,25 @@
         <mat-checkbox (change)="toggleSelectAll($event)" [color]="'primary'"></mat-checkbox>
       </th>
       <td mat-cell *matCellDef="let element">
-        <mat-checkbox [(ngModel)]="element.selected" (change)="updateSelectedCount()" [color]="'primary'"></mat-checkbox>
+        <mat-checkbox [(ngModel)]="element.selected" (change)="updateSelectedCount()"
+          [color]="'primary'"></mat-checkbox>
       </td>
     </ng-container>
 
-    <!-- Coluna fixa: Data de Envio -->
+    <!-- Coluna de Data de Envio -->
     <ng-container matColumnDef="submittedAt">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header class="align-right"> Data de Envio </th>
-      <td mat-cell *matCellDef="let element" class="align-right"> {{ element.submittedAt | date: 'dd/MM/yyyy HH:mm' }} </td>
+      <th mat-header-cell *matHeaderCellDef class="align-right"> Data de Envio </th>
+      <td mat-cell *matCellDef="let element" class="align-right">
+        {{ element.answers['submittedAt'] | date: 'dd/MM/yyyy HH:mm' }}
+      </td>
     </ng-container>
-    
+
     <!-- Colunas Dinâmicas -->
-    <ng-container *ngFor="let column of dynamicColumns" [matColumnDef]="column">
-      <th mat-header-cell *matHeaderCellDef class="align-right"> {{ column }} </th>
-      <td mat-cell *matCellDef="let element" class="align-right"> {{ element.answers[column] }} </td>
+    <ng-container *ngFor="let column of dynamicColumns" [matColumnDef]="column.field">
+      <th mat-header-cell *matHeaderCellDef class="align-right"> {{ column.field }} </th>
+      <td mat-cell *matCellDef="let element" class="align-right">
+        {{ element.answers[column.field] }}
+      </td>
     </ng-container>
 
     <!-- Cabeçalho -->
@@ -29,8 +33,7 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 </div>
-
-
+  
 <!-- Barra fixa com a lixeira -->
 <div class="action-bar-container" *ngIf="selectedCount > 0">
   <div class="action-bar">

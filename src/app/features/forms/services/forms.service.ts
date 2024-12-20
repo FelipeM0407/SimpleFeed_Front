@@ -16,4 +16,9 @@ export class FormsService {
   getForms(clientId: number): Observable<FormDashboard[]> {
     return this.http.get<FormDashboard[]>(`${this.apiUrl}/forms/${clientId}`);
   }
+
+  getFormStructure(formId: number): Observable<any> {
+    return this.http.get<void>(`${this.apiUrl}/forms/${formId}/structure`);
+  }
+  
 }
