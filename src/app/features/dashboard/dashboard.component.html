@@ -1,33 +1,30 @@
+<mat-toolbar color="primary">
+  <span>SimpleFeed</span>
+  <span class="example-spacer"></span>
+  <p class="welcome-message">Bem-vindo, {{ userName }}</p>
 
-<p>
-    <mat-toolbar color="primary">
-        <span>SimpleFeed</span>
-        <span class="example-spacer"></span>
-        <p class="welcome-message">Bem-vindo, {{ userName }}</p>
+  <button mat-icon-button [matMenuTriggerFor]="menu">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <div mat-menu-item>
+      <mat-icon>email</mat-icon>
+      <small>{{ userEmail }}</small>
+    </div>
+    <mat-divider></mat-divider>
+    <button mat-menu-item>
+      <mat-icon>account_circle</mat-icon>
+      <span>Minha Conta</span>
+    </button>
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Sair</span>
+    </button>
+  </mat-menu>
 
-        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-            <mat-icon>menu</mat-icon>
-          </button>
-          <mat-menu #menu="matMenu">
-            <div mat-menu-item>
-                <mat-icon>email</mat-icon>
-                <small>{{ userEmail }}</small>
-            </div>
-            <mat-divider></mat-divider>
-            <button mat-menu-item>
-              <mat-icon>account_circle</mat-icon>
-              <span>Minha Conta</span>
-            </button>
-            <button mat-menu-item (click)="logout()">
-              <mat-icon>logout</mat-icon>
-              <span>Sair</span>
-            </button>
-          </mat-menu>
-          
-    </mat-toolbar>
-</p>
+</mat-toolbar>
+
 
 <div class="dashboard-container">
   <router-outlet></router-outlet>
 </div>
-

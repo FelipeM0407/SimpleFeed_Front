@@ -1,39 +1,75 @@
-<div class="table-container">
-  <table mat-table [dataSource]="feedbacks" class="mat-elevation-z8 fixed-table">
-    <!-- Coluna de Checkbox -->
-    <ng-container matColumnDef="select" sticky>
-      <th mat-header-cell *matHeaderCellDef>
-        <mat-checkbox (change)="toggleSelectAll($event)" [color]="'primary'"></mat-checkbox>
-      </th>
-      <td mat-cell *matCellDef="let element">
-        <mat-checkbox [(ngModel)]="element.selected" (change)="updateSelectedCount()"
-          [color]="'primary'"></mat-checkbox>
-      </td>
-    </ng-container>
-
-    <!-- Coluna de Data de Envio -->
-    <ng-container matColumnDef="submittedAt">
-      <th mat-header-cell *matHeaderCellDef class="align-right"> Data de Envio </th>
-      <td mat-cell *matCellDef="let element" class="align-right">
-        {{ element.answers['submittedAt'] | date: 'dd/MM/yyyy HH:mm' }}
-      </td>
-    </ng-container>
-
-    <!-- Colunas Dinâmicas -->
-    <ng-container *ngFor="let column of dynamicColumns" [matColumnDef]="column.field">
-      <th mat-header-cell *matHeaderCellDef class="align-right"> {{ column.field }} </th>
-      <td mat-cell *matCellDef="let element" class="align-right">
-        {{ element.answers[column.field] }}
-      </td>
-    </ng-container>
-
-    <!-- Cabeçalho -->
-    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
-    <!-- Linhas -->
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
-</div>
+<div class="container">
+  <div class="date-filter">
+    <!-- Filtro de Data -->
+    <form [formGroup]="dateRangeForm">
+      <mat-form-field appearance="outline" class="date-range-field">
+        <mat-label>Intervalo de data</mat-label>
+        <mat-date-range-input [rangePicker]="picker" formGroupName="dateRange">
+          <input matStartDate placeholder="DD/MM/YYYY" formControlName="startDate" readonly (click)="picker.open()">
+          <input matEndDate placeholder="DD/MM/YYYY" formControlName="endDate" readonly (click)="picker.open()">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </form>
+  </div>
   
+  <!-- Tabela -->
+  <div class="table-container">
+    <table mat-table [dataSource]="feedbacksSorted" class="mat-elevation-z8 fixed-table" matSort>
+      <!-- Coluna de Checkbox -->
+      <ng-container matColumnDef="select" sticky>
+        <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="toggleSelectAll($event)" [color]="'primary'"></mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <mat-checkbox [(ngModel)]="element.selected" (change)="updateSelectedCount()"
+            [color]="'primary'"></mat-checkbox>
+        </td>
+      </ng-container>
+
+      <!-- Coluna de Data de Envio -->
+      <ng-container matColumnDef="submittedAt">
+        <th mat-header-cell *matHeaderCellDef class="align-right">Data de Envio</th>
+        <td mat-cell *matCellDef="let element" class="align-right">
+          {{ element.answers['submittedAt'] | date: 'dd/MM/yyyy HH:mm' }}
+        </td>
+      </ng-container>
+
+      <!-- Colunas Dinâmicas -->
+      <ng-container *ngFor="let column of dynamicColumns" [matColumnDef]="column.field">
+        <th mat-header-cell *matHeaderCellDef class="align-right"> {{ column.label }} </th>
+        <td mat-cell *matCellDef="let element" class="align-right">
+          {{ element.answers[column.field] }}
+        </td>
+      </ng-container>
+
+      <!-- Cabeçalho -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <!-- Linhas -->
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <!-- Row shown when there is no matching data that will be provided to the wrapper table. -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">Sem feedbacks por enquanto.</td>
+      </tr>
+    </table>
+
+  </div>
+  <!-- Paginador -->
+  <div class="paginator-container">
+    <mat-paginator [length]="feedbacksSorted.data.length || 0" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50, 100]">
+    </mat-paginator>
+  </div>
+</div>
+
+<!-- Botão de filtro (visível apenas no mobile) -->
+<div class="mobile-filters">
+  <button mat-fab (click)="openFilterModal()" color="primary">
+    <mat-icon>tune</mat-icon>
+  </button>
+</div>
+
 <!-- Barra fixa com a lixeira -->
 <div class="action-bar-container" *ngIf="selectedCount > 0">
   <div class="action-bar">
