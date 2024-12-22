@@ -14,18 +14,25 @@ import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { FormsService } from '../forms/services/forms.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, NativeDateAdapter } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
-import {
-  MAT_MOMENT_DATE_FORMATS,
-  MomentDateAdapter,
-  MAT_MOMENT_DATE_ADAPTER_OPTIONS,
-} from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FilterDialogComponent } from './filter-dialog/filter-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
+
+export const MY_DATE_FORMATS = {
+  parse: {
+    dateInput: 'DD/MM/YYYY',
+  },
+  display: {
+    dateInput: 'DD/MM/YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'DD/MM/YYYY',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 
 @Component({
   selector: 'app-feedback',
@@ -50,14 +57,10 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule
   ],
   providers: [
-    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
-    {
-      provide: DateAdapter,
-      useClass: MomentDateAdapter,
-      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS],
-    },
-    { provide: MAT_DATE_FORMATS, useValue: MAT_MOMENT_DATE_FORMATS },
-  ],
+    { provide: DateAdapter, useClass: NativeDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }
+  ]
 })
 export class FeedbacksComponent implements OnInit {
   formId!: number;
@@ -134,7 +137,7 @@ export class FeedbacksComponent implements OnInit {
     this.dialog.open(FilterDialogComponent, {
       width: '90%',
     });
-  }   
+  }
 
   applyFilters() {
     // Lógica para aplicar os filtros
