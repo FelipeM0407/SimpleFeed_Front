@@ -103,25 +103,23 @@ export class FeedbacksComponent implements OnInit {
 
   ngOnInit(): void {
     this.isMobile = window.innerWidth < 768; // Inicializa com o tamanho correto
-
+  
     this.formId = Number(this.route.snapshot.paramMap.get('formId'));
-
+  
     this.isLoading = true;
-
+  
     // Buscar a estrutura do formulário
     this.formService.getFormStructure(this.formId).subscribe({
       next: (structure) => {
         // Criar as colunas dinâmicas com base na estrutura
-        this.dynamicColumns = structure
-          .filter((field: any) => field.order !== 0) // Ignorar submittedAt na estrutura
-          .sort((a: any, b: any) => a.order - b.order)
-          .map((field: any) => ({
-            field: field.label, // Usar o label como identificador para outras colunas
-            label: field.label, // Usar o rótulo para o cabeçalho
-          }));
-
-        this.displayedColumns = ['select', 'submittedAt', ...this.dynamicColumns.map((col) => col.field)];
-
+        this.dynamicColumns = structure.map((field: any) => ({
+          field: field.id.toString(), // Garante que o campo seja uma string
+          label: field.label,
+          type: field.type
+        }));
+        
+        this.displayedColumns = ['select', ...this.dynamicColumns.map((col) => col.field)];
+  
         // Buscar os feedbacks
         this.fetchFeedbacks();
       },
@@ -154,25 +152,22 @@ export class FeedbacksComponent implements OnInit {
       next: (data) => {
         this.feedbacks = data.map((item: any) => {
           const mappedAnswers: any = {};
-
-          // Adicionar o submittedAt no início
-          mappedAnswers['submittedAt'] = item.submittedAt;
-
-          // Mapear os valores das respostas pelo 'order'
-          item.answers.forEach((answer: any) => {
-            const column = this.dynamicColumns.find((col, index) => index + 1 === answer.order); // Ajustar pelo índice
+          const answers = JSON.parse(item.answers);
+  
+          answers.forEach((answer: any) => {
+            const column = this.dynamicColumns.find((col) => col.field === answer.id_form_field.toString());
             if (column) {
               mappedAnswers[column.field] = answer.value;
             }
           });
-
+  
           return {
             ...item,
-            answers: mappedAnswers, // Respostas mapeadas
-            selected: false, // Adicionar propriedade de seleção
+            answers: mappedAnswers,
+            selected: false,
           };
         });
-
+  
         this.feedbacksSorted = new MatTableDataSource(this.feedbacks);
         this.feedbacksSorted.paginator = this.paginator!;
         this.feedbacksSorted.sort = this.sort!;
