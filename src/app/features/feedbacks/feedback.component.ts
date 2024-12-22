@@ -67,7 +67,7 @@ export class FeedbacksComponent implements OnInit {
   feedbacks: any[] = [];
   isLoading = true;
   errorMessage: string | null = null;
-  dynamicColumns: { field: string; label: string }[] = [];
+  dynamicColumns: { field_Id: string; label: string; type: string }[] = [];
   displayedColumns: string[] = ['select', 'submittedAt'];
   selectedCount = 0; // Quantidade de registros selecionados
   isMobile = false;
@@ -113,12 +113,12 @@ export class FeedbacksComponent implements OnInit {
       next: (structure) => {
         // Criar as colunas dinâmicas com base na estrutura
         this.dynamicColumns = structure.map((field: any) => ({
-          field: field.id.toString(), // Garante que o campo seja uma string
+          field_Id: field.id.toString(), // Garante que o campo seja uma string
           label: field.label,
           type: field.type
         }));
         
-        this.displayedColumns = ['select', ...this.dynamicColumns.map((col) => col.field)];
+        this.displayedColumns = ['select', ...this.dynamicColumns.map((col) => col.field_Id)];
   
         // Buscar os feedbacks
         this.fetchFeedbacks();
@@ -155,9 +155,9 @@ export class FeedbacksComponent implements OnInit {
           const answers = JSON.parse(item.answers);
   
           answers.forEach((answer: any) => {
-            const column = this.dynamicColumns.find((col) => col.field === answer.id_form_field.toString());
+            const column = this.dynamicColumns.find((col) => col.field_Id === answer.id_form_field.toString());
             if (column) {
-              mappedAnswers[column.field] = answer.value;
+              mappedAnswers[column.field_Id] = answer.value;
             }
           });
   
