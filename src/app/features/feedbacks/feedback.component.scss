@@ -2,28 +2,36 @@
 .container {
     display: flex;
     flex-direction: column;
+    align-items: center;
     padding: 16px;
 }
 
 /* Contêiner da tabela */
 .table-container {
-    width: 80%;
+    width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
-    max-height: calc(100vh - 100px); /* Define limite máximo da altura */
-    overflow: auto; /* Adiciona rolagem quando necessário */
+    max-height: calc(100vh - 100px);
+    /* Define limite máximo da altura */
+    overflow: auto;
+    /* Adiciona rolagem quando necessário */
     box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2),
         0px 8px 10px 1px rgba(0, 0, 0, 0.14),
-        0px 3px 14px 2px rgba(0, 0, 0, 0.12); /* Sombra da tabela */
+        0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+    /* Sombra da tabela */
 }
 
 /* Colunas da tabela */
-th, td {
+th,
+td {
     padding: 8px;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* Trunca o texto excedente */
+    text-overflow: ellipsis;
+    /* Trunca o texto excedente */
     text-align: center;
-    border: 1px solid rgba(0, 0, 0, 0.12); /* Borda das células */
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    /* Borda das células */
 }
 
 /* Texto alinhado à esquerda */
@@ -33,22 +41,27 @@ th, td {
 
 /* Customização da barra de rolagem da tabela */
 .table-container::-webkit-scrollbar-thumb {
-    background-color: #888; /* Cor do indicador de rolagem */
-    border-radius: 10px; /* Bordas arredondadas */
+    background-color: #888;
+    /* Cor do indicador de rolagem */
+    border-radius: 10px;
+    /* Bordas arredondadas */
 }
 
 .table-container::-webkit-scrollbar-track {
-    background-color: #f1f1f1; /* Fundo da barra de rolagem */
+    background-color: #f1f1f1;
+    /* Fundo da barra de rolagem */
 }
 
-/* Filtros de data */
+/* Filtros */
 .filters {
-    display: none; /* Oculta os filtros em dispositivos móveis */
+    display: none;
+    /* Oculta os filtros em dispositivos móveis */
 }
 
 .date-range-field {
     width: 100%;
-    max-width: 400px; /* Limita a largura do campo em telas maiores */
+    max-width: 400px;
+    /* Limita a largura do campo em telas maiores */
 }
 
 /* Botão flutuante de filtros para mobile */
@@ -56,22 +69,26 @@ th, td {
     position: fixed;
     bottom: 30px;
     right: 6px;
-    z-index: 1000; /* Fica acima de outros elementos */
+    z-index: 1000;
+    /* Fica acima de outros elementos */
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 button.mat-mini-fab {
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Destaque com sombra */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    /* Destaque com sombra */
 }
 
 /* Barra de ações fixa */
 .action-bar-container {
     position: fixed;
-    bottom: 20px; /* Distância do rodapé */
+    bottom: 20px;
+    /* Distância do rodapé */
     left: 50%;
-    transform: translateX(-50%); /* Centraliza horizontalmente */
+    transform: translateX(-50%);
+    /* Centraliza horizontalmente */
     z-index: 1000;
 }
 
@@ -80,69 +97,112 @@ button.mat-mini-fab {
     align-items: center;
     padding: 10px 20px;
     background-color: #fff;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Sombra */
-    border-radius: 25px; /* Bordas arredondadas */
-    border: 1px solid rgba(0, 0, 0, 0.1); /* Borda leve */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    /* Sombra */
+    border-radius: 25px;
+    /* Bordas arredondadas */
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    /* Borda leve */
 }
 
 .action-bar span {
     font-size: 14px;
     font-weight: 500;
-    color: #333; /* Cor do texto */
-    white-space: nowrap; /* Garante que o texto não quebre */
+    color: #333;
+    /* Cor do texto */
+    white-space: nowrap;
+    /* Garante que o texto não quebre */
 }
 
 /* Estilo para botões */
 button.mat-icon-button {
-    color: #666; /* Cor padrão dos ícones */
+    color: #666;
+    /* Cor padrão dos ícones */
     transition: color 0.2s ease-in-out;
 }
 
 button.mat-icon-button:hover {
-    color: #000; /* Cor ao passar o mouse */
+    color: #000;
+    /* Cor ao passar o mouse */
 }
 
 /* Contêiner do paginator */
 .paginator-container {
-    width: 80%;
+    width: 100%;
+    max-width: 1200px;
     margin: 2px auto;
     box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2),
         0px 8px 10px 1px rgba(0, 0, 0, 0.14),
-        0px 3px 14px 2px rgba(0, 0, 0, 0.12); /* Sombra */
+        0px 3px 14px 2px rgba(0, 0, 0, 0.12);
+    /* Sombra */
 }
 
 /* Modal de filtros */
 mat-dialog-content {
     display: flex;
     flex-direction: column;
-    gap: 16px; /* Espaçamento entre elementos */
+    gap: 16px;
+    /* Espaçamento entre elementos */
 }
 
 /* Responsividade */
 @media (min-width: 768px) {
     .filters {
         display: flex;
-        justify-content: center; /* Centraliza os filtros em telas maiores */
+        flex-wrap: wrap;
+        /* Permite quebrar linha caso necessário */
+        gap: 16px;
+        /* Espaçamento entre os itens */
+        justify-content: center;
+        /* Alinha os filtros à esquerda */
+        align-items: center;
+        /* Centraliza verticalmente os itens */
+        margin: auto;
+        /* Espaçamento inferior */
+        padding: 5px;
+        /* Espaçamento interno */
+        background-color: #f9f9f9;
+        /* Fundo leve */
+        border-radius: 8px;
+        /* Bordas arredondadas */
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        /* Sombra leve */
+    }
+
+    .filter-actions {
+        display: flex;
+        gap: 16px;
+        /* Espaçamento entre os botões */
+        justify-content: center;
+        /* Alinha os botões à direita */
+        margin-top: 16px;
+        /* Espaçamento superior */
     }
 
     .mobile-filters {
-        display: none; /* Oculta botão flutuante em telas maiores */
+        display: none;
+        /* Oculta botão flutuante em telas maiores */
     }
 }
 
 @media (max-width: 768px) {
     .table-container {
-        width: 100%; /* Ajusta largura da tabela para dispositivos móveis */
+        width: 100%;
+        /* Ajusta largura da tabela para dispositivos móveis */
         overflow-x: auto;
     }
 
     .paginator-container {
-        width: 100%; /* Ajusta largura do paginator */
+        width: 100%;
+        /* Ajusta largura do paginator */
         margin: 4px auto;
-        padding-bottom: 5px; /* Espaçamento inferior */
+        padding-bottom: 5px;
+        /* Espaçamento inferior */
     }
 
-    th, td {
-        padding: 4px 8px; /* Reduz o espaçamento das células */
+    th,
+    td {
+        padding: 4px 8px;
+        /* Reduz o espaçamento das células */
     }
 }
