@@ -1,6 +1,5 @@
 import { Component, HostListener, Inject, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FeedbacksService } from '../forms/services/feedbacks.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
@@ -22,6 +21,7 @@ import { FilterDialogComponent } from './filter-dialog/filter-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select'; // Importação necessária
+import { FeedbacksService } from './services/feedbacks.service';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -89,8 +89,12 @@ export class FeedbacksComponent implements OnInit {
     private fb: FormBuilder,
     @Inject(MAT_DATE_LOCALE) private _locale: string
   ) {
-
-    this.filterForm = this.fb.group({});
+    this.filterForm = this.fb.group({
+      data_do_feedback: this.fb.group({
+        start: [''],
+        end: ['']
+      })
+    });
   }
 
   @HostListener('window:resize', ['$event'])
@@ -105,6 +109,18 @@ export class FeedbacksComponent implements OnInit {
 
     this.isLoading = true;
 
+    // Definir o filtro de data padrão para os últimos 30 dias
+    const today = new Date();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(today.getDate() - 30);
+
+    this.filterForm.patchValue({
+      data_do_feedback: {
+        start: thirtyDaysAgo,
+        end: today
+      }
+    });
+
     // Buscar a estrutura do formulário
     this.formService.getFormStructure(this.formId).subscribe({
       next: (structure) => {
@@ -117,21 +133,6 @@ export class FeedbacksComponent implements OnInit {
 
         this.displayedColumns = ['select', ...this.dynamicColumns.map((col) => col.field_Id)];
 
-        // Adicionar controles de filtro ao formulário
-        this.dynamicColumns.forEach(column => {
-
-          if (['date', 'rating', 'dropdown'].includes(column.type)) {
-            if (column.type === 'date') {
-              this.filterForm.addControl(column.field_Id, this.fb.group({
-                start: [''],
-                end: ['']
-              }));
-            }else{
-              this.filterForm.addControl(column.field_Id, this.fb.control(''));
-            }
-          }
-        });
-
         // Buscar os feedbacks
         this.fetchFeedbacks();
       },
@@ -141,32 +142,79 @@ export class FeedbacksComponent implements OnInit {
         this.isLoading = false;
       },
     });
+
+    // Aplicar o filtro de data padrão
+    this.applyFilters();
   }
 
   openFilterModal() {
-    this.dialog.open(FilterDialogComponent, {
+    const currentRange = this.filterForm.value.data_do_feedback;
+    const dialogRef = this.dialog.open(FilterDialogComponent, {
       width: '90%',
+      data: {
+        startDate: currentRange.start || new Date(new Date().setDate(new Date().getDate() - 30)),
+        endDate: currentRange.end || new Date()
+      }
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.feedbacks = result.map((item: any) => {
+          const mappedAnswers: any = {};
+          const answers = JSON.parse(item.answers);
+
+          answers.forEach((answer: any) => {
+            const column = this.dynamicColumns.find((col) => col.field_Id === answer.id_form_field.toString());
+            if (column) {
+              mappedAnswers[column.field_Id] = answer.value;
+            }
+          });
+
+          return {
+            ...item,
+            answers: mappedAnswers,
+            selected: false,
+          };
+        });
+
+        this.feedbacksSorted = new MatTableDataSource(this.feedbacks);
+        this.feedbacksSorted.paginator = this.paginator!;
+        this.feedbacksSorted.sort = this.sort!;
+      }
     });
   }
 
   applyFilters() {
-    const filters = this.filterForm.value;
-    this.feedbacksSorted.filterPredicate = (data: any, filter: string) => {
-      const filterValues = JSON.parse(filter);
-      return Object.keys(filterValues).every(key => {
-        if (!filterValues[key]) {
-          return true;
-        }
-        if (key === 'dateRange') {
-          const startDate = new Date(filterValues[key].startDate);
-          const endDate = new Date(filterValues[key].endDate);
-          const submittedDate = new Date(data.answers['submittedAt']);
-          return submittedDate >= startDate && submittedDate <= endDate;
-        }
-        return data.answers[key] === filterValues[key];
-      });
-    };
-    this.feedbacksSorted.filter = JSON.stringify(filters);
+    const dateRange = this.filterForm.value.data_do_feedback;
+    this.feedbacksService.applyFilters(this.formId, dateRange).subscribe({
+      next: (data: any[]) => {
+        this.feedbacks = data.map((item: any) => {
+          const mappedAnswers: any = {};
+          const answers = JSON.parse(item.answers);
+
+          answers.forEach((answer: any) => {
+            const column = this.dynamicColumns.find((col) => col.field_Id === answer.id_form_field.toString());
+            if (column) {
+              mappedAnswers[column.field_Id] = answer.value;
+            }
+          });
+
+          return {
+            ...item,
+            answers: mappedAnswers,
+            selected: false,
+          };
+        });
+
+        this.feedbacksSorted = new MatTableDataSource(this.feedbacks);
+        this.feedbacksSorted.paginator = this.paginator!;
+        this.feedbacksSorted.sort = this.sort!;
+      },
+      error: (error: any) => {
+        console.error('Erro ao aplicar filtros:', error);
+        this.errorMessage = 'Erro ao aplicar filtros.';
+      }
+    });
   }
 
   clearFilters() {

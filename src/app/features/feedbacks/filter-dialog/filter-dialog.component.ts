@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { Component, Inject } from '@angular/core';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatNativeDateModule, NativeDateAdapter } from '@angular/material/core';
@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FeedbacksService } from '../services/feedbacks.service';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -37,35 +38,46 @@ export class FilterDialogComponent {
 
   filterForm: FormGroup;
 
-  constructor(private fb: FormBuilder,
+  constructor(
+    private fb: FormBuilder,
     private dialogRef: MatDialogRef<FilterDialogComponent>,
-    private dateAdapter: DateAdapter<any>
+    private dateAdapter: DateAdapter<any>,
+    private feedbacksService: FeedbacksService, // Inject FeedbacksService
+    @Inject(MAT_DIALOG_DATA) public data: { startDate: Date, endDate: Date } // Inject initial date range
   ) {
     this.dateAdapter.setLocale('pt-BR'); // Define o local para pt-BR
-    const today = new Date();
     this.filterForm = this.fb.group({
       dateRange: this.fb.group({
-        startDate: [today],
-        endDate: [today]
+        startDate: [data.startDate || new Date(new Date().setDate(new Date().getDate() - 30))],
+        endDate: [data.endDate || new Date()]
       })
     });
   }
 
   onSubmit() {
     if (this.filterForm.valid) {
-      const filters = this.filterForm.value;
-      console.log('Filtros aplicados:', filters);
-      this.applyFilters();
+      const filters = this.filterForm.value.dateRange;
+      this.applyFilters(filters);
     }
   }
 
-
-  applyFilters() {
-    console.log('Filtros aplicados');
+  applyFilters(dateRange: { startDate: Date, endDate: Date }) {
+    const formId = 1; // Replace with the actual formId
+    this.feedbacksService.applyFilters(formId, {
+      start: dateRange.startDate,
+      end: dateRange.endDate
+    }).subscribe({
+      next: (data) => {
+        console.log('Filtros aplicados', data);
+        this.dialogRef.close(data); // Close the dialog with the filtered data
+      },
+      error: (error) => {
+        console.error('Erro ao aplicar filtros:', error);
+      }
+    });
   }
 
   clearFilters() {
     this.filterForm.reset(); // Reseta o formulário
-    this.dialogRef.close();  // Fecha o modal
   }
 }

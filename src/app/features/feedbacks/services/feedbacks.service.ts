@@ -10,7 +10,7 @@ export class FeedbacksService {
 
   private apiUrl = `${environment.apiUrl}/feedbacks`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getFeedbacks(formId: number): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/${formId}`);
@@ -20,11 +20,11 @@ export class FeedbacksService {
     return this.http.post<void>(`${this.apiUrl}/delete`, { ids });
   }
 
-  getFeedbacksPaginated(formId: number, page: number): Observable<any> {
-    const pageSize = 10;
-    const offset = page * pageSize;
-    return this.http.get<any>(
-      `/api/feedbacks?formId=${formId}&offset=${offset}&limit=${pageSize}`
-    );
+  applyFilters(formId: number, dateRange: { start: Date, end: Date }): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/${formId}/filter`, {
+      Submitted_Start: dateRange.start || null,
+      Submitted_End: dateRange.end || null
+    });
   }
+
 }

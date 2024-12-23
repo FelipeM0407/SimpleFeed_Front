@@ -1,39 +1,25 @@
 <div class="container">
-  <!-- Filtros Dinâmicos -->
+  <!-- Filtro de Data -->
   <form [formGroup]="filterForm" class="filters">
-    <div *ngFor="let column of dynamicColumns">
-      <ng-container [ngSwitch]="column.type">
-        <mat-form-field *ngSwitchCase="'date'" appearance="outline" class="date-range-field">
-          <mat-label>{{column.label}}</mat-label>
-          <mat-date-range-input [rangePicker]="datePicker" formGroupName="{{column.field_Id}}">
-            <input matStartDate placeholder="DD/MM/YYYY" formControlName="start" readonly>
-            <input matEndDate placeholder="DD/MM/YYYY" formControlName="end" readonly>
-          </mat-date-range-input>
-          <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
-          <mat-date-range-picker #datePicker></mat-date-range-picker>
-        </mat-form-field>
-        <mat-form-field *ngSwitchCase="'rating'" appearance="outline">
-          <mat-label>{{ column.label }}</mat-label>
-          <mat-select formControlName="{{ column.field_Id }}">
-            <mat-option *ngFor="let rating of [1, 2, 3, 4, 5]" [value]="rating">{{ rating }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field *ngSwitchCase="'dropdown'" appearance="outline">
-          <mat-label>{{ column.label }}</mat-label>
-          <mat-select formControlName="{{ column.field_Id }}">
-            <mat-option *ngFor="let option of column.options" [value]="option">{{ option }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </ng-container>
-    </div>
-    <!-- Botões de Ação dos Filtros -->
-    <div class="filter-actions">
-      <button mat-mini-fab color="warn" (click)="clearFilters()">
-        <mat-icon>close</mat-icon>
-      </button>
-      <button mat-mini-fab color="primary" (click)="applyFilters()">
-        <mat-icon>done_outline</mat-icon>
-      </button>
+    <div class="filter-group">
+      <mat-form-field appearance="outline" class="date-range-field">
+        <mat-label>Data do Feedback</mat-label>
+        <mat-date-range-input [rangePicker]="datePicker" formGroupName="data_do_feedback">
+          <input matStartDate placeholder="DD/MM/YYYY" formControlName="start" (focus)="datePicker.open()">
+          <input matEndDate placeholder="DD/MM/YYYY" formControlName="end" (focus)="datePicker.open()">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matIconSuffix [for]="datePicker"></mat-datepicker-toggle>
+        <mat-date-range-picker #datePicker></mat-date-range-picker>
+      </mat-form-field>
+      <!-- Botões de Ação dos Filtros -->
+      <div class="filter-actions">
+        <button mat-mini-fab color="warn" (click)="clearFilters()">
+          <mat-icon>close</mat-icon>
+        </button>
+        <button mat-mini-fab color="primary" (click)="applyFilters()">
+          <mat-icon>done_outline</mat-icon>
+        </button>
+      </div>
     </div>
   </form>
 
@@ -42,10 +28,10 @@
     <table mat-table [dataSource]="feedbacksSorted" class="mat-elevation-z8 fixed-table" matSort>
       <!-- Coluna de Checkbox -->
       <ng-container matColumnDef="select" sticky>
-        <th mat-header-cell *matHeaderCellDef>
+        <th mat-header-cell *matHeaderCellDef sticky>
           <mat-checkbox (change)="toggleSelectAll($event)" [color]="'primary'"></mat-checkbox>
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td mat-cell *matCellDef="let element" sticky>
           <mat-checkbox [(ngModel)]="element.selected" (change)="updateSelectedCount()" [color]="'primary'"></mat-checkbox>
         </td>
       </ng-container>
@@ -54,7 +40,7 @@
       <ng-container matColumnDef="submittedAt">
         <th mat-header-cell *matHeaderCellDef class="align-right">Data de Envio</th>
         <td mat-cell *matCellDef="let element" class="align-right">
-          {{ element.answers['submittedAt'] | date: 'dd/MM/yyyy HH:mm' }}
+          {{ element.answers['submittedAt'] | date: 'dd/MM/yyyy' }}
         </td>
       </ng-container>
 
