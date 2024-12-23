@@ -19,6 +19,15 @@
         0px 8px 10px 1px rgba(0, 0, 0, 0.14),
         0px 3px 14px 2px rgba(0, 0, 0, 0.12);
     /* Sombra da tabela */
+    position: relative; /* Add this line */
+}
+
+th[sticky], td[sticky] {
+    position: sticky;
+    left: 0;
+    background: white;
+    z-index: 1;
+    box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.2);
 }
 
 /* Colunas da tabela */
