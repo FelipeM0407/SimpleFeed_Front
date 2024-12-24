@@ -16,9 +16,11 @@ export class FeedbacksService {
     return this.http.get<any>(`${this.apiUrl}/${formId}`);
   }
 
-  deleteFeedbacks(ids: number[]): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/delete`, { ids });
-  }
+  deleteFeedbacks(feedbackIds: number[]): Observable<void> {
+    return this.http.request<void>('delete', `${this.apiUrl}/delete`, {
+      body: feedbackIds
+    });
+  } 
 
   applyFilters(formId: number, dateRange: { start: Date, end: Date }): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/${formId}/filter`, {

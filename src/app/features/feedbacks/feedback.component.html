@@ -81,12 +81,15 @@
 <!-- Barra fixa com a lixeira -->
 <div class="action-bar-container" *ngIf="selectedCount > 0">
   <div class="action-bar">
-    <span>{{ selectedCount }} selecionados</span>
+    <mat-icon [matBadge]="selectedCount" matBadgeSize="small" matBadgeColor="primary">check_circle</mat-icon>
     <button mat-icon-button color="warn" (click)="deleteSelected()">
       <mat-icon>delete</mat-icon>
     </button>
     <button mat-icon-button color="black" (click)="clearSelection()">
       <mat-icon>close</mat-icon>
+    </button>
+    <button mat-icon-button color="primary" (click)="viewSelected()" *ngIf="selectedCount === 1">
+      <mat-icon>visibility</mat-icon>
     </button>
   </div>
 </div>

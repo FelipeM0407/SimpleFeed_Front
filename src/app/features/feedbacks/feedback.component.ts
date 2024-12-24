@@ -22,6 +22,10 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select'; // Importação necessária
 import { FeedbacksService } from './services/feedbacks.service';
+import { ViewFeedbackDialogComponent } from './view-feedback-dialog/view-feedback-dialog.component';
+import { MatBadgeModule } from '@angular/material/badge'; // Importação necessária
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -56,7 +60,9 @@ export const MY_DATE_FORMATS = {
     MatInputModule,
     MatDialogModule,
     ReactiveFormsModule,
-    MatSelectModule // Adicione o MatSelectModule aqui
+    MatSelectModule,
+    MatBadgeModule,
+    MatSnackBarModule
   ],
   providers: [
     { provide: DateAdapter, useClass: NativeDateAdapter },
@@ -87,6 +93,7 @@ export class FeedbacksComponent implements OnInit {
     private formService: FormsService,
     private dialog: MatDialog,
     private fb: FormBuilder,
+    private snackBar: MatSnackBar,
     @Inject(MAT_DATE_LOCALE) private _locale: string
   ) {
     this.filterForm = this.fb.group({
@@ -274,17 +281,46 @@ export class FeedbacksComponent implements OnInit {
       .filter((feedback) => feedback.selected)
       .map((feedback) => feedback.id);
 
-    console.log('Excluir registros:', selectedFeedbackIds);
-
-    // Placeholder para chamar o endpoint de exclusão
-    // this.feedbacksService.deleteFeedbacks(selectedFeedbacks.map(f => f.id)).subscribe(() => {
-    //   this.feedbacks = this.feedbacks.filter(feedback => !feedback.selected);
-    //   this.updateSelectedCount();
-    // });
+    if (selectedFeedbackIds.length > 0) {
+      this.feedbacksService.deleteFeedbacks(selectedFeedbackIds).subscribe({
+        next: () => {
+          this.snackBar.open('Feedbacks removidos com sucesso!', 'Fechar', {
+            duration: 3000,
+            panelClass: ['snackbar-success'],
+            horizontalPosition: 'right',
+            verticalPosition: 'top'
+          });
+          this.clearSelection();
+          this.fetchFeedbacks();
+        },
+        error: (error) => {
+          console.error('Erro ao remover feedbacks:', error);
+          this.snackBar.open('Erro ao remover feedbacks.', 'Fechar', {
+            duration: 3000,
+            panelClass: ['snackbar-error'],
+            horizontalPosition: 'right',
+            verticalPosition: 'top'
+          });
+        }
+      });
+    }
   }
 
   clearSelection(): void {
     this.feedbacks.forEach((feedback) => (feedback.selected = false)); // Remove seleção de todos os itens
     this.updateSelectedCount(); // Atualiza o contador para zero
+  }
+
+  viewSelected(): void {
+    const selectedFeedback = this.feedbacks.find((feedback) => feedback.selected);
+    if (selectedFeedback) {
+      this.dialog.open(ViewFeedbackDialogComponent, {
+        width: '90%',
+        data: {
+          ...selectedFeedback,
+          dynamicColumns: this.dynamicColumns
+        }
+      });
+    }
   }
 }
