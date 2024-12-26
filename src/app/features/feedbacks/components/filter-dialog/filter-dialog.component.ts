@@ -8,7 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
-import { FeedbacksService } from '../services/feedbacks.service';
+import { FeedbacksService } from '../../services/feedbacks.service';
 
 export const MY_DATE_FORMATS = {
   parse: {
