@@ -3,9 +3,12 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatInputModule } from '@angular/material/input';
-import { ReactiveFormsModule } from '@angular/forms'; // Para formularios reativos
+import { ReactiveFormsModule } from '@angular/forms'; 
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { CommonModule } from '@angular/common'; // Import necessário
 
 
 @Component({
@@ -13,9 +16,9 @@ import { MatCardModule } from '@angular/material/card';
   templateUrl: './form-create-dialog.component.html',
   styleUrls: ['./form-create-dialog.component.scss'],
   standalone: true,
-  imports: [MatCardModule, MatIconModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule]
+  imports: [CommonModule, MatGridListModule, MatTabsModule, MatCardModule, MatIconModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule]
 })
-export class FormCreateDialogComponent { 
+export class FormCreateDialogComponent {
   form: FormGroup;
 
   constructor(
@@ -37,4 +40,5 @@ export class FormCreateDialogComponent {
       this.dialogRef.close(this.form.value.formName); // Retorna o nome do formulário
     }
   }
+
 }

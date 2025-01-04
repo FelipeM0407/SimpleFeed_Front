@@ -49,8 +49,7 @@ export class FormsListComponent implements OnInit, OnDestroy {
 
   onCreateForm(): void {
     const dialogRef = this.dialog.open(FormCreateDialogComponent, {
-      width: 'auto', // Largura do diálogo
-      data: { formName: 'teste' } // Dados iniciais para o diálogo 
+      data: { formName: 'form_creation_dialog' } // Dados iniciais para o diálogo 
     });
   
     dialogRef.afterClosed().subscribe((result) => {

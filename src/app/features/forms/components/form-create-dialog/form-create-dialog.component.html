@@ -1,24 +1,60 @@
-<h1 mat-dialog-title class="dialog-title">
-  <mat-icon class="dialog-icon">create</mat-icon>
-  Criar Novo Formulário
-</h1>
-<div mat-dialog-content>
-  <form [formGroup]="form" class="dialog-form">
-    <mat-form-field appearance="outline" class="dialog-form-field">
-      <input matInput formControlName="formName" placeholder="Digite o nome do formulário">
-      <mat-error *ngIf="form.get('formName')?.hasError('required')">
-        Nome é obrigatório
-      </mat-error>
-      <mat-error *ngIf="form.get('formName')?.hasError('minlength')">
-        Nome deve ter no mínimo 5 caracteres
-      </mat-error>
-      <mat-error *ngIf="form.get('formName')?.hasError('maxlength')">
-        Nome deve ter no máximo 100 caracteres
-      </mat-error>
-    </mat-form-field>
-  </form>
-  <div mat-dialog-actions class="dialog-actions">
-    <button mat-stroked-button color="warn" (click)="cancel()">Cancelar</button>
-    <button mat-stroked-button color="primary" [disabled]="form.invalid" (click)="continue()">Continuar</button>
+<div class="mat-dialog-container">
+
+
+  <h1 mat-dialog-title class="dialog-title">
+    <mat-icon class="dialog-icon">create</mat-icon>
+    Novo Formulário
+  </h1>
+  <div mat-dialog-content>
+    <form [formGroup]="form" class="dialog-form">
+      <mat-form-field appearance="outline" class="dialog-form-field">
+        <mat-label>Nome do Formulário</mat-label>
+        <input matInput formControlName="formName" placeholder="Digite o nome do formulário">
+        <mat-error *ngIf="form.get('formName')?.hasError('required')">
+          Nome é obrigatório
+        </mat-error>
+        <mat-error *ngIf="form.get('formName')?.hasError('minlength')">
+          Nome deve ter no mínimo 5 caracteres
+        </mat-error>
+        <mat-error *ngIf="form.get('formName')?.hasError('maxlength')">
+          Nome deve ter no máximo 100 caracteres
+        </mat-error>
+      </mat-form-field>
+
+      <mat-tab-group [color]="'primary'">
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">dynamic_form</mat-icon>
+            Campos
+          </ng-template>
+          Content 1
+        </mat-tab>
+
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">ballot</mat-icon>
+            Modelos
+          </ng-template>
+          <mat-grid-list cols="2" rowHeight="5:5">
+            <mat-grid-tile>1</mat-grid-tile>
+            <mat-grid-tile>2</mat-grid-tile>
+            <mat-grid-tile>3</mat-grid-tile>
+            <mat-grid-tile>4</mat-grid-tile>
+            <mat-grid-tile>4</mat-grid-tile>
+            <mat-grid-tile>4</mat-grid-tile>
+            <mat-grid-tile>4</mat-grid-tile>
+            <mat-grid-tile>4</mat-grid-tile>
+            <mat-grid-tile>4</mat-grid-tile>
+            <mat-grid-tile>4</mat-grid-tile>
+          </mat-grid-list>
+        </mat-tab>
+
+      </mat-tab-group>
+
+    </form>
+    <div mat-dialog-actions class="dialog-actions">
+      <button mat-stroked-button color="warn" (click)="cancel()">Cancelar</button>
+      <button mat-stroked-button color="primary" [disabled]="form.invalid" (click)="continue()">Continuar</button>
+    </div>
   </div>
 </div>
