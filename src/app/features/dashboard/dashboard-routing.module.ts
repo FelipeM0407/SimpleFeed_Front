@@ -4,15 +4,18 @@ import { DashboardComponent } from './dashboard.component';
 import { authGuard } from 'src/app/core/auth.guard';
 import { FeedbacksComponent } from '../feedbacks/feedback.component';
 import { FormsListComponent } from '../forms/components/forms-list/forms-list.component';
+import { FormCreateComponent } from '../forms/components/form-create/form-create.component';
 
 const routes: Routes = [
   {
     path: '', component: DashboardComponent, // Rota padrão para o Dashboard
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'forms', pathMatch: 'full' }, // Rota padrão para 'forms'
+      { path: '', redirectTo: 'forms', pathMatch: 'full' }, 
       { path: 'forms', component: FormsListComponent },
       { path: 'feedbacks/:formId', component: FeedbacksComponent },
+      { path: 'form-create', component: FormCreateComponent }, 
+
     ], // Aplica o guard na rota
   }
 ];

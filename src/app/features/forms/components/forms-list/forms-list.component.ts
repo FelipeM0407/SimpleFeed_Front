@@ -13,6 +13,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { FormCreateDialogComponent } from '../form-create-dialog/form-create-dialog.component';
 
 
 @Component({
@@ -30,7 +32,9 @@ export class FormsListComponent implements OnInit, OnDestroy {
   private clientDataSubscription: Subscription | null = null;
 
 
-  constructor(private formsService: FormsService, private authService: AuthService, private router: Router ) { }
+  constructor(private formsService: FormsService, private authService: AuthService, private router: Router,
+    public dialog: MatDialog
+   ) { }
 
   ngOnInit(): void {
     this.clientDataSubscription = this.authService.getClientData().subscribe({
@@ -40,6 +44,19 @@ export class FormsListComponent implements OnInit, OnDestroy {
           this.loadForms(clientId);
         }
       },
+    });
+  }
+
+  onCreateForm(): void {
+    const dialogRef = this.dialog.open(FormCreateDialogComponent, {
+      width: 'auto', // Largura do diálogo
+      data: { formName: 'teste' } // Dados iniciais para o diálogo 
+    });
+  
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.router.navigate(['/dashboard/form-create']); // Navegar para a tela de criação de formulário
+      }
     });
   }
 
@@ -62,11 +79,6 @@ export class FormsListComponent implements OnInit, OnDestroy {
 
   getTotalResponsesPercentage(): number {
     return Math.min((this.getTotalResponses() / this.maxResponses) * 100, 100);
-  }
-
-  onCreateForm(): void {
-    // Implementar lógica para criar formulário
-    console.log('Criar Formulário');
   }
 
   ngOnDestroy(): void {
