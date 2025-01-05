@@ -18,6 +18,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormsTemplates } from '../../models/FormsTemplates';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
+import { FormStructure } from '../../models/FormStructure';
 
 @Component({
   selector: 'app-form-create-dialog',
@@ -32,6 +33,8 @@ export class FormCreateDialogComponent {
   formFields: FieldTypes[] = []; // Lista de campos retornados
   formTemplates: FormsTemplates[] = []; // Lista de campos retornados
   selectedTemplateId: number | null = null; // ID do template selecionado
+  clientId: number | null = null;
+  formStructure: FormStructure | null = null;
 
   constructor(
     public dialogRef: MatDialogRef<FormCreateDialogComponent>,
@@ -44,6 +47,8 @@ export class FormCreateDialogComponent {
     this.form = this.fb.group({
       formName: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]]
     });
+
+    this.clientId = this.authService.getClientId();
   }
 
   ngOnInit(): void {
@@ -67,7 +72,7 @@ export class FormCreateDialogComponent {
 
   // Retorna os templates selecionados
   getSelectedTemplates(): FormsTemplates[] {
-    return this.formTemplates.filter(template => template.selected);
+    return this.formTemplates.filter(template => template.id === this.selectedTemplateId);
   }
 
   selectTemplate(templateId: number): void {
@@ -100,10 +105,46 @@ export class FormCreateDialogComponent {
 
   continue(): void {
     if (this.form.valid) {
-      const selectedTemplates = this.getSelectedTemplates();
+      const selectedTemplate = this.getSelectedTemplates();
+
+      const templateFields = selectedTemplate.map(template => {
+        return JSON.parse(template.fields).map((field: any) => ({
+          type: field.field_type,
+          required: field.required,
+          label: field.label,
+          name: field.name,
+          ordenation: field.ordenation,
+          fieldTypeId: field.fieldTypeId,
+          id: field.id
+        }));
+      });
+
+      const selectedFields = this.formFields
+        .filter(field => field.selected)
+        .map((field, index) => ({
+          type: field.fieldType,
+          required: true,
+          label: field.label,
+          name: field.name,
+          ordenation: index, 
+          fieldTypeId: field.id,
+          id: field.id
+        }));
+
+
+      this.formStructure = {
+        name: this.form.value.formName,
+        clientId: this.clientId || 0,
+        isActive: true,
+        templateId: selectedTemplate[0]?.id || 0,
+
+        fields: selectedFields || templateFields
+      };
+
       this.dialogRef.close({
         formName: this.form.value.formName,
-        templates: selectedTemplates
+        templates: selectedTemplate || null,
+        fields: this.formStructure
       }); // Retorna o nome do formulário e os templates selecionados
     }
   }

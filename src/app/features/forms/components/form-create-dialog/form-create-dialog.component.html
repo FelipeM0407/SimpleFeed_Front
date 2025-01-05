@@ -31,7 +31,7 @@
             <mat-list-option *ngFor="let field of formFields" [value]="field.id" class="compact-list-item" [(selected)]="field.selected">
               <div mat-line class="list-item-header">
                 <mat-icon class="field-icon">{{ getIconByFieldType(field.fieldType) }}</mat-icon>
-                <strong>{{ field.name }}</strong>
+                <strong>{{ field.label }}</strong>
               </div>
               <div mat-line class="list-item-description">
                 {{ field.description }}

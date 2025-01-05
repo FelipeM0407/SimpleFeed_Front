@@ -24,6 +24,11 @@ export class AuthService {
     return null;
   }
 
+  getClientId() {
+    const decodedToken: any = this.getDecodedToken();
+    return decodedToken?.client_id || null;
+  }
+
   getUserGuid() {
     const decodedToken: any = this.getDecodedToken();
     return decodedToken?.id || null;
