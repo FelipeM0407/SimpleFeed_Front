@@ -70,6 +70,171 @@ mat-form-field {
     width: 70%;
 }
 
+/* Estilo geral para a lista */
+.compact-selection-list {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0.5rem 0;
+    background-color: #f9f9f9;
+    /* Fundo leve para destacar */
+    border-radius: 8px;
+    /* Bordas arredondadas */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Sombra discreta */
+}
+
+/* Estilo para cada item da lista */
+.compact-list-item {
+    margin: 0.25rem 0px 7px;
+    /* Espaço entre os itens */
+    padding: 0.5rem;
+    /* Espaço interno */
+    border-radius: 4px;
+    /* Bordas arredondadas para cada item */
+    transition: background-color 0.3s ease;
+    /* Efeito de hover */
+}
+
+.compact-list-item:hover {
+    background-color: #e3f2fd;
+    /* Fundo azul claro ao passar o mouse */
+}
+
+/* Cabeçalho do item (ícone + nome) */
+.list-item-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    /* Espaçamento entre o ícone e o texto */
+    font-size: 1.1rem;
+    /* Texto um pouco maior */
+    font-weight: bold;
+    color: #424242;
+}
+
+/* Ícone do campo */
+.field-icon {
+    font-size: 1.5rem;
+    /* Tamanho do ícone */
+    color: #3f51b5;
+    /* Azul Material */
+}
+
+/* Descrição do item */
+.list-item-description {
+    font-size: 0.9rem;
+    /* Texto menor para descrição */
+    color: #757575;
+    /* Cinza para texto secundário */
+    margin-left: 2.5rem;
+    /* Indentação para alinhar com o texto */
+}
+
+/* Contador de campos selecionados */
+.selected-count {
+    margin-top: 1rem;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: right;
+    color: #424242;
+}
+
+/* Contêiner dos templates */
+.template-card-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 1rem;
+}
+
+/* Card do template */
+.template-card {
+    position: relative;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px 5px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.template-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+
+/* Checkbox para seleção */
+.template-checkbox {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 10;
+}
+
+/* Imagem de fundo do card */
+.template-image {
+    height: 120px;
+    background-color: #3f51b5;
+    /* Azul Material */
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+/* Detalhes do template */
+.template-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.template-details h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #424242;
+}
+
+.template-details p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: #757575;
+}
+
+mat-radio-group {
+    display: contents;
+}
+
+/* Destaca o card selecionado */
+.template-card.selected {
+    border: 2px solid #3f51b5;
+    /* Cor do destaque */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.template-card {
+    cursor: pointer;
+    /* Indica que o card é clicável */
+}
+
+.template-card:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+
+
+
+/* Botão de rádio no card */
+.template-radio-button {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 10;
+}
+
+
 
 @media (max-width: 768px) {
 
@@ -78,5 +243,19 @@ mat-form-field {
     // } 
     mat-form-field {
         width: 100%;
+    }
+
+    mat-card {
+        width: 244px;
+    }
+
+    .list-item-description {
+        font-size: 0.75rem;
+        /* Texto menor para descrição em dispositivos móveis */
+    }
+
+    .list-item-description {
+        margin-left: 0px;
+        /* Indentação para alinhar com o texto */
     }
 }

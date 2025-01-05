@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { FormDashboard } from '../models/FormDashboard';
+import { FieldTypes } from '../models/FieldTypes';
+import { FormsTemplates } from '../models/FormsTemplates';
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +21,14 @@ export class FormsService {
 
   getFormStructure(formId: number): Observable<any> {
     return this.http.get<void>(`${this.apiUrl}/forms/${formId}/structure`);
+  }
+
+  getFormFieldsByClientId(clientId: string): Observable<FieldTypes[]> {
+    return this.http.get<FieldTypes[]>(`${this.apiUrl}/fieldtypes/${clientId}`);
+  }
+
+  getTemplatesByClientId(clientId: string): Observable<FormsTemplates[]> {
+    return this.http.get<FormsTemplates[]>(`${this.apiUrl}/templates/${clientId}/templates`);
   }
   
 }

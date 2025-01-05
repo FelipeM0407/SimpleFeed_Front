@@ -27,7 +27,23 @@
             <mat-icon class="example-tab-icon">dynamic_form</mat-icon>
             Campos
           </ng-template>
-          Content 1
+          <mat-selection-list #fields class="compact-selection-list">
+            <mat-list-option *ngFor="let field of formFields" [value]="field.id" class="compact-list-item">
+              <div mat-line class="list-item-header">
+                <mat-icon class="field-icon">{{ getIconByFieldType(field.fieldType) }}</mat-icon>
+                <strong>{{ field.name }}</strong>
+              </div>
+              <div mat-line class="list-item-description">
+                {{ field.description }}
+              </div>
+            </mat-list-option>
+          </mat-selection-list>
+
+          <p class="selected-count">
+            Campos selecionados: {{ fields.selectedOptions.selected.length }}
+          </p>
+
+
         </mat-tab>
 
         <mat-tab>
@@ -35,18 +51,27 @@
             <mat-icon class="example-tab-icon">ballot</mat-icon>
             Modelos
           </ng-template>
-          <mat-grid-list cols="2" rowHeight="5:5">
-            <mat-grid-tile>1</mat-grid-tile>
-            <mat-grid-tile>2</mat-grid-tile>
-            <mat-grid-tile>3</mat-grid-tile>
-            <mat-grid-tile>4</mat-grid-tile>
-            <mat-grid-tile>4</mat-grid-tile>
-            <mat-grid-tile>4</mat-grid-tile>
-            <mat-grid-tile>4</mat-grid-tile>
-            <mat-grid-tile>4</mat-grid-tile>
-            <mat-grid-tile>4</mat-grid-tile>
-            <mat-grid-tile>4</mat-grid-tile>
-          </mat-grid-list>
+          
+          <div class="template-card-container">
+            <mat-radio-group [(ngModel)]="selectedTemplateId" [ngModelOptions]="{standalone: true}">
+              <mat-card
+                *ngFor="let template of formTemplates"
+                class="template-card"
+                (click)="selectTemplate(template.id)"
+                [class.selected]="selectedTemplateId === template.id"
+              >
+                <div class="template-card-content">
+                  <div class="template-image"></div>
+                  <div class="template-details">
+                    <h3>{{ template.name }}</h3>
+                    <p>{{ template.description }}</p>
+                  </div>
+                </div>
+              </mat-card>
+            </mat-radio-group>
+          </div>
+          
+          
         </mat-tab>
 
       </mat-tab-group>
