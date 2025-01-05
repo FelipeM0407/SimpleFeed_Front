@@ -62,20 +62,7 @@ mat-form-field {
     width: 70%;
 }
 
-@media (max-width: 768px) {
-    mat-form-field {
-        width: 100%;
-    }
 
-    mat-card {
-        width: 244px;
-    }
-
-    .list-item-description {
-        font-size: 0.75rem;
-        margin-left: 0px;
-    }
-}
 
 /* Estilo geral para a lista */
 .compact-selection-list {
@@ -191,4 +178,19 @@ mat-form-field {
 
 mat-radio-group {
     display: contents;
+}
+
+@media (max-width: 768px) {
+    mat-form-field {
+        width: 100%;
+    }
+
+    mat-card {
+        width: 244px;
+    }
+
+    .list-item-description {
+        font-size: 0.75rem;
+        margin-left: 0px;
+    }
 }
