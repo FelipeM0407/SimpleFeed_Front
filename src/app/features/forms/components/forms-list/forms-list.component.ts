@@ -49,12 +49,19 @@ export class FormsListComponent implements OnInit, OnDestroy {
 
   onCreateForm(): void {
     const dialogRef = this.dialog.open(FormCreateDialogComponent, {
-      data: { formName: 'form_creation_dialog' } // Dados iniciais para o diálogo 
+      data: { name: 'form_creation_dialog' } 
     });
   
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.router.navigate(['/dashboard/form-create']); // Navegar para a tela de criação de formulário
+        this.formsService.createForm(result).subscribe({
+          next: (formIdCreated: any) => {
+            this.router.navigate(['/dashboard/form-create', formIdCreated.formId]);
+          },
+          error: () => {
+            this.errorMessage = 'Erro ao criar o formulário.';
+          }
+        });
       }
     });
   }

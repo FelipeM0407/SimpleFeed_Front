@@ -14,7 +14,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'forms', pathMatch: 'full' }, 
       { path: 'forms', component: FormsListComponent },
       { path: 'feedbacks/:formId', component: FeedbacksComponent },
-      { path: 'form-create', component: FormCreateComponent }, 
+      { path: 'form-create/:formId', component: FormCreateComponent }, 
 
     ], // Aplica o guard na rota
   }

@@ -1,18 +1,19 @@
 export interface FormStructure {
-    name: string;
-    clientId: number;
-    isActive: boolean;
-    templateId: number;
-    fields: FormField[];
+    Name: string;
+    Client_Id: number;
+    Is_Active: boolean;
+    TemplateId: number;
+    Fields: FormField[];
 }
 
 export interface FormField {
-    id: number;
-    type: string;
-    required: boolean;
-    label: string;
-    name: string;
-    ordenation: number;
-    options?: string;
-    fieldTypeId: number;
+    Id: number;
+    Type: string;
+    Required: boolean;
+    Label: string;
+    Name: string;
+    Ordenation: number;
+    Options?: string;
+    Field_Type_Id: number;
 }
+ 

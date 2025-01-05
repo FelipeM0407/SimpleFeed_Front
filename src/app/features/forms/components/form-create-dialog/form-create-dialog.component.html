@@ -9,14 +9,14 @@
     <form [formGroup]="form" class="dialog-form">
       <mat-form-field appearance="outline" class="dialog-form-field">
         <mat-label>Nome do Formulário</mat-label>
-        <input matInput formControlName="formName" placeholder="Digite o nome do formulário">
-        <mat-error *ngIf="form.get('formName')?.hasError('required')">
+        <input matInput formControlName="name" placeholder="Digite o nome do formulário">
+        <mat-error *ngIf="form.get('name')?.hasError('required')">
           Nome é obrigatório
         </mat-error>
-        <mat-error *ngIf="form.get('formName')?.hasError('minlength')">
+        <mat-error *ngIf="form.get('name')?.hasError('minlength')">
           Nome deve ter no mínimo 5 caracteres
         </mat-error>
-        <mat-error *ngIf="form.get('formName')?.hasError('maxlength')">
+        <mat-error *ngIf="form.get('name')?.hasError('maxlength')">
           Nome deve ter no máximo 100 caracteres
         </mat-error>
       </mat-form-field>

@@ -1,6 +1,6 @@
 export interface FormDashboard {
     id: number;
-    formName: string;
+    name: string;
     responseCount: number;
     lastUpdated: Date;
   }

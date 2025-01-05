@@ -39,14 +39,14 @@ export class FormCreateDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<FormCreateDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { formName: string },
+    @Inject(MAT_DIALOG_DATA) public data: { name: string },
     private fb: FormBuilder,
     private formsService: FormsService,
     private authService: AuthService,
     private el: ElementRef
   ) {
     this.form = this.fb.group({
-      formName: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]]
+      name: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]]
     });
 
     this.clientId = this.authService.getClientId();
@@ -107,7 +107,7 @@ export class FormCreateDialogComponent {
   continue(): void {
     if (this.form.valid) {
       const selectedTemplate = this.getSelectedTemplates();
-  
+
       const templateFields = selectedTemplate.map(template => {
         return JSON.parse(template.fields).map((field: any) => ({
           type: field.field_type,
@@ -115,37 +115,41 @@ export class FormCreateDialogComponent {
           label: field.label,
           name: field.name,
           ordenation: field.ordenation,
-          fieldTypeId: field.fieldTypeId,
+          field_Type_Id: field.field_Type_Id,
           id: field.id
         }));
       });
-  
+
       const selectedFields = this.selectedFieldsOrder.map((field, index) => ({
         type: field.fieldType,
         required: true,
         label: field.label,
         name: field.name,
         ordenation: index + 1, // Define a ordem com base na lista rastreada
-        fieldTypeId: field.id,
+        field_Type_Id: field.id,
         id: field.id
       }));
-  
-      this.formStructure = {
-        name: this.form.value.formName,
-        clientId: this.clientId || 0,
-        isActive: true,
-        templateId: selectedTemplate[0]?.id || 0,
-        fields: selectedFields.length > 0 ? selectedFields : templateFields
-      };
-  
+
+      // this.formStructure = {
+      //   Name: this.form.value.name,
+      //   Client_Id: this.clientId || 0,
+      //   Is_Active: true,
+      //   TemplateId: selectedTemplate[0]?.id || 0,
+      //   Fields: selectedFields.length > 0 ? selectedFields : templateFields
+      // };
+
       this.dialogRef.close({
-        formName: this.form.value.formName,
-        templates: selectedTemplate || null,
-        fields: this.formStructure
+
+        Name: this.form.value.name,
+        Client_Id: this.clientId || 0,
+        Is_Active: true,
+        TemplateId: selectedTemplate[0]?.id || 0,
+        Fields: selectedFields.length > 0 ? selectedFields : templateFields
+
       }); // Retorna o nome do formulário e os templates selecionados
     }
   }
-  
+
 
   toggleFieldSelection(field: FieldTypes): void {
     if (field.selected) {

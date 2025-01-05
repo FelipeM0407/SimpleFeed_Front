@@ -5,6 +5,7 @@ import { environment } from 'src/environments/environment';
 import { FormDashboard } from '../models/FormDashboard';
 import { FieldTypes } from '../models/FieldTypes';
 import { FormsTemplates } from '../models/FormsTemplates';
+import { FormStructure } from '../models/FormStructure';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +30,10 @@ export class FormsService {
 
   getTemplatesByClientId(clientId: string): Observable<FormsTemplates[]> {
     return this.http.get<FormsTemplates[]>(`${this.apiUrl}/templates/${clientId}/templates`);
+  }
+
+  createForm(form: FormStructure): Observable<number> {
+    return this.http.post<number>(`${this.apiUrl}/forms`, form);
   }
   
 }
