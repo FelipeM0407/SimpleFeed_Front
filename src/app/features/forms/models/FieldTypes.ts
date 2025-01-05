@@ -7,5 +7,5 @@ export interface FieldTypes{
     fieldType: string;
     planId: number;
     selected: boolean;
-
+    selectionOrder?: number;
 }

@@ -35,6 +35,7 @@ export class FormCreateDialogComponent {
   selectedTemplateId: number | null = null; // ID do template selecionado
   clientId: number | null = null;
   formStructure: FormStructure | null = null;
+  selectedFieldsOrder: FieldTypes[] = []; // Lista para rastrear a ordem de seleção
 
   constructor(
     public dialogRef: MatDialogRef<FormCreateDialogComponent>,
@@ -106,7 +107,7 @@ export class FormCreateDialogComponent {
   continue(): void {
     if (this.form.valid) {
       const selectedTemplate = this.getSelectedTemplates();
-
+  
       const templateFields = selectedTemplate.map(template => {
         return JSON.parse(template.fields).map((field: any) => ({
           type: field.field_type,
@@ -118,35 +119,52 @@ export class FormCreateDialogComponent {
           id: field.id
         }));
       });
-
-      const selectedFields = this.formFields
-        .filter(field => field.selected)
-        .map((field, index) => ({
-          type: field.fieldType,
-          required: true,
-          label: field.label,
-          name: field.name,
-          ordenation: index, 
-          fieldTypeId: field.id,
-          id: field.id
-        }));
-
-
+  
+      const selectedFields = this.selectedFieldsOrder.map((field, index) => ({
+        type: field.fieldType,
+        required: true,
+        label: field.label,
+        name: field.name,
+        ordenation: index + 1, // Define a ordem com base na lista rastreada
+        fieldTypeId: field.id,
+        id: field.id
+      }));
+  
       this.formStructure = {
         name: this.form.value.formName,
         clientId: this.clientId || 0,
         isActive: true,
         templateId: selectedTemplate[0]?.id || 0,
-
-        fields: selectedFields || templateFields
+        fields: selectedFields.length > 0 ? selectedFields : templateFields
       };
-
+  
       this.dialogRef.close({
         formName: this.form.value.formName,
         templates: selectedTemplate || null,
         fields: this.formStructure
       }); // Retorna o nome do formulário e os templates selecionados
     }
+  }
+  
+
+  toggleFieldSelection(field: FieldTypes): void {
+    if (field.selected) {
+      // Desmarcar o campo
+      field.selected = false;
+      field.selectionOrder = undefined; // Limpa a ordem ao desmarcar
+      this.selectedFieldsOrder = this.selectedFieldsOrder.filter(f => f.id !== field.id);
+    } else {
+      // Marcar o campo
+      field.selected = true;
+      this.selectedFieldsOrder.push(field);
+    }
+    this.updateFieldSelectionOrder();
+  }
+
+  updateFieldSelectionOrder(): void {
+    this.selectedFieldsOrder.forEach((field, index) => {
+      field.selectionOrder = index + 1; // Redefine a ordem com base na sequência atual
+    });
   }
 
   onTabChange(event: any) {
@@ -156,7 +174,9 @@ export class FormCreateDialogComponent {
   clearSelections() {
     this.selectedTemplateId = null;
     this.formFields.forEach(field => field.selected = false);
+    this.updateFieldSelectionOrder();
   }
+
   ngAfterViewInit(): void {
     // Aguarda as abas serem renderizadas e remove os botões
     const paginationButtons = this.el.nativeElement.querySelectorAll(

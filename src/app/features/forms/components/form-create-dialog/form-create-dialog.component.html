@@ -28,8 +28,15 @@
             Campos
           </ng-template>
           <mat-selection-list #fields class="compact-selection-list">
-            <mat-list-option *ngFor="let field of formFields" [value]="field.id" class="compact-list-item" [(selected)]="field.selected">
+            <mat-list-option
+              *ngFor="let field of formFields"
+              [value]="field.id"
+              class="compact-list-item"
+              (click)="toggleFieldSelection(field)"
+              [class.selected]="field.selected"
+            >
               <div mat-line class="list-item-header">
+                <span *ngIf="field.selectionOrder" class="field-order">{{ field.selectionOrder }}</span>
                 <mat-icon class="field-icon">{{ getIconByFieldType(field.fieldType) }}</mat-icon>
                 <strong>{{ field.label }}</strong>
               </div>
