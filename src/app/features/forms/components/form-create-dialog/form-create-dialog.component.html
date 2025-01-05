@@ -21,14 +21,14 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-tab-group [color]="'primary'">
+      <mat-tab-group [color]="'primary'" (selectedTabChange)="onTabChange($event)" >
         <mat-tab>
           <ng-template mat-tab-label>
             <mat-icon class="example-tab-icon">dynamic_form</mat-icon>
             Campos
           </ng-template>
           <mat-selection-list #fields class="compact-selection-list">
-            <mat-list-option *ngFor="let field of formFields" [value]="field.id" class="compact-list-item">
+            <mat-list-option *ngFor="let field of formFields" [value]="field.id" class="compact-list-item" [(selected)]="field.selected">
               <div mat-line class="list-item-header">
                 <mat-icon class="field-icon">{{ getIconByFieldType(field.fieldType) }}</mat-icon>
                 <strong>{{ field.name }}</strong>
@@ -79,7 +79,7 @@
     </form>
     <div mat-dialog-actions class="dialog-actions">
       <button mat-stroked-button color="warn" (click)="cancel()">Cancelar</button>
-      <button mat-stroked-button color="primary" [disabled]="form.invalid" (click)="continue()">Continuar</button>
+      <button mat-stroked-button color="primary" [disabled]="!canContinue()" (click)="continue()">Continuar</button>
     </div>
   </div>
 </div>

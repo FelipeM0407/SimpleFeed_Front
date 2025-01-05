@@ -5,4 +5,6 @@ export interface FieldTypes{
     settingsschema: string;
     fieldType: string;
     planId: number;
+    selected: boolean;
+
 }

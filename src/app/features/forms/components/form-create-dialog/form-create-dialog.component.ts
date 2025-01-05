@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, ElementRef, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -33,13 +33,13 @@ export class FormCreateDialogComponent {
   formTemplates: FormsTemplates[] = []; // Lista de campos retornados
   selectedTemplateId: number | null = null; // ID do template selecionado
 
-
   constructor(
     public dialogRef: MatDialogRef<FormCreateDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { formName: string },
     private fb: FormBuilder,
     private formsService: FormsService,
-    private authService: AuthService
+    private authService: AuthService,
+    private el: ElementRef
   ) {
     this.form = this.fb.group({
       formName: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]]
@@ -50,7 +50,10 @@ export class FormCreateDialogComponent {
     const guidClient = this.authService.getUserGuid();
 
     this.formsService.getFormFieldsByClientId(guidClient).subscribe(fields => {
-      this.formFields = fields;
+      this.formFields = fields.map(field => ({
+        ...field,
+        selected: false // Adiciona propriedade para controle de seleção
+      }));
     });
 
     // Buscar templates
@@ -105,4 +108,27 @@ export class FormCreateDialogComponent {
     }
   }
 
+  onTabChange(event: any) {
+    this.clearSelections();
+  }
+
+  clearSelections() {
+    this.selectedTemplateId = null;
+    this.formFields.forEach(field => field.selected = false);
+  }
+  ngAfterViewInit(): void {
+    // Aguarda as abas serem renderizadas e remove os botões
+    const paginationButtons = this.el.nativeElement.querySelectorAll(
+      '.mat-mdc-tab-header-pagination'
+    );
+
+    paginationButtons.forEach((button: HTMLElement) => {
+      button.style.display = 'none'; // Esconde os botões
+    });
+  }
+
+  canContinue(): boolean {
+    const selectedFields = this.formFields.filter(field => field.selected);
+    return this.form.valid && (selectedFields.length > 0 || this.selectedTemplateId !== null);
+  }
 }

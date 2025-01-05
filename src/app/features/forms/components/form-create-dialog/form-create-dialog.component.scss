@@ -3,7 +3,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Centraliza o título */
     gap: 0.5rem;
     font-size: 1.75rem;
     color: #3f51b5;
@@ -15,26 +14,19 @@
     color: #3f51b5;
 }
 
-/* Estilo para o formulário */
 .dialog-form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    /* Centraliza o formulário */
     gap: 1.5rem;
 }
 
-
-/* Estilo para as ações do diálogo */
 .dialog-actions {
     display: flex;
     justify-content: space-between;
-    /* Distribui os botões */
     width: 100%;
     max-width: 400px;
-    /* Limita a largura máxima */
-    margin: 0.0rem auto 0;
-    /* Centraliza as ações */
+    margin: 0 auto;
 }
 
 button {
@@ -70,6 +62,21 @@ mat-form-field {
     width: 70%;
 }
 
+@media (max-width: 768px) {
+    mat-form-field {
+        width: 100%;
+    }
+
+    mat-card {
+        width: 244px;
+    }
+
+    .list-item-description {
+        font-size: 0.75rem;
+        margin-left: 0px;
+    }
+}
+
 /* Estilo geral para a lista */
 .compact-selection-list {
     width: 100%;
@@ -77,61 +84,41 @@ mat-form-field {
     margin: 0 auto;
     padding: 0.5rem 0;
     background-color: #f9f9f9;
-    /* Fundo leve para destacar */
     border-radius: 8px;
-    /* Bordas arredondadas */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    /* Sombra discreta */
 }
 
-/* Estilo para cada item da lista */
 .compact-list-item {
     margin: 0.25rem 0px 7px;
-    /* Espaço entre os itens */
     padding: 0.5rem;
-    /* Espaço interno */
     border-radius: 4px;
-    /* Bordas arredondadas para cada item */
     transition: background-color 0.3s ease;
-    /* Efeito de hover */
 }
 
 .compact-list-item:hover {
     background-color: #e3f2fd;
-    /* Fundo azul claro ao passar o mouse */
 }
 
-/* Cabeçalho do item (ícone + nome) */
 .list-item-header {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    /* Espaçamento entre o ícone e o texto */
     font-size: 1.1rem;
-    /* Texto um pouco maior */
     font-weight: bold;
     color: #424242;
 }
 
-/* Ícone do campo */
 .field-icon {
     font-size: 1.5rem;
-    /* Tamanho do ícone */
     color: #3f51b5;
-    /* Azul Material */
 }
 
-/* Descrição do item */
 .list-item-description {
     font-size: 0.9rem;
-    /* Texto menor para descrição */
     color: #757575;
-    /* Cinza para texto secundário */
     margin-left: 2.5rem;
-    /* Indentação para alinhar com o texto */
 }
 
-/* Contador de campos selecionados */
 .selected-count {
     margin-top: 1rem;
     font-size: 1rem;
@@ -145,11 +132,9 @@ mat-form-field {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1rem;
-    margin-top: 1rem;
     padding: 1rem;
 }
 
-/* Card do template */
 .template-card {
     position: relative;
     padding: 1rem;
@@ -158,6 +143,7 @@ mat-form-field {
     background-color: #ffffff;
     overflow: hidden;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
 }
 
 .template-card:hover {
@@ -165,26 +151,18 @@ mat-form-field {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-
-
-/* Checkbox para seleção */
-.template-checkbox {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    z-index: 10;
+.template-card.selected {
+    border: 2px solid #3f51b5;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Imagem de fundo do card */
 .template-image {
     height: 120px;
     background-color: #3f51b5;
-    /* Azul Material */
     border-radius: 4px;
     margin-bottom: 1rem;
 }
 
-/* Detalhes do template */
 .template-details {
     display: flex;
     flex-direction: column;
@@ -203,29 +181,6 @@ mat-form-field {
     color: #757575;
 }
 
-mat-radio-group {
-    display: contents;
-}
-
-/* Destaca o card selecionado */
-.template-card.selected {
-    border: 2px solid #3f51b5;
-    /* Cor do destaque */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.template-card {
-    cursor: pointer;
-    /* Indica que o card é clicável */
-}
-
-.template-card:hover {
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-
-
-
 /* Botão de rádio no card */
 .template-radio-button {
     position: absolute;
@@ -234,28 +189,6 @@ mat-radio-group {
     z-index: 10;
 }
 
-
-
-@media (max-width: 768px) {
-
-    // mat-tab-group {
-    //     width: 100%;
-    // } 
-    mat-form-field {
-        width: 100%;
-    }
-
-    mat-card {
-        width: 244px;
-    }
-
-    .list-item-description {
-        font-size: 0.75rem;
-        /* Texto menor para descrição em dispositivos móveis */
-    }
-
-    .list-item-description {
-        margin-left: 0px;
-        /* Indentação para alinhar com o texto */
-    }
+mat-radio-group {
+    display: contents;
 }
