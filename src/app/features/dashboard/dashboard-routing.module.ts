@@ -4,7 +4,7 @@ import { DashboardComponent } from './dashboard.component';
 import { authGuard } from 'src/app/core/auth.guard';
 import { FeedbacksComponent } from '../feedbacks/feedback.component';
 import { FormsListComponent } from '../forms/components/forms-list/forms-list.component';
-import { FormCreateComponent } from '../forms/components/form-create/form-create.component';
+import { FormEditComponent } from '../forms/components/form-edit/form-edit.component';
 
 const routes: Routes = [
   {
@@ -14,7 +14,7 @@ const routes: Routes = [
       { path: '', redirectTo: 'forms', pathMatch: 'full' }, 
       { path: 'forms', component: FormsListComponent },
       { path: 'feedbacks/:formId', component: FeedbacksComponent },
-      { path: 'form-create/:formId', component: FormCreateComponent }, 
+      { path: 'form-edit/:formId', component: FormEditComponent }, 
 
     ], // Aplica o guard na rota
   }

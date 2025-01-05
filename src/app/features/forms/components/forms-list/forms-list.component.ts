@@ -56,7 +56,7 @@ export class FormsListComponent implements OnInit, OnDestroy {
       if (result) {
         this.formsService.createForm(result).subscribe({
           next: (formIdCreated: any) => {
-            this.router.navigate(['/dashboard/form-create', formIdCreated.formId]);
+            this.router.navigate(['/dashboard/form-edit', formIdCreated.formId]);
           },
           error: () => {
             this.errorMessage = 'Erro ao criar o formulário.';

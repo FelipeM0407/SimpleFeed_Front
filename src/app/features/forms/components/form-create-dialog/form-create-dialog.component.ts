@@ -108,7 +108,7 @@ export class FormCreateDialogComponent {
     if (this.form.valid) {
       const selectedTemplate = this.getSelectedTemplates();
 
-      const templateFields = selectedTemplate.map(template => {
+      const templateFields = selectedTemplate.flatMap(template => {
         return JSON.parse(template.fields).map((field: any) => ({
           type: field.field_type,
           required: field.required,
@@ -134,7 +134,7 @@ export class FormCreateDialogComponent {
       //   Name: this.form.value.name,
       //   Client_Id: this.clientId || 0,
       //   Is_Active: true,
-      //   TemplateId: selectedTemplate[0]?.id || 0,
+      //   Template_Id: selectedTemplate[0]?.id || 0,
       //   Fields: selectedFields.length > 0 ? selectedFields : templateFields
       // };
 
@@ -143,7 +143,7 @@ export class FormCreateDialogComponent {
         Name: this.form.value.name,
         Client_Id: this.clientId || 0,
         Is_Active: true,
-        TemplateId: selectedTemplate[0]?.id || 0,
+        Template_Id: selectedTemplate[0]?.id || 0,
         Fields: selectedFields.length > 0 ? selectedFields : templateFields
 
       }); // Retorna o nome do formulário e os templates selecionados
