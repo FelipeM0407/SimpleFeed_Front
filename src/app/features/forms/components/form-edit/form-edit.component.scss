@@ -1,0 +1,72 @@
+.container {
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  /* Lado esquerdo (editor) */
+  .editor-container {
+    flex: 1;
+    padding: 20px;
+    border-right: 1px solid #ccc;
+    overflow-y: auto;
+  }
+  
+  .field-item {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+  }
+  
+  .field-header {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  
+  .field-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .arrow-btn {
+    background: none;
+    border: 1px solid #ccc;
+    padding: 4px 6px;
+    cursor: pointer;
+  }
+  
+  .arrow-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .edit-btn {
+    color: blue;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .delete-btn {
+    background: none;
+    border: none;
+    color: red;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  /* Lado direito (preview) */
+  .preview-container {
+    flex: 1;
+    padding: 20px;
+  }
+  
+  .iframe-preview {
+    width: 100%;
+    height: calc(100vh - 50px);
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
