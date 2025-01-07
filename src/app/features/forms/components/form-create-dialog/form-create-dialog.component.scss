@@ -191,6 +191,10 @@ mat-radio-group {
 
     .list-item-description {
         font-size: 0.75rem;
-        margin-left: 0px;
+        //margin-left: 0px;
+    }
+
+    ::ng-deep .cdk-overlay-pane {
+        max-width: 99% !important;
     }
 }
