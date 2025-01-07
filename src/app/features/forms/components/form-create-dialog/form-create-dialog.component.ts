@@ -130,6 +130,17 @@ export class FormCreateDialogComponent {
         id: field.id
       }));
 
+      // Adiciona o campo padrão "data_do_envio" 
+      selectedFields.unshift({
+        type: 'date',
+        required: true,
+        label: 'Data do Envio',
+        name: 'data_do_envio',
+        ordenation: 0, // Ordem padrão
+        field_Type_Id: 6,
+        id: 0 // O id permanece como está
+      });
+
       // this.formStructure = {
       //   Name: this.form.value.name,
       //   Client_Id: this.clientId || 0,

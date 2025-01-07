@@ -76,7 +76,7 @@ export class FeedbacksComponent implements OnInit {
   isLoading = true;
   errorMessage: string | null = null;
   dynamicColumns: { field_Id: string; label: string; type: string; options: string[] }[] = [];
-  displayedColumns: string[] = ['select', 'submittedAt'];
+  displayedColumns: string[] = ['select'];
   selectedCount = 0; // Quantidade de registros selecionados
   isMobile = false;
 
@@ -132,11 +132,13 @@ export class FeedbacksComponent implements OnInit {
     this.formService.getFormStructure(this.formId).subscribe({
       next: (structure) => {
         // Criar as colunas dinâmicas com base na estrutura
-        this.dynamicColumns = structure.map((field: any) => ({
-          field_Id: field.id.toString(), // Garante que o campo seja uma string
-          label: field.label,
-          type: field.type
-        }));
+        this.dynamicColumns = structure
+          .sort((a: any, b: any) => a.ordenation - b.ordenation) // Ordena pela propriedade 'ordenation'
+          .map((field: any) => ({
+            field_Id: field.id.toString(), // Garante que o campo seja uma string
+            label: field.label,
+            type: field.type
+          }));
 
         this.displayedColumns = ['select', ...this.dynamicColumns.map((col) => col.field_Id)];
 
@@ -183,6 +185,8 @@ export class FeedbacksComponent implements OnInit {
             selected: false,
           };
         });
+
+        this.feedbacks.sort((a, b) => new Date(b.submitted_At).getTime() - new Date(a.submitted_At).getTime());
 
         this.feedbacksSorted = new MatTableDataSource(this.feedbacks);
         this.feedbacksSorted.paginator = this.paginator!;
@@ -235,21 +239,25 @@ export class FeedbacksComponent implements OnInit {
         this.feedbacks = data.map((item: any) => {
           const mappedAnswers: any = {};
           const answers = JSON.parse(item.answers);
-
+  
           answers.forEach((answer: any) => {
             const column = this.dynamicColumns.find((col) => col.field_Id === answer.id_form_field.toString());
             if (column) {
               mappedAnswers[column.field_Id] = answer.value;
             }
           });
-
+  
           return {
             ...item,
             answers: mappedAnswers,
             selected: false,
           };
         });
-
+  
+        // Ordenar os feedbacks por submitted_At (mais recente primeiro)
+        this.feedbacks.sort((a, b) => new Date(b.submitted_At).getTime() - new Date(a.submitted_At).getTime());
+  
+        // Atualizar o MatTableDataSource com os dados ordenados
         this.feedbacksSorted = new MatTableDataSource(this.feedbacks);
         this.feedbacksSorted.paginator = this.paginator!;
         this.feedbacksSorted.sort = this.sort!;
@@ -262,6 +270,7 @@ export class FeedbacksComponent implements OnInit {
       },
     });
   }
+  
 
   // Método para selecionar ou desmarcar todos os checkboxes
   toggleSelectAll(event: any): void {
@@ -315,7 +324,6 @@ export class FeedbacksComponent implements OnInit {
     const selectedFeedback = this.feedbacks.find((feedback) => feedback.selected);
     if (selectedFeedback) {
       this.dialog.open(ViewFeedbackDialogComponent, {
-        width: '90%',
         data: {
           ...selectedFeedback,
           dynamicColumns: this.dynamicColumns

@@ -9,3 +9,8 @@
     justify-content: flex-end;
     margin-top: 16px;
 }
+
+.mat-dialog-content {
+    max-height: calc(100vh - 64px);
+    overflow: auto;
+}
