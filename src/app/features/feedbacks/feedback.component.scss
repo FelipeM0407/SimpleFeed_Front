@@ -19,10 +19,12 @@
         0px 8px 10px 1px rgba(0, 0, 0, 0.14),
         0px 3px 14px 2px rgba(0, 0, 0, 0.12);
     /* Sombra da tabela */
-    position: relative; /* Add this line */
+    position: relative;
+    /* Add this line */
 }
 
-th[sticky], td[sticky] {
+th[sticky],
+td[sticky] {
     position: sticky;
     left: 0;
     background: white;
@@ -176,8 +178,8 @@ mat-dialog-content {
         justify-content: center;
         /* Alinha os filtros à esquerda */
         align-items: center;
-        /* Centraliza verticalmente os itens */
-        margin: auto;
+
+        margin-bottom: 10px;
         /* Espaçamento inferior */
         padding: 5px;
         /* Espaçamento interno */
@@ -195,8 +197,6 @@ mat-dialog-content {
         /* Espaçamento entre os botões */
         justify-content: center;
         /* Alinha os botões à direita */
-        margin-top: 16px;
-        /* Espaçamento superior */
     }
 
     .mobile-filters {
@@ -225,11 +225,4 @@ mat-dialog-content {
         padding: 4px 8px;
         /* Reduz o espaçamento das células */
     }
-}
-
-.filter-group {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    /* Espaçamento entre o campo de data e os botões */
 }

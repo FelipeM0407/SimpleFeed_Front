@@ -324,6 +324,7 @@ export class FeedbacksComponent implements OnInit {
     const selectedFeedback = this.feedbacks.find((feedback) => feedback.selected);
     if (selectedFeedback) {
       this.dialog.open(ViewFeedbackDialogComponent, {
+        width: '500px',
         data: {
           ...selectedFeedback,
           dynamicColumns: this.dynamicColumns

@@ -1,7 +1,7 @@
 <div class="container">
   <!-- Filtro de Data -->
   <form [formGroup]="filterForm" class="filters">
-    <div class="filter-group">
+    <div class="filter-actions">
       <mat-form-field appearance="outline" class="date-range-field">
         <mat-label>Data do Feedback</mat-label>
         <mat-date-range-input [rangePicker]="datePicker" formGroupName="data_do_feedback">
@@ -12,14 +12,12 @@
         <mat-date-range-picker #datePicker></mat-date-range-picker>
       </mat-form-field>
       <!-- Botões de Ação dos Filtros -->
-      <div class="filter-actions">
-        <button mat-mini-fab color="warn" (click)="clearFilters()">
-          <mat-icon>close</mat-icon>
-        </button>
-        <button mat-mini-fab color="primary" (click)="applyFilters()">
-          <mat-icon>done_outline</mat-icon>
-        </button>
-      </div>
+      <button mat-mini-fab color="warn" (click)="clearFilters()">
+        <mat-icon>close</mat-icon>
+      </button>
+      <button mat-mini-fab color="primary" (click)="applyFilters()">
+        <mat-icon>done_outline</mat-icon>
+      </button>
     </div>
   </form>
 
@@ -32,7 +30,8 @@
           <mat-checkbox (change)="toggleSelectAll($event)" [color]="'primary'"></mat-checkbox>
         </th>
         <td mat-cell *matCellDef="let element" sticky>
-          <mat-checkbox [(ngModel)]="element.selected" (change)="updateSelectedCount()" [color]="'primary'"></mat-checkbox>
+          <mat-checkbox [(ngModel)]="element.selected" (change)="updateSelectedCount()"
+            [color]="'primary'"></mat-checkbox>
         </td>
       </ng-container>
 
