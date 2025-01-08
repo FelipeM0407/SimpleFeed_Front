@@ -1,19 +1,24 @@
 <div class="container">
     <!-- Lado esquerdo: Editor de campos -->
     <div class="editor-container">
-        <h3>Form Fields</h3>
+        <h3>Fields Editor</h3>
         <div *ngFor="let field of fields; let i = index" class="field-item">
             <div class="field-header">
                 <strong>{{ field.label }}</strong>
-                <small>Tipo do campo: {{ field.type }}</small>
+                <small>Tipo: {{ field.type }}</small>
             </div>
             <div class="field-actions">
-                <button class="arrow-btn" (click)="moveUp(i)"
-                    [disabled]="i === 0"><mat-icon>arrow_upward</mat-icon></button>
-                <button class="arrow-btn" (click)="moveDown(i)"
-                    [disabled]="i === fields.length - 1"><mat-icon>arrow_downward</mat-icon></button>
-                <span class="edit-btn" (click)="editField(i)"><mat-icon>edit</mat-icon></span>
-                <button class="delete-btn" (click)="deleteField(i)"><mat-icon>delete</mat-icon>
+                <button class="arrow-btn" (click)="moveUp(i)" [disabled]="i === 0">
+                    <mat-icon>arrow_upward</mat-icon>
+                </button>
+                <button class="arrow-btn" (click)="moveDown(i)" [disabled]="i === fields.length - 1">
+                    <mat-icon>arrow_downward</mat-icon>
+                </button>
+                <span class="edit-btn" (click)="editField(i)">
+                    <mat-icon>edit</mat-icon>
+                </span>
+                <button class="delete-btn" (click)="deleteField(i)">
+                    <mat-icon>delete</mat-icon>
                 </button>
             </div>
         </div>
