@@ -181,6 +181,9 @@ h3 {
   display: block;
   background: #f5f5f5;
   border-bottom: 1px solid #ddd;
+  position: fixed;
+  width: 100%; /* Garante que ocupe toda a largura do contêiner */
+
 }
 
 
