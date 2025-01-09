@@ -16,7 +16,7 @@ import { MatTabsModule } from '@angular/material/tabs';
   styleUrls: ['./form-edit.component.scss'],
 })
 export class FormEditComponent {
-  fields: { id: number; type: string; label: string; required: boolean; options?: string[] }[] = [];
+  fields: { id: number; type: string; name: string; label: string; required: boolean; options?: string[] }[] = [];
   iframeContent: SafeHtml = ''; // Usar SafeHtml para conteúdo sanitizado
   isMobile = false; // Define se é mobile
   activeTab = 0; // Tab ativa: 0 = Editor, 1 = Preview
@@ -45,6 +45,10 @@ export class FormEditComponent {
     if (!this.isMobile) {
       this.activeTab = 0; // Sempre exibe o Editor em telas maiores
     }
+  }
+
+  get visibleFields() {
+    return this.fields.filter((field) => field.name !== 'data_do_envio');
   }
 
   // Atualiza o conteúdo do iframe
@@ -109,63 +113,66 @@ export class FormEditComponent {
           <form>
     `;
 
-    this.fields.forEach((field) => {
-      if (field.type === 'text' || field.type === 'email') {
-        formHtml += `
-          <div class="form-group">
-            <label>${field.label}</label>
-            <input type="${field.type}" ${field.required ? 'required' : ''}>
-          </div>
-        `;
-      } else if (field.type === 'textarea') {
-        formHtml += `
-          <div class="form-group">
-            <label>${field.label}</label>
-            <textarea ${field.required ? 'required' : ''}></textarea>
-          </div>
-        `;
-      } else if (field.type === 'date') {
-        formHtml += `
-          <div class="form-group">
-            <label>${field.label}</label>
-            <input type="date" ${field.required ? 'required' : ''}>
-          </div>
-        `;
-      } else if (field.type === 'dropdown' && field.options) {
-        formHtml += `
-          <div class="form-group">
-            <label>${field.label}</label>
-            <select ${field.required ? 'required' : ''}>
-              ${field.options.map((option) => `<option value="${option}">${option}</option>`).join('')}
-            </select>
-          </div>
-        `;
-      }
-    });
+    // Adicionar somente os campos que não sejam "data_do_envio"
+    this.fields
+      .filter((field) => field.name !== 'data_do_envio') // Filtrar o campo `data_do_envio`
+      .forEach((field) => {
+        if (field.type === 'text' || field.type === 'email') {
+          formHtml += `
+            <div class="form-group">
+              <label>${field.label}</label>
+              <input type="${field.type}" ${field.required ? 'required' : ''}>
+            </div>
+          `;
+        } else if (field.type === 'textarea') {
+          formHtml += `
+            <div class="form-group">
+              <label>${field.label}</label>
+              <textarea ${field.required ? 'required' : ''}></textarea>
+            </div>
+          `;
+        } else if (field.type === 'date') {
+          formHtml += `
+            <div class="form-group">
+              <label>${field.label}</label>
+              <input type="date" ${field.required ? 'required' : ''}>
+            </div>
+          `;
+        } else if (field.type === 'dropdown' && field.options) {
+          formHtml += `
+            <div class="form-group">
+              <label>${field.label}</label>
+              <select ${field.required ? 'required' : ''}>
+                ${field.options.map((option) => `<option value="${option}">${option}</option>`).join('')}
+              </select>
+            </div>
+          `;
+        }
+      });
 
     formHtml += `
-            <button type="submit">Enviar</button>
-          </form>
-        </div>
-      </body>
-      </html>
-    `;
+              <button type="submit">Enviar</button>
+            </form>
+          </div>
+        </body>
+        </html>
+      `;
 
     // Sanitizar o conteúdo do iframe
     this.iframeContent = this.sanitizer.bypassSecurityTrustHtml(formHtml);
   }
 
 
-  // Funções para interação (futuro)
+  // Atualizar métodos de manipulação para filtrar `data_do_envio`
   moveUp(index: number) {
-    if (index > 0) {
+    if (index > 0 && this.fields[index].label !== 'data_do_envio') {
       [this.fields[index - 1], this.fields[index]] = [this.fields[index], this.fields[index - 1]];
       this.updateIframe();
     }
   }
 
   moveDown(index: number) {
-    if (index < this.fields.length - 1) {
+    if (index < this.fields.length - 1 && this.fields[index].label !== 'data_do_envio') {
       [this.fields[index + 1], this.fields[index]] = [this.fields[index], this.fields[index + 1]];
       this.updateIframe();
     }
@@ -175,8 +182,11 @@ export class FormEditComponent {
     console.log('Edit field:', this.fields[index]);
   }
 
+  // Ajustar a exclusão para não permitir excluir `data_do_envio`
   deleteField(index: number) {
-    this.fields.splice(index, 1);
-    this.updateIframe();
+    if (this.fields[index].label !== 'data_do_envio') {
+      this.fields.splice(index, 1);
+      this.updateIframe();
+    }
   }
 }

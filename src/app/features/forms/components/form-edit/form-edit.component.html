@@ -18,26 +18,49 @@
     <!-- Editor -->
     <div class="editor-container" [class.hidden]="isMobile && activeTab !== 0">
         <h3>Fields Editor</h3>
-        <div *ngFor="let field of fields; let i = index" class="field-item">
+        <div *ngFor="let field of visibleFields; let i = index" class="field-item">
             <div class="field-header">
-                <strong>{{ field.label }}</strong>
-                <small>Tipo: {{ field.type }}</small>
+              <strong>{{ field.label }}</strong>
+              <small>Tipo: {{ field.type }}</small>
             </div>
             <div class="field-actions">
-                <button class="arrow-btn" (click)="moveUp(i)" [disabled]="i === 0" aria-label="Move field up" title="Move field up">
-                    <mat-icon>arrow_upward</mat-icon>
-                </button>
-                <button class="arrow-btn" (click)="moveDown(i)" [disabled]="i === fields.length - 1" aria-label="Move field down" title="Move field down">
-                    <mat-icon>arrow_downward</mat-icon>
-                </button>
-                <span class="edit-btn" (click)="editField(i)" aria-label="Edit field" title="Edit field">
-                    <mat-icon>edit</mat-icon>
-                </span>
-                <button class="delete-btn" (click)="deleteField(i)" aria-label="Delete field" title="Delete field">
-                    <mat-icon>delete</mat-icon>
-                </button>
+              <button
+                class="arrow-btn"
+                (click)="moveUp(i)"
+                [disabled]="i === 0"
+                aria-label="Move field up"
+                title="Move field up"
+              >
+                <mat-icon>arrow_upward</mat-icon>
+              </button>
+              <button
+                class="arrow-btn"
+                (click)="moveDown(i)"
+                [disabled]="i === visibleFields.length - 1"
+                aria-label="Move field down"
+                title="Move field down"
+              >
+                <mat-icon>arrow_downward</mat-icon>
+              </button>
+              <span
+                class="edit-btn"
+                (click)="editField(i)"
+                aria-label="Edit field"
+                title="Edit field"
+              >
+                <mat-icon>edit</mat-icon>
+              </span>
+              <button
+                class="delete-btn"
+                (click)="deleteField(i)"
+                aria-label="Delete field"
+                title="Delete field"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
             </div>
-        </div>
+          </div>
+          
     </div>
 
     <!-- Preview -->
