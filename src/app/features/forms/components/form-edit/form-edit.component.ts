@@ -5,20 +5,21 @@ import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HostListener } from '@angular/core';
+import { MatTabsModule } from '@angular/material/tabs';
 
 
 @Component({
   selector: 'app-form-edit',
   standalone: true,
-  imports: [MatIconModule, CommonModule],
+  imports: [MatTabsModule, MatIconModule, CommonModule],
   templateUrl: './form-edit.component.html',
   styleUrls: ['./form-edit.component.scss'],
 })
 export class FormEditComponent {
   fields: { id: number; type: string; label: string; required: boolean; options?: string[] }[] = [];
   iframeContent: SafeHtml = ''; // Usar SafeHtml para conteúdo sanitizado
-  isMobile = false;
-  activeView: 'editor' | 'preview' = 'editor';
+  isMobile = false; // Define se é mobile
+  activeTab = 0; // Tab ativa: 0 = Editor, 1 = Preview
 
 
   constructor(private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer) {
@@ -40,14 +41,10 @@ export class FormEditComponent {
   }
 
   checkIfMobile() {
-    this.isMobile = window.innerWidth <= 768; // Considera mobile para larguras <= 768px
+    this.isMobile = window.innerWidth <= 768; // Define como mobile para telas menores que 768px
     if (!this.isMobile) {
-      this.activeView = 'editor'; // Sempre exibir o editor em telas maiores
+      this.activeTab = 0; // Sempre exibe o Editor em telas maiores
     }
-  }
-
-  toggleView(view: 'editor' | 'preview') {
-    this.activeView = view;
   }
 
   // Atualiza o conteúdo do iframe

@@ -8,6 +8,14 @@
   background-color: #fafafa;
 }
 
+.fixed-tabs {
+  position: sticky;
+  top: 60px;
+  /* Adjust this value based on the height of your dashboard header */
+  z-index: 1000;
+  background-color: white;
+}
+
 /* Lado esquerdo (editor) */
 .editor-container {
   flex: 1;
@@ -169,6 +177,33 @@ h3 {
   background: #f0f0f0;
 }
 
+.mobile-tab-group {
+  display: block;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+
+
+.mobile-tab-group .mat-tab-label {
+  font-size: 1rem;
+  color: #007bff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  /* Espaço entre o ícone e o texto */
+  font-size: 1rem;
+}
+
+.mobile-tab-group .mat-tab-label.mat-tab-label-active {
+  color: #ffffff;
+  background: #007bff;
+}
+
+.mobile-tab-group .mat-tab-label mat-icon {
+  font-size: 20px;
+}
+
 /* Desktop-specific styles */
 @media (min-width: 769px) {
   .mobile-toggle-buttons {
@@ -186,4 +221,9 @@ h3 {
     flex: none;
     height: 50vh;
   }
+
+  .iframe-container {
+    height: 85% !important;
+  }
+
 }

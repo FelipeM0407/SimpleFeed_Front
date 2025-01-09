@@ -1,25 +1,33 @@
 <div class="container" [ngClass]="{'mobile-view': isMobile}">
-    <div *ngIf="isMobile" class="mobile-toggle-buttons">
-        <button (click)="toggleView('editor')" [class.active]="activeView === 'editor'">Editor</button>
-        <button (click)="toggleView('preview')" [class.active]="activeView === 'preview'">Preview</button>
-    </div>
+    <!-- Tabs para Mobile -->
+    <mat-tab-group *ngIf="isMobile" [(selectedIndex)]="activeTab" class="mobile-tab-group">
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <mat-icon>edit</mat-icon>
+                <span>Campos</span>
+            </ng-template>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <mat-icon>visibility</mat-icon>
+                <span>Pré-visualização</span>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
 
     <!-- Editor -->
-    <div class="editor-container" [class.hidden]="isMobile && activeView !== 'editor'">
+    <div class="editor-container" [class.hidden]="isMobile && activeTab !== 0">
         <h3>Fields Editor</h3>
-        <!-- Conteúdo do editor -->
         <div *ngFor="let field of fields; let i = index" class="field-item">
             <div class="field-header">
                 <strong>{{ field.label }}</strong>
                 <small>Tipo: {{ field.type }}</small>
             </div>
             <div class="field-actions">
-                <button class="arrow-btn" (click)="moveUp(i)" [disabled]="i === 0" aria-label="Move field up"
-                    title="Move field up">
+                <button class="arrow-btn" (click)="moveUp(i)" [disabled]="i === 0" aria-label="Move field up" title="Move field up">
                     <mat-icon>arrow_upward</mat-icon>
                 </button>
-                <button class="arrow-btn" (click)="moveDown(i)" [disabled]="i === fields.length - 1"
-                    aria-label="Move field down" title="Move field down">
+                <button class="arrow-btn" (click)="moveDown(i)" [disabled]="i === fields.length - 1" aria-label="Move field down" title="Move field down">
                     <mat-icon>arrow_downward</mat-icon>
                 </button>
                 <span class="edit-btn" (click)="editField(i)" aria-label="Edit field" title="Edit field">
@@ -33,12 +41,11 @@
     </div>
 
     <!-- Preview -->
-    <div class="preview-container" [class.hidden]="isMobile && activeView !== 'preview'">
+    <div class="preview-container" [class.hidden]="isMobile && activeTab !== 1">
         <h3>Form Preview</h3>
         <div class="iframe-container" style="height: 100%;">
             <iframe id="formPreview" frameborder="0" class="iframe-preview"
                 [srcdoc]="iframeContent || '<p>No content available</p>'" title="Form Preview"></iframe>
         </div>
     </div>
-
 </div>
