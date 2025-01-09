@@ -4,6 +4,8 @@ import { FormsService } from '../../services/forms.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { HostListener } from '@angular/core';
+
 
 @Component({
   selector: 'app-form-edit',
@@ -15,6 +17,8 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 export class FormEditComponent {
   fields: { id: number; type: string; label: string; required: boolean; options?: string[] }[] = [];
   iframeContent: SafeHtml = ''; // Usar SafeHtml para conteúdo sanitizado
+  isMobile = false;
+  activeView: 'editor' | 'preview' = 'editor';
 
 
   constructor(private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer) {
@@ -27,6 +31,23 @@ export class FormEditComponent {
         this.updateIframe();
       });
     }
+    this.checkIfMobile();
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.checkIfMobile();
+  }
+
+  checkIfMobile() {
+    this.isMobile = window.innerWidth <= 768; // Considera mobile para larguras <= 768px
+    if (!this.isMobile) {
+      this.activeView = 'editor'; // Sempre exibir o editor em telas maiores
+    }
+  }
+
+  toggleView(view: 'editor' | 'preview') {
+    this.activeView = view;
   }
 
   // Atualiza o conteúdo do iframe

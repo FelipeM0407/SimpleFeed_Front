@@ -1,57 +1,44 @@
-<div class="container">
-    <!-- Lado esquerdo: Editor de campos -->
-    <div class="editor-container">
+<div class="container" [ngClass]="{'mobile-view': isMobile}">
+    <div *ngIf="isMobile" class="mobile-toggle-buttons">
+        <button (click)="toggleView('editor')" [class.active]="activeView === 'editor'">Editor</button>
+        <button (click)="toggleView('preview')" [class.active]="activeView === 'preview'">Preview</button>
+    </div>
+
+    <!-- Editor -->
+    <div class="editor-container" [class.hidden]="isMobile && activeView !== 'editor'">
         <h3>Fields Editor</h3>
+        <!-- Conteúdo do editor -->
         <div *ngFor="let field of fields; let i = index" class="field-item">
             <div class="field-header">
                 <strong>{{ field.label }}</strong>
                 <small>Tipo: {{ field.type }}</small>
             </div>
             <div class="field-actions">
-                <button
-                    class="arrow-btn"
-                    (click)="moveUp(i)"
-                    [disabled]="i === 0"
-                    aria-label="Move field up"
-                    title="Move field up"
-                >
+                <button class="arrow-btn" (click)="moveUp(i)" [disabled]="i === 0" aria-label="Move field up"
+                    title="Move field up">
                     <mat-icon>arrow_upward</mat-icon>
                 </button>
-                <button
-                    class="arrow-btn"
-                    (click)="moveDown(i)"
-                    [disabled]="i === fields.length - 1"
-                    aria-label="Move field down"
-                    title="Move field down"
-                >
+                <button class="arrow-btn" (click)="moveDown(i)" [disabled]="i === fields.length - 1"
+                    aria-label="Move field down" title="Move field down">
                     <mat-icon>arrow_downward</mat-icon>
                 </button>
                 <span class="edit-btn" (click)="editField(i)" aria-label="Edit field" title="Edit field">
                     <mat-icon>edit</mat-icon>
                 </span>
-                <button
-                    class="delete-btn"
-                    (click)="deleteField(i)"
-                    aria-label="Delete field"
-                    title="Delete field"
-                >
+                <button class="delete-btn" (click)="deleteField(i)" aria-label="Delete field" title="Delete field">
                     <mat-icon>delete</mat-icon>
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Lado direito: Preview do formulário no iframe -->
-    <div class="preview-container" >
+    <!-- Preview -->
+    <div class="preview-container" [class.hidden]="isMobile && activeView !== 'preview'">
         <h3>Form Preview</h3>
         <div class="iframe-container" style="height: 100%;">
-            <iframe
-                id="formPreview"
-                frameborder="0"
-                class="iframe-preview"
-                [srcdoc]="iframeContent || '<p>No content available</p>'"
-                title="Form Preview"
-            ></iframe>
+            <iframe id="formPreview" frameborder="0" class="iframe-preview"
+                [srcdoc]="iframeContent || '<p>No content available</p>'" title="Form Preview"></iframe>
         </div>
     </div>
+
 </div>

@@ -1,7 +1,8 @@
 .container {
   display: flex;
   flex-direction: row;
-  height: 100vh; /* Limita a altura total à altura da tela */
+  height: 100vh;
+  /* Limita a altura total à altura da tela */
   overflow: hidden;
   font-family: 'Inter', sans-serif;
   background-color: #fafafa;
@@ -12,10 +13,12 @@
   flex: 1;
   border-right: 1px solid #e8e9eb;
   background-color: #ffffff;
-  overflow-y: auto; /* Scroll apenas se o conteúdo exceder */
+  overflow-y: auto;
+  /* Scroll apenas se o conteúdo exceder */
   padding: 20px;
   box-sizing: border-box;
-  height: calc(100vh - 20px); /* Compensa o padding */
+  height: calc(100vh - 20px);
+  /* Compensa o padding */
 }
 
 h3 {
@@ -86,11 +89,13 @@ h3 {
 /* Lado direito (preview) */
 .preview-container {
   flex: 1;
-  overflow-y: auto; /* Scroll apenas quando necessário */
+  overflow-y: auto;
+  /* Scroll apenas quando necessário */
   background-color: #ffffff;
   padding: 20px;
   box-sizing: border-box;
-  height: calc(100vh - 20px); /* Altura máxima respeitando o padding */
+  height: calc(100vh - 20px);
+  /* Altura máxima respeitando o padding */
   display: flex;
   flex-direction: column;
 }
@@ -107,8 +112,68 @@ h3 {
   border: 1px solid #ccc;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: auto; /* Scroll interno no iframe */
-  height: calc(100% - 50px); /* Compensa o espaço do título */
+  overflow: auto;
+  /* Scroll interno no iframe */
+  height: calc(100% - 50px);
+  /* Compensa o espaço do título */
+}
+
+/* Mobile-specific layout */
+.mobile-view .editor-container,
+.mobile-view .preview-container {
+  flex: none;
+  width: 100%;
+  height: 100%;
+  /* Permite que o editor ou preview ocupe a tela inteira */
+  display: none;
+}
+
+.mobile-view .editor-container.hidden,
+.mobile-view .preview-container.hidden {
+  display: none;
+}
+
+.mobile-view .editor-container:not(.hidden),
+.mobile-view .preview-container:not(.hidden) {
+  display: block;
+}
+
+.mobile-toggle-buttons {
+  display: flex;
+  justify-content: center;
+  background: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+}
+
+.mobile-toggle-buttons button {
+  flex: 1;
+  padding: 10px;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  background: #ffffff;
+  border-right: 1px solid #ddd;
+  transition: background 0.3s;
+}
+
+.mobile-toggle-buttons button:last-child {
+  border-right: none;
+}
+
+.mobile-toggle-buttons button.active {
+  background: #007bff;
+  color: #ffffff;
+}
+
+.mobile-toggle-buttons button:hover:not(.active) {
+  background: #f0f0f0;
+}
+
+/* Desktop-specific styles */
+@media (min-width: 769px) {
+  .mobile-toggle-buttons {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {
