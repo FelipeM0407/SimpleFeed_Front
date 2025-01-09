@@ -43,7 +43,20 @@ export class FormEditComponent {
             font-family: Roboto, Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background: #f5f5f5;
+            background: #333; /* Fundo escuro */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start !important; /* Mantém o formulário no topo */
+            height: 100vh;
+            overflow-y: auto; /* Habilita scroll vertical */
+          }
+          .form-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
           }
           .form-group {
             margin-bottom: 20px;
@@ -60,11 +73,6 @@ export class FormEditComponent {
             border: 1px solid #ccc;
             border-radius: 4px;
           }
-          input[disabled], textarea[disabled], select[disabled] {
-            background: #f5f5f5;
-            color: #aaa;
-            cursor: not-allowed;
-          }
           button {
             background-color: #3f51b5;
             color: white;
@@ -76,14 +84,11 @@ export class FormEditComponent {
           button:hover {
             background-color: #303f9f;
           }
-          button[disabled] {
-            background-color: #ddd;
-            cursor: not-allowed;
-          }
         </style>
       </head>
       <body>
-        <form>
+        <div class="form-container">
+          <form>
     `;
 
     this.fields.forEach((field) => {
@@ -91,28 +96,28 @@ export class FormEditComponent {
         formHtml += `
           <div class="form-group">
             <label>${field.label}</label>
-            <input type="${field.type}" ${field.required ? 'required' : ''} disabled>
+            <input type="${field.type}" ${field.required ? 'required' : ''}>
           </div>
         `;
       } else if (field.type === 'textarea') {
         formHtml += `
           <div class="form-group">
             <label>${field.label}</label>
-            <textarea ${field.required ? 'required' : ''} disabled></textarea>
+            <textarea ${field.required ? 'required' : ''}></textarea>
           </div>
         `;
       } else if (field.type === 'date') {
         formHtml += `
           <div class="form-group">
             <label>${field.label}</label>
-            <input type="date" ${field.required ? 'required' : ''} disabled>
+            <input type="date" ${field.required ? 'required' : ''}>
           </div>
         `;
       } else if (field.type === 'dropdown' && field.options) {
         formHtml += `
           <div class="form-group">
             <label>${field.label}</label>
-            <select ${field.required ? 'required' : ''} disabled>
+            <select ${field.required ? 'required' : ''}>
               ${field.options.map((option) => `<option value="${option}">${option}</option>`).join('')}
             </select>
           </div>
@@ -121,8 +126,9 @@ export class FormEditComponent {
     });
 
     formHtml += `
-          <button type="submit" disabled>Enviar</button>
-        </form>
+            <button type="submit">Enviar</button>
+          </form>
+        </div>
       </body>
       </html>
     `;
@@ -130,7 +136,6 @@ export class FormEditComponent {
     // Sanitizar o conteúdo do iframe
     this.iframeContent = this.sanitizer.bypassSecurityTrustHtml(formHtml);
   }
-
 
 
   // Funções para interação (futuro)

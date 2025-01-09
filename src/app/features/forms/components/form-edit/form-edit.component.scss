@@ -1,7 +1,7 @@
 .container {
   display: flex;
   flex-direction: row;
-  height: 100vh;
+  height: 100vh; /* Limita a altura total à altura da tela */
   overflow: hidden;
   font-family: 'Inter', sans-serif;
   background-color: #fafafa;
@@ -10,10 +10,12 @@
 /* Lado esquerdo (editor) */
 .editor-container {
   flex: 1;
-  padding: 20px;
   border-right: 1px solid #e8e9eb;
-  overflow-y: auto;
   background-color: #ffffff;
+  overflow-y: auto; /* Scroll apenas se o conteúdo exceder */
+  padding: 20px;
+  box-sizing: border-box;
+  height: calc(100vh - 20px); /* Compensa o padding */
 }
 
 h3 {
@@ -84,8 +86,11 @@ h3 {
 /* Lado direito (preview) */
 .preview-container {
   flex: 1;
-  padding: 20px;
+  overflow-y: auto; /* Scroll apenas quando necessário */
   background-color: #ffffff;
+  padding: 20px;
+  box-sizing: border-box;
+  height: calc(100vh - 20px); /* Altura máxima respeitando o padding */
   display: flex;
   flex-direction: column;
 }
@@ -102,7 +107,8 @@ h3 {
   border: 1px solid #ccc;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow: auto; /* Scroll interno no iframe */
+  height: calc(100% - 50px); /* Compensa o espaço do título */
 }
 
 @media (max-width: 768px) {
