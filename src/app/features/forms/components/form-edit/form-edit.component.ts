@@ -165,15 +165,25 @@ export class FormEditComponent {
 
   // Atualizar métodos de manipulação para filtrar `data_do_envio`
   moveUp(index: number) {
-    if (index > 0 && this.fields[index].label !== 'data_do_envio') {
-      [this.fields[index - 1], this.fields[index]] = [this.fields[index], this.fields[index - 1]];
+    // Obtenha o índice real no array `fields` com base no índice do array visível
+    const visibleField = this.visibleFields[index];
+    const realIndex = this.fields.findIndex((field) => field === visibleField);
+  
+    if (realIndex > 0) {
+      // Troque os campos no array original
+      [this.fields[realIndex - 1], this.fields[realIndex]] = [this.fields[realIndex], this.fields[realIndex - 1]];
       this.updateIframe();
     }
   }
-
+  
   moveDown(index: number) {
-    if (index < this.fields.length - 1 && this.fields[index].label !== 'data_do_envio') {
-      [this.fields[index + 1], this.fields[index]] = [this.fields[index], this.fields[index + 1]];
+    // Obtenha o índice real no array `fields` com base no índice do array visível
+    const visibleField = this.visibleFields[index];
+    const realIndex = this.fields.findIndex((field) => field === visibleField);
+  
+    if (realIndex < this.fields.length - 1) {
+      // Troque os campos no array original
+      [this.fields[realIndex + 1], this.fields[realIndex]] = [this.fields[realIndex], this.fields[realIndex + 1]];
       this.updateIframe();
     }
   }

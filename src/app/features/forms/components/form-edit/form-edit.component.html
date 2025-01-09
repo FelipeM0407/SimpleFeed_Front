@@ -20,7 +20,8 @@
         <h3>Fields Editor</h3>
         <div *ngFor="let field of visibleFields; let i = index" class="field-item">
             <div class="field-header">
-              <strong>{{ field.label }}</strong>
+              <strong>{{ field.label }}</strong><br/>
+
               <small>Tipo: {{ field.type }}</small>
             </div>
             <div class="field-actions">
