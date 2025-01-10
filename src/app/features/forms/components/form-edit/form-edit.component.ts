@@ -6,12 +6,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HostListener } from '@angular/core';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatButtonModule } from '@angular/material/button';
+import { AuthService } from 'src/app/core/auth.service';
+import { FieldTypes } from '../../models/FieldTypes';
 
 
 @Component({
   selector: 'app-form-edit',
   standalone: true,
-  imports: [MatTabsModule, MatIconModule, CommonModule],
+  imports: [MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule],
   templateUrl: './form-edit.component.html',
   styleUrls: ['./form-edit.component.scss'],
 })
@@ -20,9 +24,12 @@ export class FormEditComponent {
   iframeContent: SafeHtml = ''; // Usar SafeHtml para conteúdo sanitizado
   isMobile = false; // Define se é mobile
   activeTab = 0; // Tab ativa: 0 = Editor, 1 = Preview
+  formFields: FieldTypes[] = []; // Lista de campos retornados
 
 
-  constructor(private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer) {
+  constructor(private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
+    private authService: AuthService 
+  ) {
     const form_Id = this.route.snapshot.paramMap.get('formId');
     if (form_Id) {
       const numericFormId = +form_Id;
@@ -33,6 +40,28 @@ export class FormEditComponent {
       });
     }
     this.checkIfMobile();
+  }
+
+  ngOnInit() {
+    const guidClient = this.authService.getUserGuid();
+
+    this.formsService.getFormFieldsByClientId(guidClient).subscribe(fields => {
+      this.formFields = fields.map(field => ({
+        ...field
+      }));
+    });
+  }
+
+  addField(field: FieldTypes) {
+    this.fields.push({
+      id: field.id,
+      type: field.fieldType,
+      name: field.name,
+      label: field.label,
+      required: false,
+      options: []
+    });
+    this.updateIframe();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -168,19 +197,19 @@ export class FormEditComponent {
     // Obtenha o índice real no array `fields` com base no índice do array visível
     const visibleField = this.visibleFields[index];
     const realIndex = this.fields.findIndex((field) => field === visibleField);
-  
+
     if (realIndex > 0) {
       // Troque os campos no array original
       [this.fields[realIndex - 1], this.fields[realIndex]] = [this.fields[realIndex], this.fields[realIndex - 1]];
       this.updateIframe();
     }
   }
-  
+
   moveDown(index: number) {
     // Obtenha o índice real no array `fields` com base no índice do array visível
     const visibleField = this.visibleFields[index];
     const realIndex = this.fields.findIndex((field) => field === visibleField);
-  
+
     if (realIndex < this.fields.length - 1) {
       // Troque os campos no array original
       [this.fields[realIndex + 1], this.fields[realIndex]] = [this.fields[realIndex], this.fields[realIndex + 1]];
