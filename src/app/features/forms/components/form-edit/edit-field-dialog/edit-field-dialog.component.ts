@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class EditFieldDialogComponent {
   fieldForm: FormGroup;
+  @ViewChild('optionsContainer') optionsContainer!: ElementRef<HTMLDivElement>;
 
   constructor(
     public dialogRef: MatDialogRef<EditFieldDialogComponent>,
@@ -33,6 +34,13 @@ export class EditFieldDialogComponent {
 
   addOption() {
     this.options.push(this.fb.control(''));
+  
+    // Certifique-se de que o scroll ocorre após o novo elemento ser renderizado
+    setTimeout(() => {
+      if (this.optionsContainer) {
+        this.optionsContainer.nativeElement.scrollTop = this.optionsContainer.nativeElement.scrollHeight;
+      }
+    });
   }
 
   removeOption(index: number) {
