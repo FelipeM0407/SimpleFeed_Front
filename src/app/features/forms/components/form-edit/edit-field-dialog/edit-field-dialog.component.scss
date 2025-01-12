@@ -28,7 +28,6 @@ mat-form-field {
 }
 
 .add-option-button {
-  margin-top: 15px;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -45,4 +44,9 @@ h3 {
   font-size: 1.2rem;
   font-weight: 500;
   margin-bottom: 10px;
+}
+
+.div-add-button {
+  display: flex;
+  justify-content: center;
 }

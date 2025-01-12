@@ -1,44 +1,48 @@
 <h1 mat-dialog-title>Edição de Campo</h1>
 <div mat-dialog-content>
-  <form [formGroup]="fieldForm" class="field-form">
-    <!-- Campo de Nome -->
-    <mat-form-field appearance="fill">
-      <mat-label>Nome do Campo</mat-label>
-      <input matInput formControlName="label" placeholder="Digite o nome do campo">
-      <mat-hint>Insira um nome claro e objetivo.</mat-hint>
-    </mat-form-field>
+    <form [formGroup]="fieldForm" class="field-form" style="max-height: 70vh; overflow-y: auto;">
+        <!-- Campo de Nome -->
+        <mat-form-field appearance="fill">
+            <mat-label>Nome do Campo</mat-label>
+            <input matInput formControlName="label" placeholder="Digite o nome do campo">
+            <mat-hint>Insira um nome claro e objetivo.</mat-hint>
+        </mat-form-field>
 
-    <!-- Opções para Dropdown -->
-    <div *ngIf="data.field.type === 'dropdown'" class="dropdown-options">
-      <h3>Opções</h3>
-      <div formArrayName="options" class="options-list">
-        <div *ngFor="let option of options.controls; let i = index" class="option-item">
-          <mat-form-field appearance="fill" class="option-field">
-            <mat-label>Opção {{ i + 1 }}</mat-label>
-            <input matInput [formControlName]="i" placeholder="Digite a opção" required>
-          </mat-form-field>
-          <div class="option-buttons">
-            <button mat-icon-button color="primary" (click)="moveOptionUp(i)" [disabled]="i === 0">
-              <mat-icon>arrow_upward</mat-icon>
-            </button>
-            <button mat-icon-button color="primary" (click)="moveOptionDown(i)" [disabled]="i === options.length - 1">
-              <mat-icon>arrow_downward</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" (click)="removeOption(i)">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
+        <!-- Opções para Dropdown -->
+        <div *ngIf="data.field.type === 'dropdown'" class="dropdown-options">
+            <h3>Opções</h3>
+
+            <div formArrayName="options" class="options-list">
+                <div *ngFor="let option of options.controls; let i = index" class="option-item">
+                    <mat-form-field appearance="fill" class="option-field">
+                        <mat-label>Opção {{ i + 1 }}</mat-label>
+                        <input matInput [formControlName]="i" placeholder="Digite a opção" required>
+                    </mat-form-field>
+                    <div class="option-buttons">
+                        <button mat-icon-button color="primary" (click)="moveOptionUp(i)" [disabled]="i === 0">
+                            <mat-icon>arrow_upward</mat-icon>
+                        </button>
+                        <button mat-icon-button color="primary" (click)="moveOptionDown(i)"
+                            [disabled]="i === options.length - 1">
+                            <mat-icon>arrow_downward</mat-icon>
+                        </button>
+                        <button mat-icon-button color="warn" (click)="removeOption(i)">
+                            <mat-icon>delete</mat-icon>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="div-add-button">
+                <button mat-raised-button color="primary" class="add-option-button" (click)="addOption()">
+                    <mat-icon>add</mat-icon>
+                    Adicionar Opção
+                </button>
+            </div>
         </div>
-      </div>
-      <button mat-raised-button color="primary" class="add-option-button" (click)="addOption()">
-        <mat-icon>add</mat-icon>
-        Adicionar Opção
-      </button>
-    </div>
-  </form>
+    </form>
 </div>
 
 <div mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">Cancelar</button>
-  <button mat-raised-button color="primary" (click)="onSave()" [disabled]="fieldForm.invalid">Salvar</button>
+    <button mat-button (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" (click)="onSave()" [disabled]="fieldForm.invalid">Salvar</button>
 </div>
