@@ -5,13 +5,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-edit-field-dialog',
   templateUrl: './edit-field-dialog.component.html',
   styleUrls: ['./edit-field-dialog.component.scss'],
   standalone: true,
-  imports: [MatInputModule, CommonModule, ReactiveFormsModule, MatFormFieldModule, MatIconModule]
+  imports: [MatButtonModule, MatInputModule, CommonModule, ReactiveFormsModule, MatFormFieldModule, MatIconModule]
 })
 export class EditFieldDialogComponent {
   fieldForm: FormGroup;

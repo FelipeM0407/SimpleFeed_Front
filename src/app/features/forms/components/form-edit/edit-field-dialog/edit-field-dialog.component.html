@@ -1,8 +1,8 @@
-<h1 mat-dialog-title>Edição de Campo</h1>
+<h1 mat-dialog-title class="dialog-title">Edição de Campo</h1>
 <div mat-dialog-content>
-    <form #optionsContainer [formGroup]="fieldForm" class="field-form " style="max-height: 70vh; overflow-y: auto;">
+    <form #optionsContainer [formGroup]="fieldForm" class="field-form" style="max-height: 70vh; overflow-y: auto; padding: 5px;">
         <!-- Campo de Nome -->
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="outline">
             <mat-label>Nome do Campo</mat-label>
             <input matInput formControlName="label" placeholder="Digite o nome do campo">
             <mat-hint>Insira um nome claro e objetivo.</mat-hint>
@@ -12,26 +12,26 @@
         <div *ngIf="data.field.type === 'dropdown'" class="dropdown-options">
             <h3>Opções</h3>
 
-            <div formArrayName="options" class="options-list" >
+            <div formArrayName="options" class="options-list">
                 <div *ngFor="let option of options.controls; let i = index" class="option-item">
-                    <mat-form-field appearance="fill" class="option-field">
+                    <mat-form-field appearance="outline" class="option-field">
                         <mat-label>Opção {{ i + 1 }}</mat-label>
                         <input matInput [formControlName]="i" placeholder="Digite a opção" required>
                     </mat-form-field>
                     <div class="option-buttons">
-                        <button mat-icon-button color="primary" (click)="moveOptionUp(i)" [disabled]="i === 0">
+                        <button mat-icon-button color="primary" (click)="moveOptionUp(i)" [disabled]="i === 0" class="icon-button">
                             <mat-icon>arrow_upward</mat-icon>
                         </button>
-                        <button mat-icon-button color="primary" (click)="moveOptionDown(i)" [disabled]="i === options.length - 1">
+                        <button mat-icon-button color="primary" (click)="moveOptionDown(i)" [disabled]="i === options.length - 1" class="icon-button">
                             <mat-icon>arrow_downward</mat-icon>
                         </button>
-                        <button mat-icon-button color="warn" (click)="removeOption(i)">
+                        <button mat-icon-button color="warn" (click)="removeOption(i)" class="icon-button">
                             <mat-icon>delete</mat-icon>
                         </button>
                     </div>
                 </div>
             </div>
-            
+
             <div class="div-add-button">
                 <button mat-raised-button color="primary" class="add-option-button" (click)="addOption()" [disabled]="isAddOptionDisabled()">
                     <mat-icon>add</mat-icon>
@@ -42,7 +42,7 @@
     </form>
 </div>
 
-<div mat-dialog-actions align="end">
-    <button mat-button (click)="onCancel()">Cancelar</button>
+<div mat-dialog-actions align="end" class="dialog-actions">
+    <button mat-raised-button color="warn"  (click)="onCancel()" class="cancel-button">Cancelar</button>
     <button mat-raised-button color="primary" (click)="onSave()" [disabled]="fieldForm.invalid">Salvar</button>
 </div>
