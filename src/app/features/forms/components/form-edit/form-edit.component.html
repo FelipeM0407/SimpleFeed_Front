@@ -1,6 +1,6 @@
 <div class="container" [ngClass]="{'mobile-view': isMobile}">
   <!-- Tabs para Mobile -->
-  <mat-tab-group *ngIf="isMobile" [(selectedIndex)]="activeTab" class="mobile-tab-group">
+  <mat-tab-group style="z-index: 1;" *ngIf="isMobile" [(selectedIndex)]="activeTab" class="mobile-tab-group">
     <mat-tab>
       <ng-template mat-tab-label>
         <mat-icon>edit</mat-icon>
@@ -17,8 +17,9 @@
 
   <!-- Editor -->
   <div class="editor-container" [class.hidden]="isMobile && activeTab !== 0">
-    <div class="d-flex justify-content-between mb-3">
-      <h3 style="margin: 0;">Fields Editor</h3>
+    <div class="d-flex" [ngClass]="isMobile ? 'justify-content-center mb-3 mt-5 align-items-end' : 'justify-content-between mb-3'">
+
+      <h3 *ngIf="!isMobile" style="margin: 0;">Edição de Campos</h3>
       <button mat-raised-button color="primary" [matMenuTriggerFor]="belowMenu" style="margin: 0;">
         <mat-icon>add</mat-icon>Adicionar campo
       </button>
@@ -56,7 +57,7 @@
 
   <!-- Preview -->
   <div class="preview-container" [class.hidden]="isMobile && activeTab !== 1">
-    <h3>Form Preview</h3>
+    <h3>Pré Visualização</h3>
     <div class="iframe-container" style="height: 100%;">
       <iframe id="formPreview" frameborder="0" class="iframe-preview"
         [srcdoc]="iframeContent || '<p>No content available</p>'" title="Form Preview"></iframe>
