@@ -17,6 +17,9 @@ export class EditFieldDialogComponent {
   fieldForm: FormGroup;
   @ViewChild('optionsContainer') optionsContainer!: ElementRef<HTMLDivElement>;
 
+  // Maximum number of options allowed
+  maxOptions = 10;
+
   constructor(
     public dialogRef: MatDialogRef<EditFieldDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -33,14 +36,16 @@ export class EditFieldDialogComponent {
   }
 
   addOption() {
-    this.options.push(this.fb.control(''));
-  
-    // Certifique-se de que o scroll ocorre após o novo elemento ser renderizado
-    setTimeout(() => {
-      if (this.optionsContainer) {
-        this.optionsContainer.nativeElement.scrollTop = this.optionsContainer.nativeElement.scrollHeight;
-      }
-    });
+    if (this.options.length < this.maxOptions) {
+      this.options.push(this.fb.control(''));
+    
+      // Certifique-se de que o scroll ocorre após o novo elemento ser renderizado
+      setTimeout(() => {
+        if (this.optionsContainer) {
+          this.optionsContainer.nativeElement.scrollTop = this.optionsContainer.nativeElement.scrollHeight;
+        }
+      });
+    }
   }
 
   removeOption(index: number) {
@@ -61,6 +66,10 @@ export class EditFieldDialogComponent {
       this.options.removeAt(index);
       this.options.insert(index + 1, option);
     }
+  }
+
+  isAddOptionDisabled() {
+    return this.options.length >= this.maxOptions;
   }
 
   onSave() {

@@ -33,7 +33,7 @@
             </div>
             
             <div class="div-add-button">
-                <button mat-raised-button color="primary" class="add-option-button" (click)="addOption()">
+                <button mat-raised-button color="primary" class="add-option-button" (click)="addOption()" [disabled]="isAddOptionDisabled()">
                     <mat-icon>add</mat-icon>
                     Adicionar Opção
                 </button>
