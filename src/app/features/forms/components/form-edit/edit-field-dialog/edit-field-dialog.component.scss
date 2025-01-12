@@ -1,12 +1,48 @@
+/* Campo de formulário */
 mat-form-field {
   width: 100%;
+  margin-bottom: 20px;
 }
 
-button {
-  margin-top: 10px;
+/* Lista de opções */
+.dropdown-options {
+  margin-top: 20px;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Botões de opções */
+.option-buttons {
+  display: flex;
+  gap: 5px;
+}
+
+.add-option-button {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 mat-dialog-actions {
+  margin-top: 20px;
   display: flex;
   justify-content: flex-end;
+  gap: 10px;
+}
+
+h3 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-bottom: 10px;
 }
