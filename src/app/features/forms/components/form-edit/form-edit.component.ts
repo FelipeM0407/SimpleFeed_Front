@@ -10,12 +10,14 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from 'src/app/core/auth.service';
 import { FieldTypes } from '../../models/FieldTypes';
-
+import { MatDialog } from '@angular/material/dialog';
+import { EditFieldDialogComponent } from './edit-field-dialog/edit-field-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-form-edit',
   standalone: true,
-  imports: [MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule],
+  imports: [MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
   templateUrl: './form-edit.component.html',
   styleUrls: ['./form-edit.component.scss'],
 })
@@ -28,7 +30,7 @@ export class FormEditComponent {
 
 
   constructor(private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
-    private authService: AuthService 
+    private authService: AuthService, private dialog: MatDialog
   ) {
     const form_Id = this.route.snapshot.paramMap.get('formId');
     if (form_Id) {
@@ -218,13 +220,33 @@ export class FormEditComponent {
   }
 
   editField(index: number) {
-    console.log('Edit field:', this.fields[index]);
+
+    // Obtenha o índice real no array `fields` com base no índice do array visível
+    const visibleField = this.visibleFields[index];
+    const realIndex = this.fields.findIndex((field) => field === visibleField);
+
+    const dialogRef = this.dialog.open(EditFieldDialogComponent, {
+      width: '400px',
+      data: { field: this.fields[realIndex] }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.fields[realIndex] = result;
+        this.updateIframe();
+      }
+    });
+
   }
 
   // Ajustar a exclusão para não permitir excluir `data_do_envio`
   deleteField(index: number) {
-    if (this.fields[index].label !== 'data_do_envio') {
-      this.fields.splice(index, 1);
+    // Obtenha o índice real no array `fields` com base no índice do array visível
+    const visibleField = this.visibleFields[index];
+    const realIndex = this.fields.findIndex((field) => field === visibleField);
+    
+    if (this.fields[realIndex].name !== 'data_do_envio') {
+      this.fields.splice(realIndex, 1);
       this.updateIframe();
     }
   }

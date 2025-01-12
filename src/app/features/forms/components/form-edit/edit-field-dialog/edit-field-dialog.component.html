@@ -1,0 +1,35 @@
+<h1 mat-dialog-title>Edição de campo</h1>
+<div mat-dialog-content>
+  <form [formGroup]="fieldForm">
+    <mat-form-field>
+      <mat-label>Nome do Campo</mat-label>
+      <input matInput formControlName="label">
+    </mat-form-field>
+
+    <div *ngIf="data.field.type === 'dropdown'">
+      <h3>Opções</h3>
+      <div formArrayName="options">
+        <div *ngFor="let option of options.controls; let i = index">
+          <mat-form-field>
+            <mat-label>Opção {{ i + 1 }}</mat-label>
+            <input matInput [formControlName]="i" required>
+          </mat-form-field>
+          <button mat-icon-button (click)="moveOptionUp(i)" [disabled]="i === 0">
+            <mat-icon>arrow_upward</mat-icon>
+          </button>
+          <button mat-icon-button (click)="moveOptionDown(i)" [disabled]="i === options.length - 1">
+            <mat-icon>arrow_downward</mat-icon>
+          </button>
+          <button mat-icon-button (click)="removeOption(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </div>
+      <button mat-button (click)="addOption()">Adicionar opção</button>
+    </div>
+  </form>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-button (click)="onSave()" [disabled]="fieldForm.invalid">Salvar</button>
+</div>
