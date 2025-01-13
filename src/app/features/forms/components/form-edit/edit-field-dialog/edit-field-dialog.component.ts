@@ -39,7 +39,7 @@ export class EditFieldDialogComponent {
   addOption() {
     if (this.options.length < this.maxOptions) {
       this.options.push(this.fb.control(''));
-    
+
       // Certifique-se de que o scroll ocorre após o novo elemento ser renderizado
       setTimeout(() => {
         if (this.optionsContainer) {
@@ -74,9 +74,18 @@ export class EditFieldDialogComponent {
   }
 
   onSave() {
+
+    const existingField = this.data.existingFields.find((field: { label: any; }) =>
+      field.label === this.fieldForm.value.label.trim());
+
+    if (existingField && existingField !== this.data.field) {
+      this.fieldForm.get('label')?.setErrors({ duplicate: true });
+      return;
+    }
+
     const updatedField = {
       ...this.data.field,
-      label: this.fieldForm.value.label,
+      label: this.fieldForm.value.label.trim(),
       options: this.fieldForm.value.options
     };
     this.dialogRef.close(updatedField);

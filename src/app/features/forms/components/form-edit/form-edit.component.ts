@@ -55,11 +55,21 @@ export class FormEditComponent {
   }
 
   addField(field: FieldTypes) {
+    let count = 2;
+    let editedLabel = field.label;
+    let editedName = '';
+
+    while (this.fields.some(f => f.label === editedLabel)) {
+      editedLabel = `${field.label} ${count}`;
+      editedName = `${field.name}_${count}`;
+      count++;
+    }
+
     this.fields.push({
       id: field.id,
       type: field.fieldType,
-      name: field.name,
-      label: field.label,
+      name: editedName || field.name,
+      label: editedLabel || field.label,
       required: false,
       options: []
     });
@@ -103,6 +113,14 @@ export class FormEditComponent {
             height: 100vh;
             overflow-y: auto; /* Habilita scroll vertical */
           }
+            input, textarea, select {
+            margin: 0;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Garante que o padding seja considerado no tamanho total */
+            width: 100%; /* Garante que todos os elementos ocupem a largura total do container */
+          }
           .form-container {
             background: #fff;
             padding: 20px;
@@ -113,6 +131,27 @@ export class FormEditComponent {
           }
           .form-group {
             margin-bottom: 20px;
+          }
+          .rating {
+          display: flex;
+          flex-direction: row-reverse;
+          justify-content: flex-end;
+          }
+          .rating input {
+            display: none;
+          }
+          .rating label {
+            font-size: 2rem;
+            color: #ccc;
+            cursor: pointer;
+            padding: 0 5px;
+          }
+          .rating input:checked ~ label {
+            color: #f5b301;
+          }
+          .rating label:hover,
+          .rating label:hover ~ label {
+            color: #f5b301;
           }
           label {
             font-weight: bold;
@@ -178,6 +217,18 @@ export class FormEditComponent {
               </select>
             </div>
           `;
+        } else if (field.type === 'rating') {
+          formHtml += `
+            <div class="form-group">
+              <label>${field.label}</label>
+              <div class="rating">
+                ${Array.from({ length: 5 }, (_, i) => i + 1).reverse().map((i) => `
+                  <input type="radio" id="${field.name}-${i}" name="${field.name}" value="${i}" ${field.required ? 'required' : ''}>
+                  <label for="${field.name}-${i}">★</label>
+                `).join('')}
+              </div>
+            </div>
+          `;
         }
       });
 
@@ -227,7 +278,7 @@ export class FormEditComponent {
 
     const dialogRef = this.dialog.open(EditFieldDialogComponent, {
       width: '400px',
-      data: { field: this.fields[realIndex] }
+      data: { field: this.fields[realIndex], existingFields: this.fields }
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -244,7 +295,7 @@ export class FormEditComponent {
     // Obtenha o índice real no array `fields` com base no índice do array visível
     const visibleField = this.visibleFields[index];
     const realIndex = this.fields.findIndex((field) => field === visibleField);
-    
+
     if (this.fields[realIndex].name !== 'data_do_envio') {
       this.fields.splice(realIndex, 1);
       this.updateIframe();
