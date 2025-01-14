@@ -23,7 +23,7 @@ import { MatCardModule } from '@angular/material/card';
   styleUrls: ['./form-edit.component.scss'],
 })
 export class FormEditComponent {
-  fields: { id: number; type: string; name: string; label: string; required: boolean; options?: string[] }[] = [];
+  fields: { id: number; type: string; name: string; label: string; required: boolean; options: string[]; isEmpty: boolean }[] = [];
   iframeContent: SafeHtml = ''; // Usar SafeHtml para conteúdo sanitizado
   isMobile = false; // Define se é mobile
   activeTab = 0; // Tab ativa: 0 = Editor, 1 = Preview
@@ -32,8 +32,7 @@ export class FormEditComponent {
 
   constructor(private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
     private authService: AuthService, private dialog: MatDialog,
-    private router: Router)
-  {
+    private router: Router) {
     const form_Id = this.route.snapshot.paramMap.get('formId');
     if (form_Id) {
       const numericFormId = +form_Id;
@@ -73,7 +72,8 @@ export class FormEditComponent {
       name: editedName || field.name,
       label: editedLabel || field.label,
       required: false,
-      options: []
+      options: [],
+      isEmpty: false
     });
     this.updateIframe();
   }
@@ -304,7 +304,28 @@ export class FormEditComponent {
     }
   }
 
-  cancel(){
+  cancel() {
     this.router.navigate(['/dashboard/forms']);
+  }
+
+  salvarForm() {
+    if (!this.visibleFields) {
+      return;
+    };
+
+    //verificar se há algum campo do tipo select sem opções
+    const selectEmptyFields = this.fields.filter(field => field.type === 'dropdown' && field.options.length === 0);
+
+    if (selectEmptyFields) {
+
+      this.visibleFields.forEach(field => {
+        selectEmptyFields.find(selectField => selectField.name === field.name)?.
+          options.length === 0 ?
+          field.isEmpty = true :
+          field.isEmpty = false;
+      });
+
+      this.updateIframe();
+    }
   }
 }

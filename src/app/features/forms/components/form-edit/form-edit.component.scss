@@ -224,6 +224,9 @@ h3 {
   background-color: #303f9f; /* Cor ao passar o mouse */
 }
 
+.empty-field{
+  border: 1px solid #e75f5f;
+}
 
 /* Desktop-specific styles */
 @media (min-width: 769px) {
