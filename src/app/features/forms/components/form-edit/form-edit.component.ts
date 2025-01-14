@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsService } from '../../services/forms.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { HostListener } from '@angular/core';
@@ -31,8 +31,9 @@ export class FormEditComponent {
 
 
   constructor(private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
-    private authService: AuthService, private dialog: MatDialog
-  ) {
+    private authService: AuthService, private dialog: MatDialog,
+    private router: Router)
+  {
     const form_Id = this.route.snapshot.paramMap.get('formId');
     if (form_Id) {
       const numericFormId = +form_Id;
@@ -301,5 +302,9 @@ export class FormEditComponent {
       this.fields.splice(realIndex, 1);
       this.updateIframe();
     }
+  }
+
+  cancel(){
+    this.router.navigate(['/dashboard/forms']);
   }
 }
