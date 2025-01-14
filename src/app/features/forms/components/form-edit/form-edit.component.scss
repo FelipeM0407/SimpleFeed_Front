@@ -1,7 +1,7 @@
 .container {
   display: flex;
   flex-direction: row;
-  height: 100vh;
+  height: 80vh;
   /* Limita a altura total à altura da tela */
   overflow: hidden;
   font-family: 'Inter', sans-serif;
@@ -25,7 +25,7 @@
   /* Scroll apenas se o conteúdo exceder */
   padding: 20px;
   box-sizing: border-box;
-  height: calc(100vh - 20px);
+  height: calc(85vh - 20px);
   /* Compensa o padding */
 }
 
@@ -125,7 +125,7 @@ h3 {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: auto;
   /* Scroll interno no iframe */
-  height: calc(100% - 50px);
+  height: calc(90% - 50px);
   /* Compensa o espaço do título */
 }
 
@@ -247,7 +247,7 @@ h3 {
   }
 
   .iframe-container {
-    height: 85% !important;
+    height: 90% !important;
   }
 
 }

@@ -14,11 +14,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditFieldDialogComponent } from './edit-field-dialog/edit-field-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-form-edit',
   standalone: true,
-  imports: [MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
+  imports: [MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
   templateUrl: './form-edit.component.html',
   styleUrls: ['./form-edit.component.scss'],
 })
@@ -106,7 +107,6 @@ export class FormEditComponent {
         <style>
           body {
             font-family: Roboto, Arial, sans-serif;
-            margin: 0;
             padding: 20px;
             background: #333; /* Fundo escuro */
             display: flex;
@@ -129,7 +129,7 @@ export class FormEditComponent {
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             max-width: 500px;
-            width: 100%;
+            width: 80%;
           }
           .form-group {
             margin-bottom: 20px;
@@ -286,6 +286,7 @@ export class FormEditComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.fields[realIndex] = result;
+        this.visibleFields.forEach(field => field.isEmpty = false);
         this.updateIframe();
       }
     });
@@ -308,12 +309,15 @@ export class FormEditComponent {
     this.router.navigate(['/dashboard/forms']);
   }
 
-  salvarForm() {
-    if (!this.visibleFields) {
-      return;
-    };
+  chageSlide(fieldName: string, event: any) {
+    const field = this.fields.find(field => field.name === fieldName);
+    if (field) {
+      field.required = event.checked;
+    }
+    this.updateIframe();
+  }
 
-    //verificar se há algum campo do tipo select sem opções
+  salvarForm() {
     const selectEmptyFields = this.fields.filter(field => field.type === 'dropdown' && field.options.length === 0);
 
     if (selectEmptyFields) {
@@ -326,6 +330,7 @@ export class FormEditComponent {
       });
 
       this.updateIframe();
+      return;
     }
   }
 }

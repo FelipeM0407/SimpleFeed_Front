@@ -2,7 +2,7 @@
   <mat-card>
     <mat-card-actions class="justify-content-between" align="end">
       <button mat-raised-button color="warn" (click)="cancel()">Cancelar</button>
-      <button mat-raised-button color="primary" (click)="salvarForm()">Salvar</button>
+      <button mat-raised-button color="primary" (click)="salvarForm()" [disabled]="visibleFields.length == 0">Salvar</button>
     </mat-card-actions>
   </mat-card>
 </div>
@@ -44,7 +44,11 @@
     <div *ngFor="let field of visibleFields; let i = index" class="field-item"
       [ngClass]="{'empty-field': field.isEmpty}">
       <div class="field-header">
-        <strong>{{ field.label }}</strong>
+        <div class="d-flex justify-content-between">
+          <strong>{{ field.label }}</strong>
+          <mat-slide-toggle [color]="'primary'" [checked]="field.required" (change)="chageSlide(field.name, $event)">Obrigatório</mat-slide-toggle>
+        </div>
+
         <ng-container *ngIf="field.isEmpty">
           <br />
           <small style="color: red; font-size: 0.75em;">Não há opções criadas para esse campo</small>
@@ -64,7 +68,6 @@
           </button>
         </div>
         <div>
-
           <span class="edit-btn" (click)="editField(i)" aria-label="Edit field" title="Edit field">
             <mat-icon>edit</mat-icon>
           </span>
@@ -81,7 +84,7 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu" yPosition="above">
-      <button mat-menu-item (click)="salvarForm()">
+      <button mat-menu-item (click)="salvarForm()" [disabled]="visibleFields.length == 0">
         <mat-icon>save</mat-icon>
         <span>Salvar</span>
       </button>

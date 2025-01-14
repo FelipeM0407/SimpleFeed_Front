@@ -6,13 +6,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-edit-field-dialog',
   templateUrl: './edit-field-dialog.component.html',
   styleUrls: ['./edit-field-dialog.component.scss'],
   standalone: true,
-  imports: [MatButtonModule, MatInputModule, CommonModule, ReactiveFormsModule, MatFormFieldModule, MatIconModule]
+  imports: [MatSlideToggleModule, MatButtonModule, MatInputModule, CommonModule, ReactiveFormsModule, MatFormFieldModule, MatIconModule]
 })
 export class EditFieldDialogComponent {
   fieldForm: FormGroup;
