@@ -55,7 +55,7 @@ h3 {
 .field-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: space-between
 }
 
 .arrow-btn {
@@ -65,6 +65,7 @@ h3 {
   padding: 6px 8px;
   cursor: pointer;
   transition: background 0.3s;
+  margin-right: 10px;
 }
 
 .arrow-btn:hover {
@@ -80,6 +81,7 @@ h3 {
   color: #007bff;
   cursor: pointer;
   text-decoration: underline;
+  margin-right: 10px;
 }
 
 .delete-btn {
