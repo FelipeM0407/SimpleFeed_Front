@@ -27,14 +27,14 @@ import { TemplateRef } from '@angular/core';
   styleUrls: ['./form-edit.component.scss'],
 })
 export class FormEditComponent {
-  fields: { id: number; type: string; name: string; label: string; required: boolean; options: string[]; isEmpty: boolean; hasFeedbacks: boolean }[] = [];
+  fields: { id: number; type: string; name: string; label: string; required: boolean; options: string[]; fieldTypeId: number; isNew: boolean; isEmpty: boolean; hasFeedbacks: boolean }[] = [];
   iframeContent: SafeHtml = ''; // Usar SafeHtml para conteúdo sanitizado
   isMobile = false; // Define se é mobile
   activeTab = 0; // Tab ativa: 0 = Editor, 1 = Preview
   formFields: FieldTypes[] = []; // Lista de campos retornados
   hasFeedbacks: boolean = false;
   @ViewChild('confirmDialog', { static: true }) confirmDialog!: TemplateRef<any>;
-
+  fieldsDeletedsWithFeedbacks: number[] = [];
 
   constructor(private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
     private authService: AuthService, private dialog: MatDialog,
@@ -57,7 +57,8 @@ export class FormEditComponent {
           this.fields = form.map((field: any) => ({
         ...field,
         options: field.options ? JSON.parse(field.options) : [],
-        hasFeedbacks: this.hasFeedbacks // Define hasFeedbacks para cada campo
+        hasFeedbacks: this.hasFeedbacks, // Define hasFeedbacks para cada campo
+        isNew: false
           })); // Converte options para um array usando JSON.parse
           this.updateIframe();
         });
@@ -91,6 +92,8 @@ export class FormEditComponent {
       label: editedLabel || field.label,
       required: false,
       options: [],
+      fieldTypeId: field.id,
+      isNew: true,
       isEmpty: false,
       hasFeedbacks: false
     });
@@ -323,6 +326,7 @@ export class FormEditComponent {
           .subscribe((confirmed) => {
             // Verifique explicitamente se o valor é igual a true
             if (String(confirmed) === 'true') {
+              this.fieldsDeletedsWithFeedbacks.push(this.fields[realIndex].id);
               this.fields.splice(realIndex, 1);
               this.updateIframe();
             }
@@ -351,10 +355,10 @@ export class FormEditComponent {
     this.updateIframe();
   }
 
-  salvarForm() {
+  saveForm() {
     const selectEmptyFields = this.fields.filter(field => field.type === 'dropdown' && field.options.length === 0);
 
-    if (selectEmptyFields) {
+    if (selectEmptyFields.length > 0) {
 
       this.visibleFields.forEach(field => {
         selectEmptyFields.find(selectField => selectField.name === field.name)?.
@@ -365,6 +369,37 @@ export class FormEditComponent {
 
       this.updateIframe();
       return;
+    }
+
+    const form_Id = this.route.snapshot.paramMap.get('formId');
+    if (form_Id) {
+      const numericFormId = +form_Id;
+      const editFormDto = {
+      FormId: numericFormId,
+      Fields: this.fields.map((field, index) => ({
+        Id: field.id,
+        Type: field.type,
+        Required: field.required,
+        Label: field.label,
+        Name: field.name,
+        Ordenation: index, 
+        Options: field.options.length ? JSON.stringify(field.options) : null,
+        Field_Type_Id: field.id,
+        IsNew: field.isNew
+      })),
+      fieldsDeletedsWithFeedbacks: this.fieldsDeletedsWithFeedbacks
+      };
+
+      console.log(editFormDto);
+      this.formsService.saveFormEdits(editFormDto).subscribe((success) => {
+        if (String(success) === 'true') {
+          alert('Formulário salvo com sucesso');
+        } else {
+          alert('Falha ao salvar o formulário');
+        }
+      }, (error) => {
+        alert('Ocorreu um erro ao salvar o formulário');
+      });
     }
   }
 

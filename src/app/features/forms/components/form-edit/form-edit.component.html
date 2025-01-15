@@ -2,7 +2,7 @@
   <mat-card>
     <mat-card-actions class="justify-content-between" align="end">
       <button mat-raised-button color="warn" (click)="cancel()">Cancelar</button>
-      <button mat-raised-button color="primary" (click)="salvarForm()" [disabled]="visibleFields.length == 0">Salvar</button>
+      <button mat-raised-button color="primary" (click)="saveForm()" [disabled]="visibleFields.length == 0">Salvar</button>
     </mat-card-actions>
   </mat-card>
 </div>
@@ -84,7 +84,7 @@
       <mat-icon>more_vert</mat-icon>
     </button>
     <mat-menu #menu="matMenu" yPosition="above">
-      <button mat-menu-item (click)="salvarForm()" [disabled]="visibleFields.length == 0">
+      <button mat-menu-item (click)="saveForm()" [disabled]="visibleFields.length == 0">
         <mat-icon>save</mat-icon>
         <span>Salvar</span>
       </button>

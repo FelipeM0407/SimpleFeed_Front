@@ -39,5 +39,9 @@ export class FormsService {
   validateExistenceFeedbacks(formId: number): Observable<boolean> {
     return this.http.get<boolean>(`${this.apiUrl}/forms/${formId}/feedbacks`);
   }
+
+  saveFormEdits(form: any): Observable<boolean> {
+    return this.http.post<boolean>(`${this.apiUrl}/forms/save-edits`, form);
+  }
   
 }
