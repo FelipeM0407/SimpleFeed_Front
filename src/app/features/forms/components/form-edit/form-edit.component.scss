@@ -8,6 +8,11 @@
   background-color: #fafafa;
 }
 
+.container.mobile-view {
+  height: 90vh;
+  /* Limita a altura total à altura da tela */
+}
+
 .fixed-tabs {
   position: sticky;
   top: 60px;
@@ -235,6 +240,7 @@ h3 {
   }
 }
 
+//Mobile
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
@@ -244,6 +250,10 @@ h3 {
   .preview-container {
     flex: none;
     height: 50vh;
+  }
+
+  .iframe-preview {
+    height: calc(115% - 50px);
   }
 
   .iframe-container {

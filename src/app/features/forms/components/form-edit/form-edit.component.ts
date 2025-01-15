@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsService } from '../../services/forms.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,11 +10,14 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from 'src/app/core/auth.service';
 import { FieldTypes } from '../../models/FieldTypes';
-import { MatDialog } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog } from '@angular/material/dialog';
 import { EditFieldDialogComponent } from './edit-field-dialog/edit-field-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatDialogRef } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
+import { TemplateRef } from '@angular/core';
 
 @Component({
   selector: 'app-form-edit',
@@ -30,10 +33,18 @@ export class FormEditComponent {
   activeTab = 0; // Tab ativa: 0 = Editor, 1 = Preview
   formFields: FieldTypes[] = []; // Lista de campos retornados
   hasFeedbacks: boolean = false;
+  @ViewChild('confirmDialog', { static: true }) confirmDialog!: TemplateRef<any>;
+
 
   constructor(private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
     private authService: AuthService, private dialog: MatDialog,
     private router: Router) {
+    
+    this.checkIfMobile();
+  }
+
+  ngOnInit() {
+    
     const form_Id = this.route.snapshot.paramMap.get('formId');
     if (form_Id) {
       const numericFormId = +form_Id;
@@ -52,10 +63,7 @@ export class FormEditComponent {
         this.updateIframe();
       });
     }
-    this.checkIfMobile();
-  }
 
-  ngOnInit() {
     const guidClient = this.authService.getUserGuid();
 
     this.formsService.getFormFieldsByClientId(guidClient).subscribe(fields => {
@@ -304,16 +312,32 @@ export class FormEditComponent {
   }
 
   // Ajustar a exclusão para não permitir excluir `data_do_envio`
-  deleteField(index: number) {
-    // Obtenha o índice real no array `fields` com base no índice do array visível
+  deleteField(index: number): void {
     const visibleField = this.visibleFields[index];
     const realIndex = this.fields.findIndex((field) => field === visibleField);
-
+  
     if (this.fields[realIndex].name !== 'data_do_envio') {
-      this.fields.splice(realIndex, 1);
-      this.updateIframe();
+      if (this.fields[realIndex].hasFeedbacks) {
+        // Abra o diálogo de confirmação
+        this.openConfirmDialog(this.confirmDialog, 'Excluir esse campo irá também excluir os feedbacks a ele associados. Tem certeza de que deseja excluí-lo?')
+          .subscribe((confirmed) => {
+            // Verifique explicitamente se o valor é igual a true
+            if (String(confirmed) === 'true') {
+              this.fields.splice(realIndex, 1);
+              this.updateIframe();
+            }
+          });
+      } else {
+        this.fields.splice(realIndex, 1);
+        this.updateIframe();
+      }
     }
   }
+  
+  
+  
+  
+  
 
   cancel() {
     this.router.navigate(['/dashboard/forms']);
@@ -343,4 +367,18 @@ export class FormEditComponent {
       return;
     }
   }
+
+
+  openConfirmDialog(templateRef: TemplateRef<any>, message: string): Observable<boolean> {
+    const dialogRef = this.dialog.open(templateRef, {
+      data: { message },
+      width: '300px',
+    });
+  
+    return dialogRef.afterClosed(); // Retorna o resultado do diálogo
+  }
+  
+  
 }
+
+
