@@ -39,7 +39,10 @@ export class FormEditComponent {
       const numericFormId = +form_Id;
 
       this.formsService.getFormStructure(numericFormId).subscribe((form) => {
-        this.fields = form; // Aqui você já recebe os campos da API
+        this.fields = form.map((field: any) => ({
+          ...field,
+          options: field.options ? JSON.parse(field.options) : []
+        })); // Converte options para um array usando JSON.parse
         this.updateIframe();
       });
     }

@@ -92,7 +92,11 @@ export class FormsListComponent implements OnInit, OnDestroy {
   }
 
   onViewResponses(id: number): void {
-    this.router.navigate(['/dashboard/feedbacks', id]); // Direciona para a rota de feedbacks com formId
+    this.router.navigate(['/dashboard/feedbacks', id]);
+  }
+
+  editForm(id: number): void {
+    this.router.navigate(['/dashboard/form-edit', id]);
   }
 }
 
