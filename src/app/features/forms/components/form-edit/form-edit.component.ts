@@ -52,15 +52,15 @@ export class FormEditComponent {
       // Valida se existem feedbacks associados a esse formulário
       this.formsService.validateExistenceFeedbacks(numericFormId).subscribe(res => {
         this.hasFeedbacks = res;
-      });
 
-      this.formsService.getFormStructure(numericFormId).subscribe((form) => {
-        this.fields = form.map((field: any) => ({
-          ...field,
-          options: field.options ? JSON.parse(field.options) : [],
-          hasFeedbacks: this.hasFeedbacks // Define hasFeedbacks para cada campo
-        })); // Converte options para um array usando JSON.parse
-        this.updateIframe();
+        this.formsService.getFormStructure(numericFormId).subscribe((form) => {
+          this.fields = form.map((field: any) => ({
+        ...field,
+        options: field.options ? JSON.parse(field.options) : [],
+        hasFeedbacks: this.hasFeedbacks // Define hasFeedbacks para cada campo
+          })); // Converte options para um array usando JSON.parse
+          this.updateIframe();
+        });
       });
     }
 
