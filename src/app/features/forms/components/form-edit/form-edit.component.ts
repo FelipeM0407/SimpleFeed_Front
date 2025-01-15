@@ -24,12 +24,12 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
   styleUrls: ['./form-edit.component.scss'],
 })
 export class FormEditComponent {
-  fields: { id: number; type: string; name: string; label: string; required: boolean; options: string[]; isEmpty: boolean }[] = [];
+  fields: { id: number; type: string; name: string; label: string; required: boolean; options: string[]; isEmpty: boolean; hasFeedbacks: boolean }[] = [];
   iframeContent: SafeHtml = ''; // Usar SafeHtml para conteúdo sanitizado
   isMobile = false; // Define se é mobile
   activeTab = 0; // Tab ativa: 0 = Editor, 1 = Preview
   formFields: FieldTypes[] = []; // Lista de campos retornados
-
+  hasFeedbacks: boolean = false;
 
   constructor(private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
     private authService: AuthService, private dialog: MatDialog,
@@ -38,10 +38,16 @@ export class FormEditComponent {
     if (form_Id) {
       const numericFormId = +form_Id;
 
+      // Valida se existem feedbacks associados a esse formulário
+      this.formsService.validateExistenceFeedbacks(numericFormId).subscribe(res => {
+        this.hasFeedbacks = res;
+      });
+
       this.formsService.getFormStructure(numericFormId).subscribe((form) => {
         this.fields = form.map((field: any) => ({
           ...field,
-          options: field.options ? JSON.parse(field.options) : []
+          options: field.options ? JSON.parse(field.options) : [],
+          hasFeedbacks: this.hasFeedbacks // Define hasFeedbacks para cada campo
         })); // Converte options para um array usando JSON.parse
         this.updateIframe();
       });
@@ -77,7 +83,8 @@ export class FormEditComponent {
       label: editedLabel || field.label,
       required: false,
       options: [],
-      isEmpty: false
+      isEmpty: false,
+      hasFeedbacks: false
     });
     this.updateIframe();
   }

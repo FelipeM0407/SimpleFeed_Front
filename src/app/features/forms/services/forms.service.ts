@@ -35,5 +35,9 @@ export class FormsService {
   createForm(form: FormStructure): Observable<number> {
     return this.http.post<number>(`${this.apiUrl}/forms`, form);
   }
+
+  validateExistenceFeedbacks(formId: number): Observable<boolean> {
+    return this.http.get<boolean>(`${this.apiUrl}/forms/${formId}/feedbacks`);
+  }
   
 }
