@@ -56,6 +56,10 @@
                 <mat-icon>delete</mat-icon>
                 <span>Excluir Formulário</span>
               </button>
+              <button mat-menu-item (click)="duplicateForm(form.id)">
+                <mat-icon>content_copy</mat-icon>
+                <span>Duplicar Formulário</span>
+              </button>
             </mat-menu>
           </div>
         </div>

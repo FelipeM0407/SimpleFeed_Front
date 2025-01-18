@@ -134,6 +134,28 @@ export class FormsListComponent implements OnInit, OnDestroy {
       });
   }
 
+  duplicateForm(id: number){
+    this.formsService.duplicateForm(id).subscribe({
+      next: (duplicatedForm) => {
+        this.snackBar.open('Formulário duplicado com sucesso!', 'Fechar', {
+          duration: 3000,
+          panelClass: ['snackbar-success'],
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        });
+        this.loadForms(this.clientId);
+      },
+      error: () => {
+        this.snackBar.open('Erro ao duplicar formulário!', 'Fechar', {
+          duration: 3000,
+          panelClass: ['snackbar-error'],
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        });
+      }
+    });
+  }
+
   openConfirmDialog(templateRef: TemplateRef<any>, message: string): Observable<boolean> {
     const dialogRef = this.dialog.open(templateRef, {
       data: { message },
