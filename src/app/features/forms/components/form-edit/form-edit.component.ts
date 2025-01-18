@@ -18,16 +18,18 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { TemplateRef } from '@angular/core';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {MatSnackBar, MatSnackBarRef, MatSnackBarModule} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-form-edit',
   standalone: true,
-  imports: [MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
+  imports: [MatSnackBarModule, MatProgressSpinnerModule, MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
   templateUrl: './form-edit.component.html',
   styleUrls: ['./form-edit.component.scss'],
 })
 export class FormEditComponent {
-  fields: { id: number; type: string; name: string; label: string; required: boolean; options: string[]; fieldTypeId: number; isNew: boolean; isEmpty: boolean; hasFeedbacks: boolean }[] = [];
+  fields: { id: number; type: string; name: string; label: string; ordenation: number; required: boolean; options: string[]; fieldTypeId: number; isNew: boolean; isEmpty: boolean; hasFeedbacks: boolean }[] = [];
   iframeContent: SafeHtml = ''; // Usar SafeHtml para conteúdo sanitizado
   isMobile = false; // Define se é mobile
   activeTab = 0; // Tab ativa: 0 = Editor, 1 = Preview
@@ -35,8 +37,9 @@ export class FormEditComponent {
   hasFeedbacks: boolean = false;
   @ViewChild('confirmDialog', { static: true }) confirmDialog!: TemplateRef<any>;
   fieldsDeletedsWithFeedbacks: number[] = [];
+  isLoading = true;
 
-  constructor(private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
+  constructor(private snackBar: MatSnackBar, private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
     private authService: AuthService, private dialog: MatDialog,
     private router: Router) {
     
@@ -54,14 +57,17 @@ export class FormEditComponent {
         this.hasFeedbacks = res;
 
         this.formsService.getFormStructure(numericFormId).subscribe((form) => {
-          this.fields = form.map((field: any) => ({
-        ...field,
-        options: field.options ? JSON.parse(field.options) : [],
-        hasFeedbacks: this.hasFeedbacks, // Define hasFeedbacks para cada campo
-        isNew: false
-          })); // Converte options para um array usando JSON.parse
+          this.fields = form
+            .map((field: any) => ({
+              ...field,
+              options: field.options ? JSON.parse(field.options) : [],
+              hasFeedbacks: this.hasFeedbacks, // Define hasFeedbacks para cada campo
+              isNew: false
+            })) // Converte options para um array usando JSON.parse
+            .sort((a: { ordenation: number; }, b: { ordenation: number; }) => a.ordenation - b.ordenation); // Ordena os campos pela ordenation
           this.updateIframe();
         });
+        this.isLoading = false;
       });
     }
 
@@ -91,6 +97,7 @@ export class FormEditComponent {
       name: editedName || field.name,
       label: editedLabel || field.label,
       required: false,
+      ordenation : field.ordenation,
       options: [],
       fieldTypeId: field.id,
       isNew: true,
@@ -209,50 +216,52 @@ export class FormEditComponent {
     // Adicionar somente os campos que não sejam "data_do_envio"
     this.fields
       .filter((field) => field.name !== 'data_do_envio') // Filtrar o campo `data_do_envio`
+      .sort((a, b) => a.ordenation - b.ordenation) // Ordenar os campos pela ordenation
       .forEach((field) => {
-        if (field.type === 'text' || field.type === 'email') {
-          formHtml += `
-            <div class="form-group">
-              <label>${field.label}</label>
-              <input type="${field.type}" ${field.required ? 'required' : ''}>
-            </div>
-          `;
-        } else if (field.type === 'textarea') {
-          formHtml += `
-            <div class="form-group">
-              <label>${field.label}</label>
-              <textarea ${field.required ? 'required' : ''}></textarea>
-            </div>
-          `;
-        } else if (field.type === 'date') {
-          formHtml += `
-            <div class="form-group">
-              <label>${field.label}</label>
-              <input type="date" ${field.required ? 'required' : ''}>
-            </div>
-          `;
-        } else if (field.type === 'dropdown' && field.options) {
-          formHtml += `
-            <div class="form-group">
-              <label>${field.label}</label>
-              <select ${field.required ? 'required' : ''}>
-                ${field.options.map((option) => `<option value="${option}">${option}</option>`).join('')}
-              </select>
-            </div>
-          `;
-        } else if (field.type === 'rating') {
-          formHtml += `
-            <div class="form-group">
-              <label>${field.label}</label>
-              <div class="rating">
-                ${Array.from({ length: 5 }, (_, i) => i + 1).reverse().map((i) => `
-                  <input type="radio" id="${field.name}-${i}" name="${field.name}" value="${i}" ${field.required ? 'required' : ''}>
-                  <label for="${field.name}-${i}">★</label>
-                `).join('')}
-              </div>
-            </div>
-          `;
-        }
+      if (field.type === 'text' || field.type === 'email') {
+        formHtml += `
+        <div class="form-group">
+          <label>${field.label}</label>
+          <input type="${field.type}" ${field.required ? 'required' : ''}>
+        </div>
+        `;
+      } else if (field.type === 'textarea') {
+        formHtml += `
+        <div class="form-group">
+          <label>${field.label}</label>
+          <textarea ${field.required ? 'required' : ''}></textarea>
+        </div>
+        `;
+      } else if (field.type === 'date') {
+        formHtml += `
+        <div class="form-group">
+          <label>${field.label}</label>
+          <input type="date" ${field.required ? 'required' : ''}>
+        </div>
+        `;
+      } else if (field.type === 'dropdown' && field.options) {
+        formHtml += `
+        <div class="form-group">
+          <label>${field.label}</label>
+          <select ${field.required ? 'required' : ''}>
+          <option value="0">Selecione uma opção</option>
+          ${field.options.map((option) => `<option value="${option}">${option}</option>`).join('')}
+          </select>
+        </div>
+        `;
+      } else if (field.type === 'rating') {
+        formHtml += `
+        <div class="form-group">
+          <label>${field.label}</label>
+          <div class="rating">
+          ${Array.from({ length: 5 }, (_, i) => i + 1).reverse().map((i) => `
+            <input type="radio" id="${field.name}-${i}" name="${field.name}" value="${i}" ${field.required ? 'required' : ''}>
+            <label for="${field.name}-${i}">★</label>
+          `).join('')}
+          </div>
+        </div>
+        `;
+      }
       });
 
     formHtml += `
@@ -390,13 +399,28 @@ export class FormEditComponent {
       fieldsDeletedsWithFeedbacks: this.fieldsDeletedsWithFeedbacks
       };
 
-      console.log(editFormDto);
-      this.formsService.saveFormEdits(editFormDto).subscribe((success) => {
-        if (String(success) === 'true') {
-          alert('Formulário salvo com sucesso');
+      this.isLoading = true;
+
+      this.formsService.saveFormEdits(editFormDto).subscribe((success: any) => {
+        if (success.success) {
+          this.snackBar.open('Formulário Salvo com sucesso!', 'Fechar', {
+            duration: 3000,
+            panelClass: ['snackbar-success'],
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
+          });
+
+            this.router.navigate(['/dashboard/forms']);
         } else {
-          alert('Falha ao salvar o formulário');
+          this.snackBar.open('Erro ao salvar formulário!', 'Fechar', {
+            duration: 3000,
+            panelClass: ['snackbar-error'],
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
+          });
         }
+        this.isLoading = false;
+
       }, (error) => {
         alert('Ocorreu um erro ao salvar o formulário');
       });

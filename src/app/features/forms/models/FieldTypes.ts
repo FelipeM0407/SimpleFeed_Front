@@ -5,6 +5,7 @@ export interface FieldTypes{
     description: string;
     settingsschema: string;
     fieldType: string;
+    ordenation: number;
     planId: number;
     selected: boolean;
     selectionOrder?: number;
