@@ -43,5 +43,9 @@ export class FormsService {
   saveFormEdits(form: any): Observable<boolean> {
     return this.http.post<boolean>(`${this.apiUrl}/forms/save-edits`, form);
   }
+
+  deleteForm(formId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/forms/${formId}`);
+  }
   
 }

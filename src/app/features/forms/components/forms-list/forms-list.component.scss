@@ -135,7 +135,9 @@ mat-divider {
   z-index: 1000;
 }
 
-
+.mat-mdc-dialog-actions {
+  justify-content: space-between;
+}
 
 /* Responsividade */
 @media (max-width: 768px) {

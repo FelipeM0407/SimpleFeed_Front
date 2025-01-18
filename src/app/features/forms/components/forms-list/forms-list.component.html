@@ -52,7 +52,7 @@
                 <mat-icon>edit</mat-icon>
                 <span>Editar Formulário</span>
               </button>
-              <button mat-menu-item>
+              <button mat-menu-item (click)="deleteForm(form.id)">
                 <mat-icon>delete</mat-icon>
                 <span>Excluir Formulário</span>
               </button>
@@ -63,3 +63,14 @@
     </div>
   </div>
 </div>
+
+<ng-template #confirmDialog let-dialogData>
+  <h2 mat-dialog-title>Atenção</h2>
+  <mat-dialog-content>
+    <p>{{ dialogData.message }}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close="false">Cancelar</button>
+    <button mat-button color="warn" mat-dialog-close="true">Confirmar</button>
+  </mat-dialog-actions>
+</ng-template>
