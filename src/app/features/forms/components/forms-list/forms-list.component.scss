@@ -105,6 +105,7 @@ p {
   margin: 0 0 0.5rem;
   font-weight: bold;
   color: #424242;
+  text-align: center;
 }
 
 mat-progress-bar {
@@ -179,6 +180,8 @@ mat-divider {
   .forms-container {
     flex-direction: column;
     padding: 0 1rem;
+    max-width: 100%;
+
   }
 
   .forms-list-container,

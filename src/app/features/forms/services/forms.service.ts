@@ -51,5 +51,10 @@ export class FormsService {
   duplicateForm(formId: number): Observable<FormStructure> {
     return this.http.post<FormStructure>(`${this.apiUrl}/forms/${formId}/duplicate`, {});
   }
+
+  renameForm(formId: number, name: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/forms/${formId}/rename`, { name });
+  }
+  
   
 }

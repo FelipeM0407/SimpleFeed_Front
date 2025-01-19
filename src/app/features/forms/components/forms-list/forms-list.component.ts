@@ -17,6 +17,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { FormCreateDialogComponent } from '../form-create-dialog/form-create-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { HttpClient } from '@angular/common/http';
+import { DialogRenameFormComponent } from './dialog-rename-form/dialog-rename-form.component';
 
 
 @Component({
@@ -33,6 +35,7 @@ export class FormsListComponent implements OnInit, OnDestroy {
   maxResponses = 100; // Limite temporário de respostas
   private clientDataSubscription: Subscription | null = null;
   @ViewChild('confirmDialog', { static: true }) confirmDialog!: TemplateRef<any>;
+
   clientId!: number;
 
   constructor(private snackBar: MatSnackBar, private formsService: FormsService, private authService: AuthService, private router: Router,
@@ -134,7 +137,7 @@ export class FormsListComponent implements OnInit, OnDestroy {
       });
   }
 
-  duplicateForm(id: number){
+  duplicateForm(id: number) {
     this.formsService.duplicateForm(id).subscribe({
       next: (duplicatedForm) => {
         this.snackBar.open('Formulário duplicado com sucesso!', 'Fechar', {
@@ -151,6 +154,42 @@ export class FormsListComponent implements OnInit, OnDestroy {
           panelClass: ['snackbar-error'],
           horizontalPosition: 'center',
           verticalPosition: 'top'
+        });
+      }
+    });
+  }
+
+  renameForm(formId: number, formName: string) {
+    const dialogRef = this.dialog.open(DialogRenameFormComponent, {
+      data: { formName },
+      width: '500px'
+    });
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      if (result) {
+        this.isLoading = true;
+
+        this.formsService.renameForm(formId, result).subscribe({
+          next: () => {
+            this.snackBar.open('Formulário renomeado com sucesso!', 'Fechar', {
+              duration: 3000,
+              panelClass: ['snackbar-success'],
+              horizontalPosition: 'center',
+              verticalPosition: 'top'
+            });
+            this.loadForms(this.clientId);
+          },
+          error: () => {
+            this.snackBar.open('Erro ao renomear formulário!', 'Fechar', {
+              duration: 3000,
+              panelClass: ['snackbar-error'],
+              horizontalPosition: 'center',
+              verticalPosition: 'top'
+            });
+          },
+          complete: () => {
+            this.isLoading = false;
+          }
         });
       }
     });

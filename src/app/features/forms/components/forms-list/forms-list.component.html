@@ -7,7 +7,7 @@
         <mat-icon class="button-icon">add</mat-icon>
         Criar Formulário
       </button>
-      
+
     </div>
 
     <!-- Divider -->
@@ -15,7 +15,8 @@
     <!-- Barra de progresso -->
     <div class="progress-section">
       <p><strong>Total de Respostas:</strong> {{ getTotalResponses() }}/{{ maxResponses }}</p>
-      <mat-progress-bar mode="determinate" [bufferValue]="maxResponses" [value]="getTotalResponsesPercentage()"></mat-progress-bar>
+      <mat-progress-bar mode="determinate" [bufferValue]="maxResponses"
+        [value]="getTotalResponsesPercentage()"></mat-progress-bar>
     </div>
   </section>
 
@@ -35,6 +36,7 @@
         [ngClass]="{'form-color-a': i % 2 === 0, 'form-color-b': i % 2 !== 0}" class="form-item mat-elevation-z8">
         <div class="form-content">
           <div>
+            <p><strong>Identificador:</strong> {{ form.id | number: '3.0-0' }}</p>
             <p><strong>Nome:</strong> {{ form.name }}</p>
             <p><strong>Respostas:</strong> {{ form.responseCount }}</p>
             <p><strong>Últ. Atualização:</strong> {{ form.lastUpdated | date: 'dd/MM/yyyy HH:mm' }}</p>
@@ -47,7 +49,7 @@
               <button mat-menu-item (click)="onViewResponses(form.id)">
                 <mat-icon>visibility</mat-icon>
                 <span>Visualizar Respostas</span>
-              </button>              
+              </button>
               <button mat-menu-item (click)="editForm(form.id)">
                 <mat-icon>edit</mat-icon>
                 <span>Editar Formulário</span>
@@ -59,6 +61,10 @@
               <button mat-menu-item (click)="duplicateForm(form.id)">
                 <mat-icon>content_copy</mat-icon>
                 <span>Duplicar Formulário</span>
+              </button>
+              <button mat-menu-item (click)="renameForm(form.id, form.name)">
+                <mat-icon>drive_file_rename_outline</mat-icon>
+                <span>Renomear Formulário</span>
               </button>
             </mat-menu>
           </div>
