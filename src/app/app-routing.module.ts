@@ -14,7 +14,7 @@ const routes: Routes = [
       import('./features/auth/auth.module').then((m) => m.AuthModule), // Certifique-se do caminho correto para o módulo AuthModule
   },
   {
-    path: 'form/:formId', // Registra a rota diretamente
+    path: 'feedback-submission/:formId', // Registra a rota diretamente
     component: FeedbackFormComponent,
   },
   { path: '**', redirectTo: 'login' },
