@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from './core/auth.guard';
+import { FeedbackFormComponent } from './features/feedback-submission/components/feedback-form/feedback-form.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -12,7 +13,12 @@ const routes: Routes = [
     loadChildren: () =>
       import('./features/auth/auth.module').then((m) => m.AuthModule), // Certifique-se do caminho correto para o módulo AuthModule
   },
+  {
+    path: 'form/:formId', // Registra a rota diretamente
+    component: FeedbackFormComponent,
+  },
   { path: '**', redirectTo: 'login' },
+  
 ];
 
 @NgModule({
