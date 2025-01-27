@@ -7,6 +7,6 @@
     </mat-form-field>
 </div>
 <div mat-dialog-actions>
-    <button mat-button mat-dialog-close>Close</button>
-    <button mat-button [disabled]="name.invalid" (click)="saveForm(name.value)">Save</button>
+    <button mat-raised-button color="warn" mat-dialog-close>Cancelar</button>
+    <button mat-raised-button color="primary" [disabled]="name.invalid" (click)="saveForm(name.value)">Salvar</button>
 </div> 

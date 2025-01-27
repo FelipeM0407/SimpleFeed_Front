@@ -59,12 +59,12 @@ export class FeedbackFormComponent {
 
       this.formsService.getFormStructure(parseInt(this.formId, 10)).subscribe({
         next: (data) => {
-          this.fields = data.map((field: FormField) => {
+            this.fields = data.map((field: FormField) => {
             if (field.type === 'dropdown' && typeof field.options === 'string') {
               field.options = JSON.parse(field.options);
             }
             return field;
-          });
+            }).sort((a: { ordenation: number; }, b: { ordenation: number; }) => a.ordenation - b.ordenation);
           this.createForm();
         },
         error: (error) => {
