@@ -14,6 +14,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { FormField } from '../../models/FormField';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialog } from '@angular/material/dialog';
+import { ThankYouDialogComponent } from './thank-you-dialog/thank-you-dialog/thank-you-dialog.component';
 
 @Component({
   selector: 'app-feedback-form',
@@ -42,7 +44,8 @@ export class FeedbackFormComponent {
   constructor(
     private route: ActivatedRoute,
     private feedbackFormService: FeedbackFormService,
-    private formsService: FormsService
+    private formsService: FormsService,
+    private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
@@ -62,12 +65,12 @@ export class FeedbackFormComponent {
 
       this.formsService.getFormStructure(parseInt(this.formId, 10)).subscribe({
         next: (data) => {
-            this.fields = data.map((field: FormField) => {
+          this.fields = data.map((field: FormField) => {
             if (field.type === 'dropdown' && typeof field.options === 'string') {
               field.options = JSON.parse(field.options);
             }
             return field;
-            }).sort((a: { ordenation: number; }, b: { ordenation: number; }) => a.ordenation - b.ordenation);
+          }).sort((a: { ordenation: number; }, b: { ordenation: number; }) => a.ordenation - b.ordenation);
           this.createForm();
           this.isLoading = false;
         },
@@ -83,7 +86,7 @@ export class FeedbackFormComponent {
   createForm(): void {
     this.fields.forEach((field) => {
       let control: FormControl;
-      if(field.name == 'data_do_envio'){
+      if (field.name == 'data_do_envio') {
         return;
       }
       if (field.type === 'dropdown') {
@@ -113,10 +116,13 @@ export class FeedbackFormComponent {
       this.form.markAllAsTouched();
       alert("Por favor, preencha todos os campos obrigatórios.");
     } else {
-      alert("Formulário enviado com sucesso!");
+      this.dialog.open(ThankYouDialogComponent, {
+        width: '300px',
+        panelClass: 'thank-you-dialog'
+      });
     }
   }
-  
+
 
   setLocalStorage(): void {
     const expirationDate = new Date();
