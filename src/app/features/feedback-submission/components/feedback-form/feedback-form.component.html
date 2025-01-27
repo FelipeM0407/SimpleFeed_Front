@@ -1,4 +1,4 @@
-<div class="form-container">
+<div *ngIf="!isLoading" class="form-container">
     <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
         <div *ngFor="let field of fields" class="form-field">
 
@@ -12,7 +12,8 @@
             </mat-form-field>
 
             <!-- Campo de data -->
-            <mat-form-field *ngIf="field.type === 'date' && field.name !== 'data_do_envio'" appearance="outline" class="full-width">
+            <mat-form-field *ngIf="field.type === 'date' && field.name !== 'data_do_envio'" appearance="outline"
+                class="full-width">
                 <mat-label>{{ field.label }}</mat-label>
                 <input matInput [formControlName]="field.name" [matDatepicker]="picker" />
                 <mat-datepicker #picker></mat-datepicker>
@@ -71,4 +72,8 @@
 
         <button mat-raised-button color="primary" type="submit">Enviar</button>
     </form>
+</div>
+
+<div *ngIf="isLoading" class="spinner-container">
+    <mat-spinner></mat-spinner>
 </div>

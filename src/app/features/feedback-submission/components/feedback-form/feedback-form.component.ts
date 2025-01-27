@@ -13,6 +13,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { FormField } from '../../models/FormField';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-feedback-form',
@@ -28,13 +29,15 @@ import { FormField } from '../../models/FormField';
     MatButtonModule,
     MatFormFieldModule,
     MatNativeDateModule,
-    MatIconModule
+    MatIconModule,
+    MatProgressSpinnerModule
   ]
 })
 export class FeedbackFormComponent {
   formId!: string;
   form: FormGroup = new FormGroup({});
   fields: FormField[] = [];
+  isLoading = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -66,6 +69,7 @@ export class FeedbackFormComponent {
             return field;
             }).sort((a: { ordenation: number; }, b: { ordenation: number; }) => a.ordenation - b.ordenation);
           this.createForm();
+          this.isLoading = false;
         },
         error: (error) => {
           if (error.status === 403) {
