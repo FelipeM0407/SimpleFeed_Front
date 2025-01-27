@@ -16,6 +16,7 @@
                 class="full-width">
                 <mat-label>{{ field.label }}</mat-label>
                 <input matInput [formControlName]="field.name" [matDatepicker]="picker" />
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
                 <mat-error *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched">
                     Este campo é obrigatório
