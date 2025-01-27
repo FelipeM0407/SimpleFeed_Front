@@ -19,7 +19,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { TemplateRef } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import {MatSnackBar, MatSnackBarRef, MatSnackBarModule} from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarRef, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-form-edit',
@@ -42,12 +42,12 @@ export class FormEditComponent {
   constructor(private snackBar: MatSnackBar, private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
     private authService: AuthService, private dialog: MatDialog,
     private router: Router) {
-    
+
     this.checkIfMobile();
   }
 
   ngOnInit() {
-    
+
     const form_Id = this.route.snapshot.paramMap.get('formId');
     if (form_Id) {
       const numericFormId = +form_Id;
@@ -97,7 +97,7 @@ export class FormEditComponent {
       name: editedName || field.name,
       label: editedLabel || field.label,
       required: false,
-      ordenation : field.ordenation,
+      ordenation: field.ordenation,
       options: [],
       fieldTypeId: field.id,
       isNew: true,
@@ -165,13 +165,14 @@ export class FormEditComponent {
           .rating {
           display: flex;
           flex-direction: row-reverse;
-          justify-content: flex-end;
+          justify-content: space-between;
           }
           .rating input {
             display: none;
           }
           .rating label {
-            font-size: 2rem;
+            font-size: 4rem;
+            font-size: ${this.isMobile ? '2rem' : '4rem'};
             color: #ccc;
             cursor: pointer;
             padding: 0 5px;
@@ -206,6 +207,7 @@ export class FormEditComponent {
           button:hover {
             background-color: #303f9f;
           }
+
         </style>
       </head>
       <body>
@@ -218,29 +220,29 @@ export class FormEditComponent {
       .filter((field) => field.name !== 'data_do_envio') // Filtrar o campo `data_do_envio`
       .sort((a, b) => a.ordenation - b.ordenation) // Ordenar os campos pela ordenation
       .forEach((field) => {
-      if (field.type === 'text' || field.type === 'email') {
-        formHtml += `
+        if (field.type === 'text' || field.type === 'email') {
+          formHtml += `
         <div class="form-group">
           <label>${field.label}</label>
           <input type="${field.type}" ${field.required ? 'required' : ''}>
         </div>
         `;
-      } else if (field.type === 'textarea') {
-        formHtml += `
+        } else if (field.type === 'textarea') {
+          formHtml += `
         <div class="form-group">
           <label>${field.label}</label>
           <textarea ${field.required ? 'required' : ''}></textarea>
         </div>
         `;
-      } else if (field.type === 'date') {
-        formHtml += `
+        } else if (field.type === 'date') {
+          formHtml += `
         <div class="form-group">
           <label>${field.label}</label>
           <input type="date" ${field.required ? 'required' : ''}>
         </div>
         `;
-      } else if (field.type === 'dropdown' && field.options) {
-        formHtml += `
+        } else if (field.type === 'dropdown' && field.options) {
+          formHtml += `
         <div class="form-group">
           <label>${field.label}</label>
           <select ${field.required ? 'required' : ''}>
@@ -249,8 +251,8 @@ export class FormEditComponent {
           </select>
         </div>
         `;
-      } else if (field.type === 'rating') {
-        formHtml += `
+        } else if (field.type === 'rating') {
+          formHtml += `
         <div class="form-group">
           <label>${field.label}</label>
           <div class="rating">
@@ -261,7 +263,7 @@ export class FormEditComponent {
           </div>
         </div>
         `;
-      }
+        }
       });
 
     formHtml += `
@@ -327,7 +329,7 @@ export class FormEditComponent {
   deleteField(index: number): void {
     const visibleField = this.visibleFields[index];
     const realIndex = this.fields.findIndex((field) => field === visibleField);
-  
+
     if (this.fields[realIndex].name !== 'data_do_envio') {
       if (this.fields[realIndex].hasFeedbacks) {
         // Abra o diálogo de confirmação
@@ -346,11 +348,11 @@ export class FormEditComponent {
       }
     }
   }
-  
-  
-  
-  
-  
+
+
+
+
+
 
   cancel() {
     this.router.navigate(['/dashboard/forms']);
@@ -384,19 +386,19 @@ export class FormEditComponent {
     if (form_Id) {
       const numericFormId = +form_Id;
       const editFormDto = {
-      FormId: numericFormId,
-      Fields: this.fields.map((field, index) => ({
-        Id: field.id,
-        Type: field.type,
-        Required: field.required,
-        Label: field.label,
-        Name: field.name,
-        Ordenation: index, 
-        Options: field.options.length ? JSON.stringify(field.options) : null,
-        Field_Type_Id: field.id,
-        IsNew: field.isNew
-      })),
-      fieldsDeletedsWithFeedbacks: this.fieldsDeletedsWithFeedbacks
+        FormId: numericFormId,
+        Fields: this.fields.map((field, index) => ({
+          Id: field.id,
+          Type: field.type,
+          Required: field.required,
+          Label: field.label,
+          Name: field.name,
+          Ordenation: index,
+          Options: field.options.length ? JSON.stringify(field.options) : null,
+          Field_Type_Id: field.id,
+          IsNew: field.isNew
+        })),
+        fieldsDeletedsWithFeedbacks: this.fieldsDeletedsWithFeedbacks
       };
 
       this.isLoading = true;
@@ -410,7 +412,7 @@ export class FormEditComponent {
             verticalPosition: 'top'
           });
 
-            this.router.navigate(['/dashboard/forms']);
+          this.router.navigate(['/dashboard/forms']);
         } else {
           this.snackBar.open('Erro ao salvar formulário!', 'Fechar', {
             duration: 3000,
@@ -433,11 +435,11 @@ export class FormEditComponent {
       data: { message },
       width: '300px',
     });
-  
+
     return dialogRef.afterClosed(); // Retorna o resultado do diálogo
   }
-  
-  
+
+
 }
 
 

@@ -1,0 +1,94 @@
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #1f1f43;
+}
+
+.form {
+  width: 95%;
+  max-width: 500px;
+  padding: 20px;
+  background: white;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+button {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.rating-field {
+  display: flex;
+  margin-top: 16px;
+}
+
+.rating-field label {
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+mat-icon {
+  cursor: pointer;
+  color: gray;
+  font-size: 32px;
+  margin-right: 4px;
+  transition: color 0.3s ease;
+  width: 35px;
+  height: 30px;
+}
+
+mat-icon.selected {
+  color: gold;
+}
+
+.rating-field {
+  display: flex;
+  flex-direction: column;
+  /* Empilha os elementos verticalmente */
+  margin-top: 16px;
+  align-items: flex-start;
+  /* Alinha os elementos à esquerda */
+}
+
+.rating-label {
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.rating-icons {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.rating-icons mat-icon {
+  cursor: pointer;
+  color: gray;
+  font-size: 50px;
+  margin-right: 4px;
+  transition: color 0.3s ease;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.rating-icons mat-icon.selected {
+  color: gold;
+}
+
+.rating-error {
+  color: red;
+  font-size: 14px;
+  margin-top: 4px;
+  display: block;
+}

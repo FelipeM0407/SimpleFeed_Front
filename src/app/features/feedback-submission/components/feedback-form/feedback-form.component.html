@@ -1,8 +1,74 @@
-<div *ngIf="errorMessage">
-    <p class="error">{{ errorMessage }}</p>
+<div class="form-container">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
+        <div *ngFor="let field of fields" class="form-field">
+
+            <!-- Campo de texto genérico -->
+            <mat-form-field *ngIf="field.type === 'text'" appearance="outline" class="full-width">
+                <mat-label>{{ field.label }}</mat-label>
+                <input matInput [formControlName]="field.name" type="text" />
+                <mat-error *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched">
+                    Este campo é obrigatório
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Campo de data -->
+            <mat-form-field *ngIf="field.type === 'date' && field.name !== 'data_do_envio'" appearance="outline" class="full-width">
+                <mat-label>{{ field.label }}</mat-label>
+                <input matInput [formControlName]="field.name" [matDatepicker]="picker" />
+                <mat-datepicker #picker></mat-datepicker>
+                <mat-error *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched">
+                    Este campo é obrigatório
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Campo de e-mail -->
+            <mat-form-field *ngIf="field.type === 'email'" appearance="outline" class="full-width">
+                <mat-label>{{ field.label }}</mat-label>
+                <input matInput [formControlName]="field.name" type="email" />
+                <mat-error *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched">
+                    Este campo é obrigatório
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Campo dropdown -->
+            <mat-form-field *ngIf="field.type === 'dropdown'" appearance="outline" class="full-width">
+                <mat-label>{{ field.label }}</mat-label>
+                <mat-select [formControlName]="field.name">
+                    <mat-option [value]="0">Selecione uma opção</mat-option>
+                    <mat-option *ngFor="let option of field.options" [value]="option">
+                        {{ option }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="form.get(field.name)?.hasError('invalidDropdown')">
+                    Por favor, selecione uma opção válida.
+                </mat-error>
+                <mat-error *ngIf="form.get(field.name)?.hasError('required')">
+                    Este campo é obrigatório.
+                </mat-error>
+            </mat-form-field>
+
+
+
+            <!-- Campo de rating (fora do mat-form-field) -->
+            <div *ngIf="field.type === 'rating'" class="rating-field mb-4">
+                <label class="rating-label">{{ field.label }}</label>
+                <div class="rating-icons">
+                    <mat-icon *ngFor="let star of [1, 2, 3, 4, 5]; let i = index"
+                        [class.selected]="i < form.get(field.name)?.value"
+                        (click)="form.get(field.name)?.setValue(i + 1)">
+                        star
+                    </mat-icon>
+                </div>
+                <!-- Mensagem de erro -->
+                <div *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched" class="rating-error">
+                    <small>Por favor, selecione uma avaliação.</small>
+                </div>
+            </div>
+
+
+
+        </div>
+
+        <button mat-raised-button color="primary" type="submit">Enviar</button>
+    </form>
 </div>
-
-<label for="feedback">Seu Feedback:</label>
-<textarea id="feedback" name="feedback" required ngModel></textarea>
-
-<button type="submit" (click)="setLocalStorage()">Enviar</button>

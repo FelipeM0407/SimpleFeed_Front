@@ -1,85 +1,118 @@
 import { Component } from '@angular/core';
 import { FeedbackFormService } from '../../services/feedback-form.service';
 import { ActivatedRoute } from '@angular/router';
-import { FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
+import { FormsService } from 'src/app/features/forms/services/forms.service';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { FormField } from '../../models/FormField';
 
 @Component({
   selector: 'app-feedback-form',
   templateUrl: './feedback-form.component.html',
   styleUrls: ['./feedback-form.component.scss'],
   standalone: true,
-  imports: [CommonModule]
+  imports: [
+    MatInputModule,
+    ReactiveFormsModule,
+    CommonModule,
+    MatDatepickerModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatNativeDateModule,
+    MatIconModule
+  ]
 })
 export class FeedbackFormComponent {
   formId!: string;
-  errorMessage: string | null = null;
-  form: FormGroup | null = null;
+  form: FormGroup = new FormGroup({});
+  fields: FormField[] = [];
 
   constructor(
     private route: ActivatedRoute,
-    private feedbackFormService: FeedbackFormService
+    private feedbackFormService: FeedbackFormService,
+    private formsService: FormsService
   ) { }
 
-
   ngOnInit(): void {
-
     this.route.params.subscribe((params) => {
       this.formId = params['formId'];
 
       const feedbackData = localStorage.getItem(this.formId);
-
       if (feedbackData) {
         const feedback = JSON.parse(feedbackData);
         const expirationDate = new Date(feedback.expiration);
 
         if (new Date() < expirationDate) {
-          this.errorMessage = "Você já respondeu a este formulário hoje.";
+          alert("Você já respondeu a este formulário hoje.");
           return;
         }
       }
-      // Verificar acesso no backend
-      // this.feedbackFormService.checkAccess(this.formId).subscribe({
-      //   next: () => {
-      //     this.loadForm();
-      //   },
-      //   error: (error: { message: string | null }) => {
-      //     this.errorMessage = error.message;
-      //   },
-      // });
-    });
-  }
 
-  loadForm(): void {
-    this.feedbackFormService.loadForm(this.formId).subscribe({
-      next: (data) => {
-        // Renderize o formulário
-        this.form = data;
-      },
-      error: (error) => {
-        if (error.status === 403) {
-          this.errorMessage = "Você já respondeu a este formulário hoje.";
+      this.formsService.getFormStructure(parseInt(this.formId, 10)).subscribe({
+        next: (data) => {
+          this.fields = data.map((field: FormField) => {
+            if (field.type === 'dropdown' && typeof field.options === 'string') {
+              field.options = JSON.parse(field.options);
+            }
+            return field;
+          });
+          this.createForm();
+        },
+        error: (error) => {
+          if (error.status === 403) {
+            alert("Você já respondeu a este formulário hoje.");
+          }
         }
-      }
+      });
     });
   }
 
-
-  onSubmit(formValues: any) {
-    this.feedbackFormService.submitFeedback(this.formId, formValues).subscribe({
-      next: () => {
-        // Feedback enviado com sucesso
-        alert('Obrigado pelo seu feedback!');
-      },
-      error: (error: any) => {
-        console.error('Erro ao enviar o feedback:', error);
-      },
-      complete: () => {
-        // Operação completa
+  createForm(): void {
+    this.fields.forEach((field) => {
+      let control: FormControl;
+      if(field.name == 'data_do_envio'){
+        return;
       }
+      if (field.type === 'dropdown') {
+        control = new FormControl(
+          0, // Valor inicial "Selecione uma opção"
+          field.required ? [Validators.required, this.validateDropdown] : null
+        );
+      } else {
+        control = new FormControl(
+          '', // Valor inicial vazio para outros campos
+          field.required ? Validators.required : null
+        );
+      }
+
+      this.form.addControl(field.name, control);
     });
+
+
   }
+
+  validateDropdown(control: FormControl): { [key: string]: any } | null {
+    return control.value === 0 ? { invalidDropdown: true } : null;
+  }
+
+  onSubmit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      alert("Por favor, preencha todos os campos obrigatórios.");
+    } else {
+      alert("Formulário enviado com sucesso!");
+    }
+  }
+  
 
   setLocalStorage(): void {
     const expirationDate = new Date();
@@ -92,5 +125,4 @@ export class FeedbackFormComponent {
 
     localStorage.setItem(this.formId, JSON.stringify(feedback));
   }
-
 }
