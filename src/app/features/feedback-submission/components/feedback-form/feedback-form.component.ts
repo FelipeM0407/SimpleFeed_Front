@@ -58,6 +58,7 @@ export class FeedbackFormComponent {
   form: FormGroup = new FormGroup({});
   fields: FormField[] = [];
   isLoading = true;
+  client_id!: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -84,6 +85,7 @@ export class FeedbackFormComponent {
 
       this.formsService.getFormStructure(parseInt(this.formId, 10)).subscribe({
         next: (data) => {
+          this.client_id = data[0].client_Id;
           this.fields = data.map((field: FormField) => {
             if (field.type === 'dropdown' && typeof field.options === 'string') {
               field.options = JSON.parse(field.options);
@@ -137,15 +139,22 @@ export class FeedbackFormComponent {
       alert("Por favor, preencha todos os campos obrigatórios.");
     } else {
       const formData = this.fields.map(field => ({
-        id: field.id,
-        name: field.name,
         value: field.name === 'data_do_envio'
           ? new Date().toLocaleDateString('pt-BR')
           : field.type === 'date'
-            ? new Date(this.form.get(field.name)?.value).toLocaleDateString('pt-BR')
-            : this.form.get(field.name)?.value
+        ? this.form.get(field.name)?.value ? new Date(this.form.get(field.name)?.value).toLocaleDateString('pt-BR') : ''
+        : this.form.get(field.name)?.value,
+        id_form_field: field.id
       }));
-      console.log('Form Data:', formData);
+
+      const submissionData = {
+        client_id: this.client_id,
+        form_id: parseInt(this.formId, 10),
+        answers: formData,
+        is_new: true
+      };
+
+      console.log('Submission Data:', submissionData);
       // this.setLocalStorage();
       this.dialog.open(ThankYouDialogComponent, {
         width: '300px',

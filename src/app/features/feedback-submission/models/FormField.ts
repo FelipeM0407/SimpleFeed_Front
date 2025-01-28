@@ -7,5 +7,6 @@ export interface FormField {
     ordenation: number;
     options?: string[];
     field_Type_Id: number;
+    client_id: number;
 }
  
