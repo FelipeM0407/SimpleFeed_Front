@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FeedbackFormService } from '../../services/feedback-form.service';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -10,12 +10,25 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatNativeDateModule } from '@angular/material/core';
+import { DateAdapter, MatNativeDateModule, NativeDateAdapter } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { FormField } from '../../models/FormField';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog } from '@angular/material/dialog';
 import { ThankYouDialogComponent } from './thank-you-dialog/thank-you-dialog/thank-you-dialog.component';
+import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+
+export const MY_DATE_FORMATS = {
+  parse: {
+    dateInput: 'DD/MM/YYYY',
+  },
+  display: {
+    dateInput: 'DD/MM/YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'DD/MM/YYYY',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 
 @Component({
   selector: 'app-feedback-form',
@@ -33,6 +46,11 @@ import { ThankYouDialogComponent } from './thank-you-dialog/thank-you-dialog/tha
     MatNativeDateModule,
     MatIconModule,
     MatProgressSpinnerModule
+  ],
+  providers: [
+    { provide: DateAdapter, useClass: NativeDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }
   ]
 })
 export class FeedbackFormComponent {
@@ -45,7 +63,8 @@ export class FeedbackFormComponent {
     private route: ActivatedRoute,
     private feedbackFormService: FeedbackFormService,
     private formsService: FormsService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    @Inject(MAT_DATE_LOCALE) private _locale: string
   ) { }
 
   ngOnInit(): void {
@@ -112,10 +131,22 @@ export class FeedbackFormComponent {
   }
 
   onSubmit(): void {
-    if (this.form.invalid) {
+
+    if (!this.validateForm()) {
       this.form.markAllAsTouched();
       alert("Por favor, preencha todos os campos obrigatórios.");
     } else {
+      const formData = this.fields.map(field => ({
+        id: field.id,
+        name: field.name,
+        value: field.name === 'data_do_envio'
+          ? new Date().toLocaleDateString('pt-BR')
+          : field.type === 'date'
+            ? new Date(this.form.get(field.name)?.value).toLocaleDateString('pt-BR')
+            : this.form.get(field.name)?.value
+      }));
+      console.log('Form Data:', formData);
+      // this.setLocalStorage();
       this.dialog.open(ThankYouDialogComponent, {
         width: '300px',
         panelClass: 'thank-you-dialog'
@@ -123,6 +154,32 @@ export class FeedbackFormComponent {
     }
   }
 
+  validateForm(): boolean {
+    let isValid = true;
+
+    this.fields.forEach(field => {
+      const control = this.form.get(field.name);
+
+      if (control) {
+        if (field.required && control.value === '') {
+          control.setErrors({ required: true });
+          isValid = false;
+        }
+
+        if (field.type === 'email' && control.value !== '' && !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i.test(control.value)) {
+          control.setErrors({ email: true });
+          isValid = false;
+        }
+
+        if (field.type === 'date' && control.value !== '' && isNaN(Date.parse(control.value))) {
+          control.setErrors({ date: true });
+          isValid = false;
+        }
+      }
+    });
+
+    return isValid;
+  }
 
   setLocalStorage(): void {
     const expirationDate = new Date();

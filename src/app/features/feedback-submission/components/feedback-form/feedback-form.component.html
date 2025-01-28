@@ -12,23 +12,23 @@
             </mat-form-field>
 
             <!-- Campo de data -->
-            <mat-form-field *ngIf="field.type === 'date' && field.name !== 'data_do_envio'" appearance="outline"
-                class="full-width">
+            <mat-form-field *ngIf="field.type === 'date' && field.name !== 'data_do_envio'" appearance="outline" class="full-width">
                 <mat-label>{{ field.label }}</mat-label>
-                <input matInput [formControlName]="field.name" [matDatepicker]="picker" />
+                <input matInput [formControlName]="field.name" [matDatepicker]="picker" (focus)="picker.open()" readonly/>
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
                 <mat-error *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched">
-                    Este campo é obrigatório
+                  Este campo é obrigatório
                 </mat-error>
-            </mat-form-field>
+              </mat-form-field>
+              
 
             <!-- Campo de e-mail -->
             <mat-form-field *ngIf="field.type === 'email'" appearance="outline" class="full-width">
                 <mat-label>{{ field.label }}</mat-label>
                 <input matInput [formControlName]="field.name" type="email" />
                 <mat-error *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched">
-                    Este campo é obrigatório
+                    Insira um e-mail válido.
                 </mat-error>
             </mat-form-field>
 
