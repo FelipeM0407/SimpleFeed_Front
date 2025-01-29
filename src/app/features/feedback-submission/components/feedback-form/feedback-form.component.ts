@@ -78,7 +78,12 @@ export class FeedbackFormComponent {
         const expirationDate = new Date(feedback.expiration);
 
         if (new Date() < expirationDate) {
-          alert("Você já respondeu a este formulário hoje.");
+            this.dialog.open(ThankYouDialogComponent, {
+            width: '300px',
+            panelClass: 'thank-you-dialog',
+            disableClose: true
+            });
+          this.isLoading = false;
           return;
         }
       }
@@ -142,8 +147,8 @@ export class FeedbackFormComponent {
         value: field.name === 'data_do_envio'
           ? new Date().toLocaleDateString('pt-BR')
           : field.type === 'date'
-        ? this.form.get(field.name)?.value ? new Date(this.form.get(field.name)?.value).toLocaleDateString('pt-BR') : ''
-        : this.form.get(field.name)?.value,
+            ? this.form.get(field.name)?.value ? new Date(this.form.get(field.name)?.value).toLocaleDateString('pt-BR') : ''
+            : this.form.get(field.name)?.value,
         id_form_field: field.id
       }));
 
@@ -155,10 +160,11 @@ export class FeedbackFormComponent {
       };
 
       console.log('Submission Data:', submissionData);
-      // this.setLocalStorage();
+      this.setLocalStorage();
       this.dialog.open(ThankYouDialogComponent, {
         width: '300px',
-        panelClass: 'thank-you-dialog'
+        panelClass: 'thank-you-dialog',
+        disableClose: true
       });
     }
   }
@@ -195,7 +201,7 @@ export class FeedbackFormComponent {
     expirationDate.setHours(expirationDate.getHours() + 24);
 
     const feedback = {
-      formId: '1',
+      formId: this.formId,
       expiration: expirationDate.toISOString()
     };
 
