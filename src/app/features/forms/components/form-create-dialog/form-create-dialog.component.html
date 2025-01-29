@@ -21,33 +21,28 @@
         </mat-error>
       </mat-form-field>
 
-      <mat-tab-group [color]="'primary'" (selectedTabChange)="onTabChange($event)" >
+      <mat-tab-group [color]="'primary'" (selectedTabChange)="onTabChange($event)">
         <mat-tab>
           <ng-template mat-tab-label>
             <mat-icon class="example-tab-icon">dynamic_form</mat-icon>
             Campos
           </ng-template>
           <mat-selection-list #fields class="compact-selection-list">
-            <mat-list-option
-              *ngFor="let field of formFields"
-              [value]="field.id"
-              class="compact-list-item"
-              (click)="toggleFieldSelection(field)"
-              [class.selected]="field.selected"
-            >
+            <mat-list-option *ngFor="let field of formFields" [value]="field.id" class="compact-list-item"
+              (click)="toggleFieldSelection(field)" [selected]="field.selected">
               <div mat-line class="list-item-header">
                 <span *ngIf="field.selectionOrder" class="field-order">{{ field.selectionOrder }}</span>
                 <mat-icon class="field-icon">{{ getIconByFieldType(field.fieldType) }}</mat-icon>
                 <strong>{{ field.label }}</strong>
               </div>
               <div mat-line class="list-item-description">
-                {{ field.description }}
+                {{ field.description }} 
               </div>
             </mat-list-option>
           </mat-selection-list>
 
           <p class="selected-count">
-            Campos selecionados: {{ fields.selectedOptions.selected.length }}
+            Campos selecionados: {{ getSelectedFieldsCount() }}
           </p>
 
 
@@ -58,15 +53,11 @@
             <mat-icon class="example-tab-icon">ballot</mat-icon>
             Modelos
           </ng-template>
-          
+
           <div class="template-card-container">
             <mat-radio-group [(ngModel)]="selectedTemplateId" [ngModelOptions]="{standalone: true}">
-              <mat-card
-                *ngFor="let template of formTemplates"
-                class="template-card"
-                (click)="selectTemplate(template.id)"
-                [class.selected]="selectedTemplateId === template.id"
-              >
+              <mat-card *ngFor="let template of formTemplates" class="template-card"
+                (click)="selectTemplate(template.id)" [class.selected]="selectedTemplateId === template.id">
                 <div class="template-card-content">
                   <div class="template-image"></div>
                   <div class="template-details">
@@ -77,8 +68,8 @@
               </mat-card>
             </mat-radio-group>
           </div>
-          
-          
+
+
         </mat-tab>
 
       </mat-tab-group>

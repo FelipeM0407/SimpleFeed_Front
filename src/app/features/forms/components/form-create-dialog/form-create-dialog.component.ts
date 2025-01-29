@@ -71,6 +71,10 @@ export class FormCreateDialogComponent {
     });
   }
 
+  getSelectedFieldsCount(): number {
+    return this.formFields.filter(field => field.selected).length;
+  }
+
   // Retorna os templates selecionados
   getSelectedTemplates(): FormsTemplates[] {
     return this.formTemplates.filter(template => template.id === this.selectedTemplateId);
@@ -155,7 +159,7 @@ export class FormCreateDialogComponent {
         Client_Id: this.clientId || 0,
         Is_Active: true,
         Template_Id: selectedTemplate[0]?.id || 0,
-        Fields: selectedFields.length > 0 ? selectedFields : templateFields
+        Fields: selectedFields.length > 1 ? selectedFields : templateFields
 
       }); // Retorna o nome do formulário e os templates selecionados
     }
@@ -188,9 +192,13 @@ export class FormCreateDialogComponent {
 
   clearSelections() {
     this.selectedTemplateId = null;
-    this.formFields.forEach(field => field.selected = false);
-    this.updateFieldSelectionOrder();
+    this.formFields.forEach(field => {
+      field.selected = false;
+      field.selectionOrder = undefined;
+    });
+    this.selectedFieldsOrder = []; // Resetar lista de ordenação
   }
+  
 
   ngAfterViewInit(): void {
     // Aguarda as abas serem renderizadas e remove os botões

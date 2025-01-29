@@ -26,6 +26,7 @@ mat-card {
   display: flex;
   flex-direction: column;
   gap: 1.5rem; /* Espaçamento maior entre os itens */
+  margin-bottom: 30px;
 }
 
 .form-item {
@@ -161,6 +162,7 @@ mat-divider {
 
   .forms-wrapper {
     padding-bottom: 4rem; /* Espaço suficiente para o botão */
+    margin: 0;
   }
 
   .progress-section {
