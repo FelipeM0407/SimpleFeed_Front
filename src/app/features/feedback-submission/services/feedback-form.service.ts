@@ -11,15 +11,11 @@ export class FeedbackFormService {
 
   constructor(private http: HttpClient) { }
 
-  checkAccess(formId: string): Observable<void> {
-    return this.http.get<void>(`${this.apiUrl}/feedbackform/${formId}/check`);
+  submitFeedback(feedback: any): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/feedbackform/feedback`, feedback);
   }
 
-  submitFeedback(formId: string, feedback: any): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/feedbackform/${formId}/feedback`, feedback);
-  }
-
-  loadForm(formId: string): Observable<any> {
+  loadForm(formId: string): Observable<void> {
     return this.http.get<any>(`${this.apiUrl}/feedbackform/${formId}`);
   }
 

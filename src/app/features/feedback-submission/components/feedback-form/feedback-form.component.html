@@ -1,5 +1,5 @@
 <div *ngIf="!isLoading" class="form-container">
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
+    <form *ngIf="exibirForm"  [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
         <div *ngFor="let field of fields" class="form-field">
 
             <!-- Campo de texto genérico -->

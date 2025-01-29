@@ -59,6 +59,7 @@ export class FeedbackFormComponent {
   fields: FormField[] = [];
   isLoading = true;
   client_id!: number;
+  exibirForm: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -78,11 +79,12 @@ export class FeedbackFormComponent {
         const expirationDate = new Date(feedback.expiration);
 
         if (new Date() < expirationDate) {
-            this.dialog.open(ThankYouDialogComponent, {
+          this.exibirForm = false;
+          this.dialog.open(ThankYouDialogComponent, {
             width: '300px',
             panelClass: 'thank-you-dialog',
             disableClose: true
-            });
+          });
           this.isLoading = false;
           return;
         }
@@ -141,14 +143,15 @@ export class FeedbackFormComponent {
 
     if (!this.validateForm()) {
       this.form.markAllAsTouched();
-      alert("Por favor, preencha todos os campos obrigatórios.");
     } else {
       const formData = this.fields.map(field => ({
         value: field.name === 'data_do_envio'
           ? new Date().toLocaleDateString('pt-BR')
           : field.type === 'date'
             ? this.form.get(field.name)?.value ? new Date(this.form.get(field.name)?.value).toLocaleDateString('pt-BR') : ''
-            : this.form.get(field.name)?.value,
+            : field.type === 'dropdown' && this.form.get(field.name)?.value === 0
+              ? ''
+              : this.form.get(field.name)?.value,
         id_form_field: field.id
       }));
 
@@ -159,8 +162,16 @@ export class FeedbackFormComponent {
         is_new: true
       };
 
-      console.log('Submission Data:', submissionData);
-      this.setLocalStorage();
+      //So salvar no local storage se a requisição for bem sucedida
+      this.feedbackFormService.submitFeedback(submissionData).subscribe({
+        next: () => {
+          this.setLocalStorage();
+        },
+        complete: () => {
+          this.exibirForm = false;
+        }
+      });
+
       this.dialog.open(ThankYouDialogComponent, {
         width: '300px',
         panelClass: 'thank-you-dialog',
