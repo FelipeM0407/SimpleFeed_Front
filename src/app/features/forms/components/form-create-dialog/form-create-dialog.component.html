@@ -19,6 +19,9 @@
         <mat-error *ngIf="form.get('name')?.hasError('maxlength')">
           Nome deve ter no máximo 100 caracteres
         </mat-error>
+        <mat-error *ngIf="form.get('name')?.hasError('alreadyExists')">
+          Já existe um formulário com este nome
+        </mat-error>
       </mat-form-field>
 
       <mat-tab-group [color]="'primary'" (selectedTabChange)="onTabChange($event)">

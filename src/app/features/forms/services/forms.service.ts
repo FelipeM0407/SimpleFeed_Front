@@ -13,11 +13,16 @@ import { FormStructure } from '../models/FormStructure';
 export class FormsService {
   private apiUrl = `${environment.apiUrl}`;
   private frontUrl = `${environment.frontUrl}`;
+  formNames: string[] = [];
 
   constructor(private http: HttpClient) {}
 
   getFrontUrl(): string {
     return this.frontUrl;
+  }
+
+  setFormNames(formNames: string[]){
+    this.formNames = formNames;
   }
 
   // Buscar os formulários ativos

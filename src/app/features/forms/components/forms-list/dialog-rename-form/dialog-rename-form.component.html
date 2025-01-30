@@ -4,9 +4,12 @@
         <mat-label>Entre com o nome do Formulário</mat-label>
         <input matInput placeholder="Form name" [formControl]="name" maxlength="100" required>
         <mat-error *ngIf="name.invalid">{{getErrorMessage()}}</mat-error>
+        <mat-error *ngIf="name.get('name')?.hasError('alreadyExists')">
+            Já existe um formulário com este nome
+          </mat-error>
     </mat-form-field>
 </div>
 <div mat-dialog-actions>
     <button mat-raised-button color="warn" mat-dialog-close>Cancelar</button>
     <button mat-raised-button color="primary" [disabled]="name.invalid" (click)="saveForm(name.value)">Salvar</button>
-</div> 
+</div>

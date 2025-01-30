@@ -39,7 +39,8 @@ export class FormsListComponent implements OnInit, OnDestroy {
   @ViewChild('confirmDialog', { static: true }) confirmDialog!: TemplateRef<any>;
   qrCodeUrl: string | null = null;
   @ViewChild('qrCodeDialog', { static: true }) qrCodeDialog!: TemplateRef<any>;
-  nameForm: string = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+  nameForm: string = '';
+  formNames: string[] = [];
 
   clientId!: number;
 
@@ -81,6 +82,7 @@ export class FormsListComponent implements OnInit, OnDestroy {
     this.formsService.getForms(clientId).subscribe({
       next: (data) => {
         this.forms = data;
+        this.formsService.setFormNames(this.forms.map(form => form.name));
         this.isLoading = false;
       },
       error: () => {

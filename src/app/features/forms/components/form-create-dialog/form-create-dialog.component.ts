@@ -110,6 +110,11 @@ export class FormCreateDialogComponent {
 
   continue(): void {
     if (this.form.valid) {
+      //validar se o formulário é válido ja existe no formNames do service
+      if (this.formsService.formNames.includes(this.form.value.name)) {
+        this.form.get('name')?.setErrors({ alreadyExists: true });
+        return;
+      }
       const selectedTemplate = this.getSelectedTemplates();
 
       const templateFields = selectedTemplate.flatMap(template => {
