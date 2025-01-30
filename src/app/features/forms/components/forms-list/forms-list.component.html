@@ -66,6 +66,14 @@
                 <mat-icon>drive_file_rename_outline</mat-icon>
                 <span>Renomear Formulário</span>
               </button>
+              <button mat-menu-item (click)="viewQRCode(form.id, form.name)">
+                <mat-icon>qr_code</mat-icon>
+                <span>QR Code</span>
+              </button>
+              <button mat-menu-item (click)="copyLink(form.id)">
+                <mat-icon>link</mat-icon>
+                <span>Copiar Link</span>
+              </button>
             </mat-menu>
           </div>
         </div>
@@ -82,5 +90,24 @@
   <mat-dialog-actions>
     <button mat-button mat-dialog-close="false">Cancelar</button>
     <button mat-button color="warn" mat-dialog-close="true">Confirmar</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #qrCodeDialog>
+  <div class="d-flex justify-content-end">
+    <button mat-icon-button mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <mat-dialog-content class="pt-0">
+    <qrcode [qrdata]="qrCodeUrl || ''" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+    <div class="d-flex justify-content-center" style="width: 240px;">
+      <h1 class="m-0 text-center" style="word-wrap: break-word; white-space: normal; max-width: 100%; overflow-wrap: break-word;">
+        {{nameForm}}
+      </h1>      
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-stroked-button color="primary" (click)="downloadQRCode()">Baixar QR Code</button>
   </mat-dialog-actions>
 </ng-template>

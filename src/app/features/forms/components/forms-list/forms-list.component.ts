@@ -19,6 +19,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClient } from '@angular/common/http';
 import { DialogRenameFormComponent } from './dialog-rename-form/dialog-rename-form.component';
+import { DomSanitizer } from '@angular/platform-browser';
+import { QRCodeModule } from 'angularx-qrcode';
 
 
 @Component({
@@ -26,7 +28,7 @@ import { DialogRenameFormComponent } from './dialog-rename-form/dialog-rename-fo
   templateUrl: './forms-list.component.html',
   styleUrls: ['./forms-list.component.scss',],
   standalone: true,
-  imports: [MatSnackBarModule, MatDialogModule, MatProgressBarModule, MatDividerModule, CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
+  imports: [QRCodeModule, MatSnackBarModule, MatDialogModule, MatProgressBarModule, MatDividerModule, CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
 })
 export class FormsListComponent implements OnInit, OnDestroy {
   forms: FormDashboard[] = [];
@@ -35,11 +37,14 @@ export class FormsListComponent implements OnInit, OnDestroy {
   maxResponses = 100; // Limite temporário de respostas
   private clientDataSubscription: Subscription | null = null;
   @ViewChild('confirmDialog', { static: true }) confirmDialog!: TemplateRef<any>;
+  qrCodeUrl: string | null = null;
+  @ViewChild('qrCodeDialog', { static: true }) qrCodeDialog!: TemplateRef<any>;
+  nameForm: string = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 
   clientId!: number;
 
   constructor(private snackBar: MatSnackBar, private formsService: FormsService, private authService: AuthService, private router: Router,
-    public dialog: MatDialog
+    public dialog: MatDialog, private sanitizer: DomSanitizer
   ) { }
 
   ngOnInit(): void {
@@ -202,6 +207,44 @@ export class FormsListComponent implements OnInit, OnDestroy {
     });
 
     return dialogRef.afterClosed(); // Retorna o resultado do diálogo
+  }
+
+  viewQRCode(formId: number, nameForm: string) {
+    const frontUrl = this.formsService.getFrontUrl();
+    const url = `${frontUrl}/feedback-submission/${formId}`;
+
+    if (url) {
+      this.nameForm = nameForm;
+      this.qrCodeUrl = url;
+      this.dialog.open(this.qrCodeDialog);
+    } else {
+      console.error('URL inválida para o QR Code');
+    }
+  }
+
+  downloadQRCode() {
+    const canvas = document.querySelector('canvas') as HTMLCanvasElement;
+    const link = document.createElement('a');
+    link.href = canvas.toDataURL('image/png');
+    link.download = 'qrcode.png';
+    link.click();
+  }
+
+  copyLink(formId: number) {
+    const frontUrl = this.formsService.getFrontUrl();
+    const url = `${frontUrl}/feedback-submission/${formId}`;
+
+    if (url) {
+      navigator.clipboard.writeText(url).then(() => {
+        this.snackBar.open('Link copiado para a área de transferência!', 'Fechar', {
+          duration: 3000,
+          panelClass: ['snackbar-success'],
+          horizontalPosition: 'center',
+
+          verticalPosition: 'top'
+        });
+      });
+    }
   }
 }
 

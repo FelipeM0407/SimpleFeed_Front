@@ -12,8 +12,13 @@ import { FormStructure } from '../models/FormStructure';
 })
 export class FormsService {
   private apiUrl = `${environment.apiUrl}`;
+  private frontUrl = `${environment.frontUrl}`;
 
   constructor(private http: HttpClient) {}
+
+  getFrontUrl(): string {
+    return this.frontUrl;
+  }
 
   // Buscar os formulários ativos
   getForms(clientId: number): Observable<FormDashboard[]> {
