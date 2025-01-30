@@ -58,8 +58,8 @@ export class FormsService {
     return this.http.delete<void>(`${this.apiUrl}/forms/${formId}`);
   }
 
-  duplicateForm(formId: number): Observable<FormStructure> {
-    return this.http.post<FormStructure>(`${this.apiUrl}/forms/${formId}/duplicate`, {});
+  duplicateForm(formId: number, formName: string): Observable<FormStructure> {
+    return this.http.post<FormStructure>(`${this.apiUrl}/forms/${formId}/${formName}/duplicate`, {});
   }
 
   renameForm(formId: number, name: string): Observable<void> {

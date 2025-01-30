@@ -17,10 +17,13 @@ import { FormsService } from '../../../services/forms.service';
 export class DialogRenameFormComponent {
   name = new FormControl('', [Validators.required, Validators.maxLength(100), Validators.minLength(5)]);
   formNames: string[] = [];
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { formName: string }, public dialog: MatDialog,
+  title: string;
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { formName: string, title: string; }, public dialog: MatDialog,
     private formsService: FormsService,
     private dialogRef: MatDialogRef<DialogRenameFormComponent>) {
     this.name.setValue(data.formName);
+    this.title = data.title;
     this.formNames = this.formsService.formNames;
   }
 
