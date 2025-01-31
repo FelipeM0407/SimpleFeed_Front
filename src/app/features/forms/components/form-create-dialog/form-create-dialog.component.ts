@@ -99,6 +99,10 @@ export class FormCreateDialogComponent {
         return 'short_text';
       case 'rating':
         return 'star';
+      case 'telephone':
+        return 'call';
+      case 'cpf':
+        return 'badge';
       default:
         return 'help_outline'; // Ícone padrão
     }
@@ -203,7 +207,7 @@ export class FormCreateDialogComponent {
     });
     this.selectedFieldsOrder = []; // Resetar lista de ordenação
   }
-  
+
 
   ngAfterViewInit(): void {
     // Aguarda as abas serem renderizadas e remove os botões

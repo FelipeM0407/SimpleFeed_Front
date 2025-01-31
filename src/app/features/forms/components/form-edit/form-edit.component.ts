@@ -132,6 +132,26 @@ export class FormEditComponent {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://cdn.jsdelivr.net/npm/@angular/material@16.0.0/prebuilt-themes/indigo-pink.css" rel="stylesheet">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/inputmask.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                setTimeout(function() {
+                    // Aplicando a máscara no CPF
+                    let cpfInput = document.querySelector("#cpfField");
+                    if (cpfInput) {
+                        Inputmask("999.999.999-99").mask(cpfInput);
+                    }
+
+                    // Aplicando a máscara no celular
+                    let phoneInput = document.querySelector("#phoneField");
+                    if (phoneInput) {
+                        Inputmask("(99) 99999-9999").mask(phoneInput);
+                    }
+                }, 500); // Pequeno delay para garantir que o DOM foi carregado
+            });
+        </script>
+
         <style>
           body {
             font-family: Roboto, Arial, sans-serif;
@@ -234,6 +254,20 @@ export class FormEditComponent {
           <textarea ${field.required ? 'required' : ''}></textarea>
         </div>
         `;
+        } else if (field.type === 'cpf') {
+          formHtml += `
+              <div class="form-group">
+                  <label>${field.label}</label>
+                  <input type="text" id="cpfField" placeholder="000.000.000-00" ${field.required ? 'required' : ''}>
+              </div>
+          `;
+        } else if (field.type === 'telephone') {
+          formHtml += `
+              <div class="form-group">
+                  <label>${field.label}</label>
+                  <input type="text" id="phoneField" placeholder="(00) 00000-0000" ${field.required ? 'required' : ''}>
+              </div>
+          `;
         } else if (field.type === 'date') {
           formHtml += `
         <div class="form-group">

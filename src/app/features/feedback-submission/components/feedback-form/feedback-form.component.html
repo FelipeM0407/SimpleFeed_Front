@@ -1,5 +1,5 @@
 <div *ngIf="!isLoading" class="form-container">
-    <form *ngIf="exibirForm"  [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
+    <form *ngIf="exibirForm" [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
         <div *ngFor="let field of fields" class="form-field">
 
             <!-- Campo de texto genérico -->
@@ -12,16 +12,18 @@
             </mat-form-field>
 
             <!-- Campo de data -->
-            <mat-form-field *ngIf="field.type === 'date' && field.name !== 'data_do_envio'" appearance="outline" class="full-width">
+            <mat-form-field *ngIf="field.type === 'date' && field.name !== 'data_do_envio'" appearance="outline"
+                class="full-width">
                 <mat-label>{{ field.label }}</mat-label>
-                <input matInput [formControlName]="field.name" [matDatepicker]="picker" (focus)="picker.open()" readonly/>
+                <input matInput [formControlName]="field.name" [matDatepicker]="picker" (focus)="picker.open()"
+                    readonly />
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
                 <mat-error *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched">
-                  Este campo é obrigatório
+                    Este campo é obrigatório
                 </mat-error>
-              </mat-form-field>
-              
+            </mat-form-field>
+
 
             <!-- Campo de e-mail -->
             <mat-form-field *ngIf="field.type === 'email'" appearance="outline" class="full-width">
@@ -73,6 +75,24 @@
                 <textarea matInput [formControlName]="field.name"></textarea>
                 <mat-error *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched">
                     Este campo é obrigatório
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Campo CPF -->
+            <mat-form-field *ngIf="field.type === 'cpf'" appearance="outline" class="full-width">
+                <mat-label>{{ field.label }}</mat-label>
+                <input matInput [formControlName]="field.name" type="text" [mask]="'000.000.000-00'" />
+                <mat-error *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched">
+                    Insira um CPF válido.
+                </mat-error>
+            </mat-form-field>
+
+            <!-- Campo de telefone -->
+            <mat-form-field *ngIf="field.type === 'telephone'" appearance="outline" class="full-width">
+                <mat-label>{{ field.label }}</mat-label>
+                <input matInput [formControlName]="field.name" type="text" [mask]="'(00) 00000-0000'" />
+                <mat-error *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched">
+                    Insira um telefone válido.
                 </mat-error>
             </mat-form-field>
 

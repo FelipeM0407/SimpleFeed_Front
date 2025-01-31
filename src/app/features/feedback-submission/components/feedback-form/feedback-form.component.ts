@@ -17,6 +17,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog } from '@angular/material/dialog';
 import { ThankYouDialogComponent } from './thank-you-dialog/thank-you-dialog/thank-you-dialog.component';
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
+import { cpfValidator, telefoneValidator } from '../../../../shared/Util/validators';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -45,12 +47,14 @@ export const MY_DATE_FORMATS = {
     MatFormFieldModule,
     MatNativeDateModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    NgxMaskDirective
   ],
   providers: [
     { provide: DateAdapter, useClass: NativeDateAdapter },
     { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
-    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    provideNgxMask()
   ]
 })
 export class FeedbackFormComponent {
@@ -117,14 +121,27 @@ export class FeedbackFormComponent {
       if (field.name == 'data_do_envio') {
         return;
       }
+
       if (field.type === 'dropdown') {
         control = new FormControl(
-          0, // Valor inicial "Selecione uma opção"
+          0,
           field.required ? [Validators.required, this.validateDropdown] : null
         );
+      } else if (field.type === 'telephone') {
+        control = new FormControl(
+          '',
+          field.required ? [Validators.required, telefoneValidator] : null
+        );
+
+      } else if (field.type === 'cpf') {
+        control = new FormControl(
+          '',
+          field.required ? [Validators.required, cpfValidator] : null
+        );
+
       } else {
         control = new FormControl(
-          '', // Valor inicial vazio para outros campos
+          '',
           field.required ? Validators.required : null
         );
       }
@@ -145,13 +162,7 @@ export class FeedbackFormComponent {
       this.form.markAllAsTouched();
     } else {
       const formData = this.fields.map(field => ({
-        value: field.name === 'data_do_envio'
-          ? new Date().toLocaleDateString('pt-BR')
-          : field.type === 'date'
-            ? this.form.get(field.name)?.value ? new Date(this.form.get(field.name)?.value).toLocaleDateString('pt-BR') : ''
-            : field.type === 'dropdown' && this.form.get(field.name)?.value === 0
-              ? ''
-              : this.form.get(field.name)?.value,
+        value: this.processField(field),
         id_form_field: field.id
       }));
 
@@ -178,6 +189,32 @@ export class FeedbackFormComponent {
         disableClose: true
       });
     }
+  }
+
+  processField(field: FormField): string {
+    const value = this.form.get(field.name)?.value;
+
+    if (field.name === 'data_do_envio') {
+      return new Date().toLocaleDateString('pt-BR');
+    }
+
+    if (field.type === 'date') {
+      return value ? new Date(value).toLocaleDateString('pt-BR') : '';
+    }
+
+    if (field.type === 'dropdown' && value === 0) {
+      return '';
+    }
+
+    if (field.type === 'cpf') {
+      return value ? value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : '';
+    }
+
+    if (field.type === 'telephone') {
+      return value ? value.replace(/(\d{2})(\d{4,5})(\d{4})/, '($1) $2-$3') : '';
+    }
+
+    return value;
   }
 
   validateForm(): boolean {
