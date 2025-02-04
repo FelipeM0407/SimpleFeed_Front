@@ -3,15 +3,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  // min-height: 100%;
+  min-height: 100%;
   background: linear-gradient(135deg, #6b8eff, #46d8d5);
   padding: 1rem;
 }
-
-body {
-  -webkit-user-drag: none; /* Impede o arraste de elementos */
-}
-
 
 .login-card {
   // max-width: 400px;
