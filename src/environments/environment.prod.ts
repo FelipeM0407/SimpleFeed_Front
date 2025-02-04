@@ -1,6 +1,6 @@
 export const environment = {
     production: true,
-    apiUrl: 'http://107.21.132.62:5237/api',
-    frontUrl: 'https://suaapi.com/api'
+    apiUrl: 'https://gestaonex.com.br/api',
+    frontUrl: 'https://simplefeed-bucket.s3.us-east-1.amazonaws.com/api'
   };
   
