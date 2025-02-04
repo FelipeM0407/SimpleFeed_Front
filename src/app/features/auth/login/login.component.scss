@@ -1,11 +1,30 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* Garante que a altura total do documento é limitada ao viewport */
+  overflow: hidden; /* Impede rolagem extra */
+}
+
+
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100%; /* Usa 100% em vez de 100vh */
   background: linear-gradient(135deg, #6b8eff, #46d8d5);
   padding: 1rem;
 }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  overflow-y: hidden; /* Esconde o scroll vertical extra */
+}
+
 
 .login-card {
   max-width: 400px;
