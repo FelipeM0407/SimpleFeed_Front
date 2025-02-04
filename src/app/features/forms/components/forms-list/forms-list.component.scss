@@ -1,3 +1,10 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* Impede rolagem extra */
+}
+
 .forms-container {
   display: flex;
   flex-direction: row;
@@ -125,10 +132,7 @@ mat-divider {
 }
 
 .spinner-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  height: 100%;
   width: 100%;
   position: fixed;
   top: 0;
@@ -136,6 +140,13 @@ mat-divider {
   background-color: rgba(255, 255, 255, 0.8);
   z-index: 1000;
 }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 
 .mat-mdc-dialog-actions {
   justify-content: center;
