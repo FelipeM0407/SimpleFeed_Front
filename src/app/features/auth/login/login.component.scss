@@ -1,19 +1,22 @@
 html, body {
   margin: 0;
   padding: 0;
-  height: 100%; /* Garante que a altura total do documento é limitada ao viewport */
-  overflow: hidden; /* Impede rolagem extra */
+  height: 100%;
+  overflow: hidden; /* Impede qualquer scroll extra */
 }
+
 
 
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%; /* Usa 100% em vez de 100vh */
+  min-height: 100vh;
+  height: 100dvh; /* Usa 100% da altura real do viewport, corrigindo para dispositivos móveis */
   background: linear-gradient(135deg, #6b8eff, #46d8d5);
   padding: 1rem;
 }
+
 
 * {
   margin: 0;
