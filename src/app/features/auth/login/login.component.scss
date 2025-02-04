@@ -8,6 +8,11 @@
   padding: 1rem;
 }
 
+body {
+  -webkit-user-drag: none; /* Impede o arraste de elementos */
+}
+
+
 .login-card {
   // max-width: 400px;
   // width: 100%;
