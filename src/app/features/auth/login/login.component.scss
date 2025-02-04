@@ -1,37 +1,16 @@
-body {
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  min-height: -webkit-fill-available;
-}
-
-html {
-  height: -webkit-fill-available;
-}
-
 
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  min-height: 100%;
   background: linear-gradient(135deg, #6b8eff, #46d8d5);
   padding: 1rem;
 }
 
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  overflow-y: hidden; /* Esconde o scroll vertical extra */
-}
-
-
 .login-card {
-  max-width: 400px;
-  width: 100%;
+  // max-width: 400px;
+  // width: 100%;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
