@@ -29,11 +29,26 @@ export function cpfValidator(control: AbstractControl): ValidationErrors | null 
  * Valida um número de celular.
  */
 export function telefoneValidator(control: AbstractControl): ValidationErrors | null {
-    const telefone = control.value?.replace(/\D/g, ''); // Remove não numéricos
+    const telefone = control.value?.replace(/\D/g, ''); // Remove caracteres não numéricos
 
-    if (!telefone || telefone.length !== 11 || /^(\d)\1+$/.test(telefone)) {
+    // Verifica se o telefone está vazio ou tem um comprimento diferente de 11
+    if (!telefone || telefone.length !== 11) {
+        return { telefoneInvalido: true };
+    }
+
+    // Verifica se o telefone é composto por números repetidos (ex: 11111111111, 22222222222, etc.)
+    if (/^(\d)\1+$/.test(telefone)) {
+        return { telefoneInvalido: true };
+    }
+
+    // Adicionar validações extras se necessário
+    // Exemplo: verificar se o DDD (os dois primeiros dígitos) é válido
+    const ddd = telefone.substring(0, 2);
+    const dddsInvalidos = ['00']; // Exemplo: DDD inválido (pode adicionar mais)
+    if (dddsInvalidos.includes(ddd)) {
         return { telefoneInvalido: true };
     }
 
     return null; // Telefone válido
 }
+

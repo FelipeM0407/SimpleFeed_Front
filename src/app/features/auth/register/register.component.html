@@ -37,16 +37,20 @@
               Este e-mail já está cadastrado.
             </mat-error>
           </mat-form-field>
-          
+
 
 
           <mat-form-field appearance="outline" class="form-field">
             <mat-label>Celular</mat-label>
             <input matInput mask="(00) 00000-0000" formControlName="phoneNumber" required />
-            <mat-error *ngIf="registerForm.get('phoneNumber')?.invalid">
-              Insira um número de celular válido.
+            <mat-error *ngIf="registerForm.get('phoneNumber')?.hasError('required')">
+              Insira um número de celular.
+            </mat-error>
+            <mat-error *ngIf="registerForm.get('phoneNumber')?.hasError('telefoneInvalido')">
+              O número de celular é inválido.
             </mat-error>
           </mat-form-field>
+
         </div>
 
         <!-- Terceira linha: Senha e Confirmação -->

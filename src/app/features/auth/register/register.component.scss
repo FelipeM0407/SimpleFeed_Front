@@ -2,7 +2,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  // height: 100vh;
   background: linear-gradient(135deg, #ff8a65, #ffcc80);
   padding: 1rem;
 }
@@ -60,6 +59,12 @@ button[mat-raised-button] {
 
   button[mat-raised-button] {
     width: 100%; /* O botão ocupa toda a largura no mobile */
+  }
+}
+
+@media (min-width: 769px) {
+  .register-container{
+    height: 100vh
   }
 }
 

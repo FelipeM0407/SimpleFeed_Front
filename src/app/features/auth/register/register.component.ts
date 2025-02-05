@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
 import { MatDialog } from '@angular/material/dialog';
 import { SuccessDialogComponent } from '../components/success-dialog/success-dialog.component';
+import { telefoneValidator } from '../../../shared/Util/validators';
 
 
 @Component({
@@ -35,6 +36,15 @@ export class RegisterComponent {
   passwordsMatch(formGroup: AbstractControl): ValidationErrors | null {
     const password = formGroup.get('password')?.value;
     const confirmPassword = formGroup.get('confirmPassword')?.value;
+    const phoneNumber = formGroup.get('phoneNumber')?.value;
+
+    if (phoneNumber !== null || phoneNumber !== '') {
+      const phoneControl = formGroup.get('phoneNumber');
+      if (phoneControl && telefoneValidator(phoneControl)) {
+        phoneControl.setErrors({ telefoneInvalido: true });
+        return { telefoneInvalido: true };
+      }
+    }
 
     if (confirmPassword === null || confirmPassword === '') {
       formGroup.get('confirmPassword')?.setErrors({ required: true });
@@ -50,7 +60,7 @@ export class RegisterComponent {
     return null;
   }
 
-  onRegister() {
+  onRegister() {    
     if (this.registerForm.valid) {
       this.isLoading = true;
 
