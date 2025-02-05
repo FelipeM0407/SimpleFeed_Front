@@ -31,12 +31,16 @@
       <p>{{ errorMessage }}</p>
     </mat-card>
 
+    <mat-card *ngIf="!isLoading && !errorMessage && forms.length === 0">
+      <mat-icon>info</mat-icon>
+      <p>Não há formulários disponíveis no momento.</p>
+    </mat-card>
+
     <div class="forms-wrapper" *ngIf="!isLoading && !errorMessage">
       <div *ngFor="let form of forms; let i = index"
         [ngClass]="{'form-color-a': i % 2 === 0, 'form-color-b': i % 2 !== 0}" class="form-item mat-elevation-z8">
         <div class="form-content">
           <div>
-            <p><strong>Identificador:</strong> {{ form.id | number: '3.0-0' }}</p>
             <p><strong>Nome:</strong> {{ form.name }}</p>
             <p><strong>Respostas:</strong> {{ form.responseCount }}</p>
             <p><strong>Últ. Atualização:</strong> {{ form.lastUpdated | date: 'dd/MM/yyyy HH:mm' }}</p>
