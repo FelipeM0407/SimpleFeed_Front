@@ -246,7 +246,7 @@ export class FormsListComponent implements OnInit, OnDestroy {
     const canvas = document.querySelector('canvas') as HTMLCanvasElement;
     const link = document.createElement('a');
     link.href = canvas.toDataURL('image/png');
-    link.download = 'qrcode.png';
+    link.download = `QR Code ${this.nameForm}.png`;
     link.click();
   }
 
