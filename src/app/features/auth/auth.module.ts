@@ -14,6 +14,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatIconModule } from '@angular/material/icon';
 import { SuccessDialogComponent } from './components/success-dialog/success-dialog.component'; 
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
 
 
 
@@ -36,7 +38,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     NgxMaskDirective,
     HttpClientModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    MatProgressSpinnerModule
   ],
   providers: [provideNgxMask()] // Configure o provedor para máscaras
 

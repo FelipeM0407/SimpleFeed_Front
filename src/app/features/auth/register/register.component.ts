@@ -52,6 +52,8 @@ export class RegisterComponent {
 
   onRegister() {
     if (this.registerForm.valid) {
+      this.isLoading = true;
+
       this.errorMessage = null; // Limpar qualquer mensagem de erro anterior
       this.authService.register(this.registerForm.value).subscribe({
         next: () => {
@@ -59,7 +61,8 @@ export class RegisterComponent {
         },
         error: (err: any) => {
           console.error('Erro ao registrar usuário', err);
-
+          this.isLoading = false;
+          
           if (err.status === 400 && Array.isArray(err.error)) {
             const duplicateError = err.error.find((e: any) => e.code === 'DuplicateUserName');
             if (duplicateError) {
