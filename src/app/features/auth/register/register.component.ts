@@ -13,7 +13,7 @@ import { SuccessDialogComponent } from '../components/success-dialog/success-dia
 })
 export class RegisterComponent {
   registerForm: FormGroup;
-  isLoading = false; // Para controle do estado de carregamento
+  isLoading = false;
   errorMessage: string | null = null;
 
   constructor(
@@ -62,7 +62,7 @@ export class RegisterComponent {
         error: (err: any) => {
           console.error('Erro ao registrar usuário', err);
           this.isLoading = false;
-          
+
           if (err.status === 400 && Array.isArray(err.error)) {
             const duplicateError = err.error.find((e: any) => e.code === 'DuplicateUserName');
             if (duplicateError) {

@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  // height: 100vh;
   background: linear-gradient(135deg, #ff8a65, #ffcc80);
   padding: 1rem;
 }
@@ -84,4 +84,17 @@ mat-icon {
 
 .field-error mat-form-field-outline {
   border-color: #d32f2f !important; /* Caso o outline precise de ajuste */
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 1000;
 }
