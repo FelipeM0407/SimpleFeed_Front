@@ -37,6 +37,7 @@ export class FormEditComponent {
   hasFeedbacks: boolean = false;
   @ViewChild('confirmDialog', { static: true }) confirmDialog!: TemplateRef<any>;
   fieldsDeletedsWithFeedbacks: number[] = [];
+  fieldsDeleteds: number[] = [];
   isLoading = true;
 
   constructor(private snackBar: MatSnackBar, private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
@@ -377,6 +378,7 @@ export class FormEditComponent {
             }
           });
       } else {
+        this.fieldsDeleteds.push(this.fields[realIndex].id);
         this.fields.splice(realIndex, 1);
         this.updateIframe();
       }
@@ -432,7 +434,8 @@ export class FormEditComponent {
           Field_Type_Id: field.id,
           IsNew: field.isNew
         })),
-        fieldsDeletedsWithFeedbacks: this.fieldsDeletedsWithFeedbacks
+        fieldsDeletedsWithFeedbacks: this.fieldsDeletedsWithFeedbacks,
+        fieldsDeleteds: this.fieldsDeleteds
       };
 
       this.isLoading = true;
