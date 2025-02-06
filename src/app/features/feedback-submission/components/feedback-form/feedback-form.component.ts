@@ -99,7 +99,9 @@ export class FeedbackFormComponent {
           this.client_id = data[0].client_Id;
           this.fields = data.map((field: FormField) => {
             if (field.type === 'dropdown' && typeof field.options === 'string') {
-              field.options = JSON.parse(field.options);
+              if (field.options) {
+                field.options = JSON.parse(field.options);
+              }
             }
             return field;
           }).sort((a: { ordenation: number; }, b: { ordenation: number; }) => a.ordenation - b.ordenation);
