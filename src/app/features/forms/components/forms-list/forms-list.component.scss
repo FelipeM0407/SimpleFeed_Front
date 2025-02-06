@@ -11,6 +11,8 @@
 .forms-list-container {
   flex-grow: 1; /* Faz a lista de formulários ocupar o espaço restante */
   max-width: 70%; /* Define um limite para evitar que fique muito largo */
+  overflow-y: auto; /* Habilita o scroll vertical */
+  max-height: 89vh; /* Limita a altura máxima à altura da tela */
 }
 
 mat-card {
@@ -189,6 +191,7 @@ mat-divider {
   .forms-list-container,
   .side-section {
     max-width: 100%; /* Ambos ocupam toda a largura no mobile */
+    max-height: 75vh;
   }
 
 }
