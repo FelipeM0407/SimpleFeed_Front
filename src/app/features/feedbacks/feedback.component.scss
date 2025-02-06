@@ -11,7 +11,7 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    max-height: calc(100vh - 100px);
+    max-height: calc(80vh - 100px);
     /* Define limite máximo da altura */
     overflow: auto;
     /* Adiciona rolagem quando necessário */
@@ -204,18 +204,15 @@ mat-dialog-content {
         /* Oculta botão flutuante em telas maiores */
     }
 
-    .table-container {
-        max-height: calc(90vh - 100px);
-    }
+
 }
 
 @media (max-width: 768px) {
     .table-container {
         width: 100%;
-        /* Ajusta largura da tabela para dispositivos móveis */
         overflow-x: auto;
+        max-height: calc(90vh - 100px);
     }
-
     .paginator-container {
         width: 100%;
         /* Ajusta largura do paginator */
