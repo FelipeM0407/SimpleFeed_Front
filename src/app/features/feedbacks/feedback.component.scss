@@ -203,6 +203,10 @@ mat-dialog-content {
         display: none;
         /* Oculta botão flutuante em telas maiores */
     }
+
+    .table-container {
+        max-height: calc(90vh - 100px);
+    }
 }
 
 @media (max-width: 768px) {
