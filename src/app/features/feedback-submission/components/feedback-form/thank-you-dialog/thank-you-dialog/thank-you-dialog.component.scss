@@ -16,15 +16,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    // animation: pop-in 0.5s ease;
+    animation: pop-in 0.5s ease;
   }
       
   .checkmark-check {
     stroke: white;
     stroke-width: 4;
     stroke-linecap: round;
-    // stroke-dasharray: 50; /* Comprimento do traço do check */
-    // stroke-dashoffset: 50;
+    stroke-dasharray: 50; /* Comprimento do traço do check */
+    stroke-dashoffset: 50;
     animation: check-draw 0.5s 0.3s ease-out forwards;
   }
   
