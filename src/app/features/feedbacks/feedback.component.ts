@@ -128,18 +128,6 @@ export class FeedbacksComponent implements OnInit {
 
     this.isLoading = true;
 
-    // Definir o filtro de data padrão para os últimos 30 dias
-    // const today = new Date();
-    // const thirtyDaysAgo = new Date();
-    // thirtyDaysAgo.setDate(today.getDate() - 30);
-
-    // this.filterForm.patchValue({
-    //   data_do_feedback: {
-    //   start: thirtyDaysAgo.toLocaleDateString('pt-BR'),
-    //   end: today.toLocaleDateString('pt-BR')
-    //   }
-    // });
-
     // Buscar a estrutura do formulário
     this.formService.getFormStructure(this.formId).subscribe({
       next: (structure) => {
@@ -154,8 +142,8 @@ export class FeedbacksComponent implements OnInit {
 
         this.displayedColumns = ['select', ...this.dynamicColumns.map((col) => col.field_Id)];
 
-        // Buscar os feedbacks
-        this.fetchFeedbacks();
+        // Aplicar o filtro de data padrão e buscar os feedbacks
+        this.applyFilters();
       },
       error: (error) => {
         console.error('Erro ao carregar a estrutura:', error);
@@ -163,9 +151,6 @@ export class FeedbacksComponent implements OnInit {
         this.isLoading = false;
       },
     });
-
-    // Aplicar o filtro de data padrão
-    this.applyFilters();
   }
 
   openFilterModal() {
@@ -209,13 +194,19 @@ export class FeedbacksComponent implements OnInit {
 
   applyFilters() {
     this.isLoading = true;
+    
     const dateRange = this.filterForm.value.data_do_feedback;
 
-    const startDate = new Date(dateRange.start);
-    startDate.setHours(0, 0, 0, 0); // Início do dia
+    const startDate = dateRange.start ? new Date(dateRange.start) : null;
+    const endDate = dateRange.end ? new Date(dateRange.end) : null;
 
-    const endDate = new Date(dateRange.end);
-    endDate.setHours(23, 59, 59, 999); // Final do dia
+    if (startDate) {
+      startDate.setHours(0, 0, 0, 0); // Início do dia
+    }
+
+    if (endDate) {
+      endDate.setHours(23, 59, 59, 999); // Final do dia
+    }
 
     // Função para formatar a data no formato YYYY-MM-DD sem conversão para UTC
     const formatDate = (date: Date): string => {
@@ -226,11 +217,36 @@ export class FeedbacksComponent implements OnInit {
     };
 
     this.feedbacksService.applyFilters(this.formId, {
-      start: formatDate(startDate), // Formata a data localmente
-      end: formatDate(endDate) // Formata a data localmente
+      start: startDate ? formatDate(startDate) : '', // Formata a data localmente ou envia string vazia
+      end: endDate ? formatDate(endDate) : '' // Formata a data localmente ou envia string vazia
     }).subscribe({
       next: (data: any[]) => {
-        // Lógica do retorno
+        this.feedbacks = data.map((item: any) => {
+          const mappedAnswers: any = {};
+          const answers = JSON.parse(item.answers);
+
+          answers.forEach((answer: any) => {
+            const column = this.dynamicColumns.find((col) => col.field_Id === answer.id_form_field.toString());
+            if (column) {
+              mappedAnswers[column.field_Id] = answer.value;
+            }
+          });
+
+          return {
+            ...item,
+            answers: mappedAnswers,
+            selected: false,
+          };
+        });
+
+        // Ordenar os feedbacks por submitted_At (mais recente primeiro)
+        this.feedbacks.sort((a, b) => new Date(b.submitted_At).getTime() - new Date(a.submitted_At).getTime());
+
+        // Atualizar o MatTableDataSource com os dados ordenados
+        this.feedbacksSorted = new MatTableDataSource(this.feedbacks);
+        this.feedbacksSorted.paginator = this.paginator!;
+        this.feedbacksSorted.sort = this.sort!;
+        this.isLoading = false;
       },
       error: (error: any) => {
         console.error('Erro ao aplicar filtros:', error);
