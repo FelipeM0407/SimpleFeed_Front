@@ -26,6 +26,7 @@ import { ViewFeedbackDialogComponent } from './components/view-feedback-dialog/v
 import { MatBadgeModule } from '@angular/material/badge'; // Importação necessária
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTabsModule } from '@angular/material/tabs';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -62,7 +63,8 @@ export const MY_DATE_FORMATS = {
     ReactiveFormsModule,
     MatSelectModule,
     MatBadgeModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTabsModule
   ],
   providers: [
     { provide: DateAdapter, useClass: NativeDateAdapter },
@@ -96,12 +98,22 @@ export class FeedbacksComponent implements OnInit {
     private snackBar: MatSnackBar,
     @Inject(MAT_DATE_LOCALE) private _locale: string
   ) {
+    const today = new Date();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(today.getDate() - 30);
+
+    // Forçar o horário inicial e final das datas
+    today.setHours(23, 59, 59, 999); // Final do dia para a data final
+    thirtyDaysAgo.setHours(0, 0, 0, 0); // Início do dia para a data inicial
+
     this.filterForm = this.fb.group({
       data_do_feedback: this.fb.group({
-        start: [''],
-        end: ['']
+      start: [thirtyDaysAgo],
+      end: [today]
       })
     });
+
+
   }
 
   @HostListener('window:resize', ['$event'])
@@ -117,16 +129,16 @@ export class FeedbacksComponent implements OnInit {
     this.isLoading = true;
 
     // Definir o filtro de data padrão para os últimos 30 dias
-    const today = new Date();
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(today.getDate() - 30);
+    // const today = new Date();
+    // const thirtyDaysAgo = new Date();
+    // thirtyDaysAgo.setDate(today.getDate() - 30);
 
-    this.filterForm.patchValue({
-      data_do_feedback: {
-        start: thirtyDaysAgo,
-        end: today
-      }
-    });
+    // this.filterForm.patchValue({
+    //   data_do_feedback: {
+    //   start: thirtyDaysAgo.toLocaleDateString('pt-BR'),
+    //   end: today.toLocaleDateString('pt-BR')
+    //   }
+    // });
 
     // Buscar a estrutura do formulário
     this.formService.getFormStructure(this.formId).subscribe({
@@ -196,37 +208,41 @@ export class FeedbacksComponent implements OnInit {
   }
 
   applyFilters() {
+    this.isLoading = true;
     const dateRange = this.filterForm.value.data_do_feedback;
-    this.feedbacksService.applyFilters(this.formId, dateRange).subscribe({
+
+    const startDate = new Date(dateRange.start);
+    startDate.setHours(0, 0, 0, 0); // Início do dia
+
+    const endDate = new Date(dateRange.end);
+    endDate.setHours(23, 59, 59, 999); // Final do dia
+
+    // Função para formatar a data no formato YYYY-MM-DD sem conversão para UTC
+    const formatDate = (date: Date): string => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Mês começa em 0
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    this.feedbacksService.applyFilters(this.formId, {
+      start: formatDate(startDate), // Formata a data localmente
+      end: formatDate(endDate) // Formata a data localmente
+    }).subscribe({
       next: (data: any[]) => {
-        this.feedbacks = data.map((item: any) => {
-          const mappedAnswers: any = {};
-          const answers = JSON.parse(item.answers);
-
-          answers.forEach((answer: any) => {
-            const column = this.dynamicColumns.find((col) => col.field_Id === answer.id_form_field.toString());
-            if (column) {
-              mappedAnswers[column.field_Id] = answer.value;
-            }
-          });
-
-          return {
-            ...item,
-            answers: mappedAnswers,
-            selected: false,
-          };
-        });
-
-        this.feedbacksSorted = new MatTableDataSource(this.feedbacks);
-        this.feedbacksSorted.paginator = this.paginator!;
-        this.feedbacksSorted.sort = this.sort!;
+        // Lógica do retorno
       },
       error: (error: any) => {
         console.error('Erro ao aplicar filtros:', error);
-        this.errorMessage = 'Erro ao aplicar filtros.';
+      },
+      complete: () => {
+        this.isLoading = false;
       }
     });
   }
+
+
+
 
   clearFilters() {
     this.filterForm.reset();
@@ -239,24 +255,24 @@ export class FeedbacksComponent implements OnInit {
         this.feedbacks = data.map((item: any) => {
           const mappedAnswers: any = {};
           const answers = JSON.parse(item.answers);
-  
+
           answers.forEach((answer: any) => {
             const column = this.dynamicColumns.find((col) => col.field_Id === answer.id_form_field.toString());
             if (column) {
               mappedAnswers[column.field_Id] = answer.value;
             }
           });
-  
+
           return {
             ...item,
             answers: mappedAnswers,
             selected: false,
           };
         });
-  
+
         // Ordenar os feedbacks por submitted_At (mais recente primeiro)
         this.feedbacks.sort((a, b) => new Date(b.submitted_At).getTime() - new Date(a.submitted_At).getTime());
-  
+
         // Atualizar o MatTableDataSource com os dados ordenados
         this.feedbacksSorted = new MatTableDataSource(this.feedbacks);
         this.feedbacksSorted.paginator = this.paginator!;
@@ -270,7 +286,7 @@ export class FeedbacksComponent implements OnInit {
       },
     });
   }
-  
+
 
   // Método para selecionar ou desmarcar todos os checkboxes
   toggleSelectAll(event: any): void {

@@ -61,7 +61,7 @@ export class FilterDialogComponent {
     }
   }
 
-  applyFilters(dateRange: { startDate: Date, endDate: Date }) {
+  applyFilters(dateRange: { startDate: string, endDate: string }) {
     const formId = 1; // Replace with the actual formId
     this.feedbacksService.applyFilters(formId, {
       start: dateRange.startDate,

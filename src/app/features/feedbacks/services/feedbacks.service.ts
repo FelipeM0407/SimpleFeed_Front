@@ -22,7 +22,7 @@ export class FeedbacksService {
     });
   } 
 
-  applyFilters(formId: number, dateRange: { start: Date, end: Date }): Observable<any> {
+  applyFilters(formId: number, dateRange: { start: string, end: string }): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/${formId}/filter`, {
       Submitted_Start: dateRange.start || null,
       Submitted_End: dateRange.end || null

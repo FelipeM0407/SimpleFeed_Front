@@ -11,7 +11,7 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    max-height: calc(80vh - 100px);
+    max-height: calc(70vh - 100px);
     /* Define limite máximo da altura */
     overflow: auto;
     /* Adiciona rolagem quando necessário */
@@ -35,7 +35,7 @@ td[sticky] {
 /* Colunas da tabela */
 th,
 td {
-    padding: 8px;
+    // padding: 8px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -167,6 +167,10 @@ mat-dialog-content {
     /* Espaçamento entre elementos */
 }
 
+.mat-mdc-tab-group {
+    width: 100%;
+}
+
 /* Responsividade */
 @media (min-width: 768px) {
     .filters {
@@ -213,6 +217,7 @@ mat-dialog-content {
         overflow-x: auto;
         max-height: calc(80vh - 100px);
     }
+
     .paginator-container {
         width: 100%;
         /* Ajusta largura do paginator */
@@ -220,10 +225,17 @@ mat-dialog-content {
         padding-bottom: 5px;
         /* Espaçamento inferior */
     }
+}
 
-    th,
-    td {
-        padding: 4px 8px;
-        /* Reduz o espaçamento das células */
-    }
+.spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.8);
+    z-index: 1000;
 }
