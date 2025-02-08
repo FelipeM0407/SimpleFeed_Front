@@ -27,6 +27,8 @@ import { MatBadgeModule } from '@angular/material/badge'; // Importação necess
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -363,5 +365,29 @@ export class FeedbacksComponent implements OnInit {
         }
       });
     }
+  }
+
+  exportToExcel(): void {
+    if (this.feedbacks.length === 0) {
+      this.snackBar.open('Nenhum dado para exportar.', 'Fechar', { duration: 3000 });
+      return;
+    }
+  
+    const dataToExport = this.feedbacks.map(feedback => {
+      const row: any = {};
+      this.dynamicColumns.forEach(column => {
+      row[column.label] = feedback.answers[column.field_Id] || '';
+      });
+      return row;
+    });
+  
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Feedbacks');
+  
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data: Blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+  
+    saveAs(data, `feedbacks_${new Date().toISOString().split('T')[0]}.xlsx`);
   }
 }
