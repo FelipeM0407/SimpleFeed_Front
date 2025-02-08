@@ -323,6 +323,9 @@ export class FormEditComponent {
     if (realIndex > 0) {
       // Troque os campos no array original
       [this.fields[realIndex - 1], this.fields[realIndex]] = [this.fields[realIndex], this.fields[realIndex - 1]];
+      // Atualize a ordenation dos campos trocados
+      this.fields[realIndex - 1].ordenation--;
+      this.fields[realIndex].ordenation++;
       this.updateIframe();
     }
   }
@@ -335,6 +338,9 @@ export class FormEditComponent {
     if (realIndex < this.fields.length - 1) {
       // Troque os campos no array original
       [this.fields[realIndex + 1], this.fields[realIndex]] = [this.fields[realIndex], this.fields[realIndex + 1]];
+      // Atualize a ordenation dos campos trocados
+      this.fields[realIndex + 1].ordenation++;
+      this.fields[realIndex].ordenation--;
       this.updateIframe();
     }
   }
