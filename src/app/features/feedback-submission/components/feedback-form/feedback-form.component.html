@@ -71,7 +71,9 @@
 
             <!-- Campo de textarea -->
             <mat-form-field *ngIf="field.type === 'textarea'" appearance="outline" class="full-width">
-                <mat-label>{{ field.label }}</mat-label>
+                <label class="rating-label">{{ field.label }}</label>
+
+                <!-- <mat-label>{{ field.label }}</mat-label> -->
                 <textarea matInput [formControlName]="field.name"></textarea>
                 <mat-error *ngIf="form.get(field.name)?.invalid && form.get(field.name)?.touched">
                     Este campo é obrigatório
