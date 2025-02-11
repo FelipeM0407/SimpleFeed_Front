@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, Renderer2  } from '@angular/core';
 import { FeedbackFormService } from '../../services/feedback-form.service';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -70,10 +70,13 @@ export class FeedbackFormComponent {
     private feedbackFormService: FeedbackFormService,
     private formsService: FormsService,
     private dialog: MatDialog,
-    @Inject(MAT_DATE_LOCALE) private _locale: string
+    @Inject(MAT_DATE_LOCALE) private _locale: string,
+    private renderer: Renderer2
   ) { }
 
   ngOnInit(): void {
+    this.renderer.setStyle(document.body, 'overflow', 'auto');
+
     this.route.params.subscribe((params) => {
       this.formId = params['formId'];
 
