@@ -151,7 +151,7 @@ export class FeedbackFormComponent {
         );
       }
 
-      this.form.addControl(field.name, control);
+      this.form.addControl(field.id.toString(), control);
     });
 
 
@@ -197,7 +197,7 @@ export class FeedbackFormComponent {
   }
 
   processField(field: FormField): string {
-    const value = this.form.get(field.name)?.value;
+    const value = this.form.get(field.id.toString())?.value;
 
     if (field.name === 'data_do_envio') {
       return new Date().toLocaleDateString('pt-BR');
@@ -226,7 +226,7 @@ export class FeedbackFormComponent {
     let isValid = true;
 
     this.fields.forEach(field => {
-      const control = this.form.get(field.name);
+      const control = this.form.get(field.id.toString());
 
       if (control) {
         if (field.required && control.value === '') {
