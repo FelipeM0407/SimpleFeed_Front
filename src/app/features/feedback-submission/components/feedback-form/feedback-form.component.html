@@ -5,7 +5,7 @@
             <!-- Campo de texto genérico -->
             <mat-form-field *ngIf="field.type === 'text'" appearance="outline" class="full-width">
                 <mat-label>{{ field.label }}</mat-label>
-                <input matInput [formControlName]="field.id.toString()" type="text" />
+                <input matInput [formControlName]="field.id.toString()" type="text" maxlength="100"/>
                 <mat-error *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched">
                     Este campo é obrigatório
                 </mat-error>
@@ -28,7 +28,7 @@
             <!-- Campo de e-mail -->
             <mat-form-field *ngIf="field.type === 'email'" appearance="outline" class="full-width">
                 <mat-label>{{ field.label }}</mat-label>
-                <input matInput [formControlName]="field.id.toString()" type="email" />
+                <input matInput [formControlName]="field.id.toString()" type="email" maxlength="100" />
                 <mat-error *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched">
                     Insira um e-mail válido.
                 </mat-error>
@@ -72,9 +72,7 @@
             <!-- Campo de textarea -->
             <mat-form-field *ngIf="field.type === 'textarea'" appearance="outline" class="full-width">
                 <label class="rating-label">{{ field.label }}</label>
-
-                <!-- <mat-label>{{ field.label }}</mat-label> -->
-                <textarea matInput [formControlName]="field.id.toString()"></textarea>
+                <textarea matInput [formControlName]="field.id.toString()" maxlength="255"></textarea>
                 <mat-error *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched">
                     Este campo é obrigatório
                 </mat-error>
