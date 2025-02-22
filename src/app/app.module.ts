@@ -10,6 +10,7 @@ import { AuthInterceptor } from './core/auth.interceptor';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatIconModule } from '@angular/material/icon';
+import { NgChartsModule } from 'ng2-charts';
  
 
 @NgModule({
@@ -23,7 +24,8 @@ import { MatIconModule } from '@angular/material/icon';
     AuthModule,
     MatTableModule,
     MatProgressSpinnerModule,
-    MatIconModule
+    MatIconModule,
+    NgChartsModule
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
   bootstrap: [AppComponent]

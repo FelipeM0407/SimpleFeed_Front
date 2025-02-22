@@ -96,10 +96,12 @@
 
     <mat-tab>
       <ng-template mat-tab-label>
-        <mat-icon class="example-tab-icon">analytics</mat-icon>
-        Visão Geral
+      <mat-icon class="example-tab-icon">analytics</mat-icon>
+      Visão Geral
       </ng-template>
-      Dashboards aqui
+      <div style="overflow-y: auto; max-height: 65vh;">
+      <app-dashboard></app-dashboard>
+      </div>
     </mat-tab>
 </mat-tab-group>
 
