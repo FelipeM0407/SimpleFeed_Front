@@ -1,0 +1,58 @@
+.dashboard-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+  }
+  
+  .dash-card {
+    flex: 1 1 calc(50% - 40px);
+    max-width: 600px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    padding: 10px;
+    box-sizing: border-box;
+    margin: 10px;
+  }
+  
+  /* Container que abriga o canvas */
+  .chart-container {
+    position: relative;
+    width: 100%;
+    /* Defina uma altura ou min-height */
+    min-height: 300px;
+    /* Se preferir altura fixa, use: height: 300px; */
+    overflow: hidden; /* ou auto, se precisar de scroll */
+  }
+  
+  /* Canvas ocupa todo o espaço, mas não gera loop */
+  .chart-container canvas {
+    display: block;
+    width: 100% !important;   /* Mantém a largura cheia */
+    height: auto !important;  /* Ajusta a altura conforme a proporção */
+    box-sizing: border-box;
+  }
+
+.no-dashboards-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    border: 2px solid #000000;
+    color: #000000;
+    border-radius: 8px;
+}
+  
+  /* Mobile: 1 por linha */
+  @media (max-width: 768px) {
+    .dash-card {
+      flex: 1 1 100%;
+      max-width: 100%;
+    }
+  }
+  

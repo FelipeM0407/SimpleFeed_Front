@@ -170,6 +170,11 @@ mat-dialog-content {
     width: 100%;
 }
 
+.dashboard-component {
+    overflow-y: auto;
+    max-height: 70vh;
+}
+
 /* Responsividade */
 @media (min-width: 768px) {
     .filters {
@@ -216,6 +221,11 @@ mat-dialog-content {
         overflow-x: auto;
         max-height: calc(70vh - 100px);
     }
+
+    .dashboard-component {
+        max-height: 86vh;
+    }
+    
 
     .paginator-container {
         width: 100%;

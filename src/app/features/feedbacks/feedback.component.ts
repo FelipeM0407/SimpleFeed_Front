@@ -29,7 +29,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { DashboardComponent } from '../feedbacks/components/dashboard/dashboard.component';
+import { DashboardFeedbackComponent } from './components/dashboard-feedback/dashboard-feedback.component';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -68,7 +68,7 @@ export const MY_DATE_FORMATS = {
     MatBadgeModule,
     MatSnackBarModule,
     MatTabsModule,
-    DashboardComponent
+    DashboardFeedbackComponent
   ],
   providers: [
     { provide: DateAdapter, useClass: NativeDateAdapter },

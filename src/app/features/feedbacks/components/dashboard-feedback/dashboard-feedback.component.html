@@ -1,0 +1,18 @@
+<div class="dashboard-container">
+  <div *ngFor="let dash of dashboards" class="dash-card">
+    <div class="chart-container">
+      <h3>{{ dash.title }}</h3>
+      <canvas baseChart [data]="dash.chartData" [type]="dash.chartType" [options]="dash.chartOptions">
+      </canvas>
+    </div>
+  </div>
+</div>
+
+<mat-card *ngIf="dashboards.length === 0" class="no-dashboards-card">
+    <mat-card-header>
+        <mat-card-title>Sem dados para exibir</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        <p>Aguarde até que mais feedbacks sejam enviados.</p>
+    </mat-card-content>
+</mat-card>

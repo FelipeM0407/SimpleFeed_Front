@@ -99,8 +99,8 @@
       <mat-icon class="example-tab-icon">analytics</mat-icon>
       Visão Geral
       </ng-template>
-      <div style="overflow-y: auto; max-height: 65vh;">
-      <app-dashboard></app-dashboard>
+      <div class="dashboard-component">
+        <app-dashboard-feedback [feedbacks]="feedbacks" [dynamicColumns]="dynamicColumns"></app-dashboard-feedback>
       </div>
     </mat-tab>
 </mat-tab-group>
