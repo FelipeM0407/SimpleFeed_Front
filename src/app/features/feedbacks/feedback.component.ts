@@ -163,7 +163,8 @@ export class FeedbacksComponent implements OnInit {
       width: '90%',
       data: {
         startDate: currentRange.start || new Date(new Date().setDate(new Date().getDate() - 30)),
-        endDate: currentRange.end || new Date()
+        endDate: currentRange.end || new Date(),
+        formId: this.formId
       }
     });
 

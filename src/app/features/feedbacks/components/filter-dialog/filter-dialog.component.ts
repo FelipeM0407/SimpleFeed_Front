@@ -43,7 +43,7 @@ export class FilterDialogComponent {
     private dialogRef: MatDialogRef<FilterDialogComponent>,
     private dateAdapter: DateAdapter<any>,
     private feedbacksService: FeedbacksService, // Inject FeedbacksService
-    @Inject(MAT_DIALOG_DATA) public data: { startDate: Date, endDate: Date } // Inject initial date range
+    @Inject(MAT_DIALOG_DATA) public data: { startDate: Date, endDate: Date, formId: number } // Inject initial date range
   ) {
     this.dateAdapter.setLocale('pt-BR'); // Define o local para pt-BR
     this.filterForm = this.fb.group({
@@ -62,7 +62,7 @@ export class FilterDialogComponent {
   }
 
   applyFilters(dateRange: { startDate: string, endDate: string }) {
-    const formId = 1; // Replace with the actual formId
+    const formId = this.data.formId;
     this.feedbacksService.applyFilters(formId, {
       start: dateRange.startDate,
       end: dateRange.endDate
