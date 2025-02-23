@@ -6,9 +6,9 @@
     padding: 20px;
     background-color: #f9f9f9;
     border-radius: 8px;
-  }
-  
-  .dash-card {
+}
+
+.dash-card {
     flex: 1 1 calc(50% - 40px);
     max-width: 600px;
     background-color: #fff;
@@ -17,25 +17,31 @@
     padding: 10px;
     box-sizing: border-box;
     margin: 10px;
-  }
-  
-  /* Container que abriga o canvas */
-  .chart-container {
+}
+
+/* Container que abriga o canvas */
+.chart-container {
     position: relative;
     width: 100%;
     /* Defina uma altura ou min-height */
     min-height: 300px;
     /* Se preferir altura fixa, use: height: 300px; */
-    overflow: hidden; /* ou auto, se precisar de scroll */
-  }
-  
-  /* Canvas ocupa todo o espaço, mas não gera loop */
-  .chart-container canvas {
+    overflow: hidden;
+    /* ou auto, se precisar de scroll */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+/* Canvas ocupa todo o espaço, mas não gera loop */
+.chart-container canvas {
     display: block;
-    width: 100% !important;   /* Mantém a largura cheia */
-    height: auto !important;  /* Ajusta a altura conforme a proporção */
+    width: 65% !important;
+    /* Mantém a largura cheia */
+    height: 100% !important;
+    /* Ajusta a altura conforme a proporção */
     box-sizing: border-box;
-  }
+}
 
 .no-dashboards-card {
     display: flex;
@@ -47,12 +53,17 @@
     color: #000000;
     border-radius: 8px;
 }
-  
-  /* Mobile: 1 por linha */
-  @media (max-width: 768px) {
+
+/* Mobile: 1 por linha */
+@media (max-width: 768px) {
     .dash-card {
-      flex: 1 1 100%;
-      max-width: 100%;
+        flex: 1 1 100%;
+        max-width: 100%;
     }
-  }
-  
+
+    .chart-container canvas {
+        width: 100% !important;
+        /* Mantém a largura cheia */
+    }
+
+}

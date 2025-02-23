@@ -1,11 +1,15 @@
+<!-- <div class="info-message">
+    <mat-icon>info</mat-icon>
+    <p>Somente os campos do tipo dropdown e rating são elegíveis a gráficos</p>
+</div> -->
 <div class="dashboard-container">
-  <div *ngFor="let dash of dashboards" class="dash-card">
-    <div class="chart-container">
-      <h3>{{ dash.title }}</h3>
-      <canvas baseChart [data]="dash.chartData" [type]="dash.chartType" [options]="dash.chartOptions">
-      </canvas>
+    <div *ngFor="let dash of dashboards" class="dash-card">
+        <div class="chart-container">
+            <h3>{{ dash.title }}</h3>
+            <canvas baseChart [data]="dash.chartData" [type]="dash.chartType" [options]="dash.chartOptions">
+            </canvas>
+        </div>
     </div>
-  </div>
 </div>
 
 <mat-card *ngIf="dashboards.length === 0" class="no-dashboards-card">
