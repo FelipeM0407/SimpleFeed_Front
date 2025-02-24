@@ -1,0 +1,82 @@
+<form [formGroup]="accountForm" (ngSubmit)="submitForm()">
+    <!-- Linha 1: Primeiro Nome e Sobrenome -->
+    <div class="form-row">
+        <div class="form-group">
+            <label for="firstName">Primeiro Nome</label>
+            <input type="text" id="firstName" formControlName="firstName" maxlength="100"
+                placeholder="Digite seu primeiro nome">
+        </div>
+        <div class="form-group">
+            <label for="lastName">Sobrenome</label>
+            <input type="text" id="lastName" formControlName="lastName" maxlength="100"
+                placeholder="Digite seu sobrenome">
+        </div>
+    </div>
+
+    <!-- Linha 2: E-mail e Telefone -->
+    <div class="form-row">
+        <div class="form-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" formControlName="email" maxlength="100" placeholder="Digite seu e-mail">
+        </div>
+        <div class="form-group">
+            <label for="phone">Telefone</label>
+            <input type="tel" id="phone" formControlName="phone" placeholder="(00) 00000-0000"
+                appMask="(00) 00000-0000">
+        </div>
+    </div>
+
+    <!-- Linha 3: Tipo de Documento e CPF/CNPJ -->
+    <div class="form-row">
+        <div class="form-group">
+            <label for="documentType">Tipo de Documento</label>
+            <select id="documentType" formControlName="documentType" (change)="onDocumentTypeChange($event)">
+                <option value="CPF">CPF</option>
+                <option value="CNPJ">CNPJ</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <ng-container *ngIf="accountForm.get('documentType')?.value === 'CPF'; else cnpjField">
+                <label for="document">CPF</label>
+                <input type="text" id="document" formControlName="document" placeholder="000.000.000-00"
+                    appMask="000.000.000-00">
+            </ng-container>
+            <ng-template #cnpjField>
+                <label for="document">CNPJ</label>
+                <input type="text" id="document" formControlName="document" placeholder="00.000.000/0000-00"
+                    appMask="00.000.000/0000-00">
+            </ng-template>
+        </div>
+    </div>
+
+    <!-- Linha 4: Senha e Confirmação de Senha -->
+    <div class="form-row">
+        <div class="form-group">
+            <label for="password">Senha</label>
+            <input type="password" id="password" formControlName="password" placeholder="Digite sua senha">
+            <div *ngIf="accountForm.get('password')?.touched && accountForm.get('password')?.invalid" class="error">
+                <small *ngIf="accountForm.get('password')?.errors?.['required']">Senha é obrigatória.</small>
+                <small *ngIf="accountForm.get('password')?.errors?.['minlength']">Senha deve ter no mínimo 6
+                    caracteres.</small>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="confirmPassword">Confirmação de Senha</label>
+            <input type="password" id="confirmPassword" formControlName="confirmPassword"
+                placeholder="Confirme sua senha">
+            <div *ngIf="accountForm.get('confirmPassword')?.touched && accountForm.get('confirmPassword')?.invalid"
+                class="error">
+                <small *ngIf="accountForm.get('confirmPassword')?.errors?.['required']">Confirmação de senha é
+                    obrigatória.</small>
+                <small *ngIf="accountForm.get('confirmPassword')?.errors?.['minlength']">Confirmação de senha deve ter
+                    no mínimo 6 caracteres.</small>
+            </div>
+            <div *ngIf="accountForm.errors?.['passwordsMismatch'] && accountForm.get('confirmPassword')?.touched"
+                class="error">
+                <small>As senhas não coincidem.</small>
+            </div>
+        </div>
+    </div>
+
+    <button type="submit">Enviar</button>
+</form>

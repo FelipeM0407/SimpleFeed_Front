@@ -42,7 +42,7 @@ export class DashboardComponent implements OnInit {
   }
 
   goToAccount() {
-    this.router.navigate(['/account']);
+    // this.router.navigate(['/dashboard/account']);
   }
 
   logout(): void {

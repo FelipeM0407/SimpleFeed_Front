@@ -5,6 +5,7 @@ import { authGuard } from 'src/app/core/auth.guard';
 import { FeedbacksComponent } from '../feedbacks/feedback.component';
 import { FormsListComponent } from '../forms/components/forms-list/forms-list.component';
 import { FormEditComponent } from '../forms/components/form-edit/form-edit.component';
+import { AccountComponent } from '../account/account.component';
 
 const routes: Routes = [
   {
@@ -13,6 +14,7 @@ const routes: Routes = [
     children: [
       { path: '', redirectTo: 'forms', pathMatch: 'full' }, 
       { path: 'forms', component: FormsListComponent },
+      { path: 'account', component: AccountComponent },
       { path: 'feedbacks/:formId', component: FeedbacksComponent },
       { path: 'form-edit/:formId', component: FormEditComponent }, 
 
