@@ -55,6 +55,7 @@ export class AccountComponent implements OnInit {
 
     this.accountService.getAccount(this.authService.getUserGuid()).subscribe(account => {
       this.accountData = account;
+      this.populateForm(account);
     });
 
     // Detecta se é mobile (handset)
@@ -93,6 +94,30 @@ export class AccountComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required, Validators.minLength(6)]]
     }, { validators: this.passwordMatchValidator });
+  }
+
+  populateForm(account: Account): void {
+    this.accountForm.patchValue({
+      firstName: account.firstName,
+      lastName: account.lastName,
+      email: account.email,
+      phone: account.phoneNumber,
+      documentType: account.cpf ? 'CPF' : 'CNPJ',
+      document: account.cpf || account.cnpj,
+      companyName: account.cnpj ? account.name : ''
+    });
+
+    if (account.cpf) {
+      this.accountForm.get('documentType')?.setValue('CPF');
+      this.accountForm.get('document')?.setValidators([Validators.required, cpfValidator]);
+    } else if (account.cnpj) {
+      this.accountForm.get('documentType')?.setValue('CNPJ');
+      this.accountForm.get('document')?.setValidators([Validators.required, cnpjValidator]);
+      this.accountForm.get('companyName')?.setValidators([Validators.required, Validators.maxLength(200)]);
+    }
+
+    this.accountForm.get('document')?.updateValueAndValidity();
+    this.accountForm.get('companyName')?.updateValueAndValidity();
   }
 
   passwordMatchValidator(formGroup: FormGroup): ValidationErrors | null {
