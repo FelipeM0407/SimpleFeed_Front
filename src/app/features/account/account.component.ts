@@ -14,6 +14,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { AuthService } from 'src/app/core/auth.service';
+import { Account } from './Models/Account';
 
 @Component({
   selector: 'app-account',
@@ -38,14 +40,23 @@ export class AccountComponent implements OnInit {
   passwordForm!: FormGroup;
   showPasswordModal: boolean = false;
   isMobile: boolean = false;
+  accountData!: Account;
+
 
   constructor(
     private fb: FormBuilder,
     private accountService: AccountService,
-    private breakpointObserver: BreakpointObserver
-  ) { }
+    private breakpointObserver: BreakpointObserver,
+    private authService: AuthService
+  ) {
+  }
 
   ngOnInit(): void {
+
+    this.accountService.getAccount(this.authService.getUserGuid()).subscribe(account => {
+      this.accountData = account;
+    });
+
     // Detecta se é mobile (handset)
     this.breakpointObserver.observe([Breakpoints.Handset]).subscribe(result => {
       this.isMobile = result.matches;
@@ -108,8 +119,6 @@ export class AccountComponent implements OnInit {
     }
     return null;
   }
-
-
 
   // Reinicia o campo "document" ao trocar o tipo
   onDocumentTypeChange(event: any): void {

@@ -1,13 +1,18 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
+import { Account } from '../Models/Account';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AccountService {
 
-  constructor() { }
+  private apiUrl = `${environment.apiUrl}`;
+
+  constructor(private http: HttpClient) { }
 
   /**
    * Simula a atualização de uma conta.
@@ -22,20 +27,8 @@ export class AccountService {
     }).pipe(delay(1000));
   }
 
-  /**
-   * Simula a recuperação dos dados da conta.
-   * Retorna um Observable com dados fictícios após 1 segundo.
-   */
-  getAccount(): Observable<any> {
-    const fakeAccountData = {
-      firstName: 'João',
-      lastName: 'Silva',
-      email: 'joao.silva@example.com',
-      phone: '(11) 91234-5678',
-      documentType: 'CPF',
-      document: '123.456.789-00'
-    };
-    return of(fakeAccountData).pipe(delay(1000));
+  getAccount(accountId: string): Observable<Account> {
+    return this.http.get<Account>(`${this.apiUrl}/account/${accountId}`);
   }
 
   /**
