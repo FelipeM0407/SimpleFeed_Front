@@ -41,7 +41,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class AccountComponent implements OnInit {
   accountForm!: FormGroup;
   passwordForm!: FormGroup;
-  showPasswordModal: boolean = false;
   isMobile: boolean = false;
   accountData!: Account;
 
@@ -174,7 +173,6 @@ export class AccountComponent implements OnInit {
 
   // Fecha a modal e reseta o formulário de senha
   closePasswordModal(): void {
-    this.showPasswordModal = false;
     this.passwordForm.reset();
   }
 

@@ -100,47 +100,4 @@
       <button mat-raised-button color="accent" type="button" (click)="openPasswordModal()">Alterar Senha</button>
     </div>
   </form>
-
-  <!-- Modal para alteração de senha -->
-  <div class="modal" *ngIf="showPasswordModal">
-    <div class="modal-content">
-      <span class="close" (click)="closePasswordModal()">&times;</span>
-      <h2>Alterar Senha</h2>
-      <form [formGroup]="passwordForm" (ngSubmit)="submitPasswordChange()">
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="form-field full-width">
-            <mat-label>Senha Atual</mat-label>
-            <input matInput type="password" formControlName="currentPassword" placeholder="Digite sua senha atual" required>
-            <mat-error *ngIf="passwordForm.get('currentPassword')?.touched && passwordForm.get('currentPassword')?.invalid">
-              Senha atual é obrigatória.
-            </mat-error>
-          </mat-form-field>
-        </div>
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="form-field full-width">
-            <mat-label>Nova Senha</mat-label>
-            <input matInput type="password" formControlName="password" placeholder="Digite sua nova senha" required>
-            <mat-error *ngIf="passwordForm.get('password')?.touched && passwordForm.get('password')?.invalid">
-              <ng-container *ngIf="passwordForm.get('password')?.hasError('minlength')">No mínimo 6 caracteres.</ng-container>
-              <ng-container *ngIf="passwordForm.get('password')?.hasError('passwordsMismatch')">As senhas não coincidem.</ng-container>
-            </mat-error>
-          </mat-form-field>
-        </div>
-        <div class="form-row">
-          <mat-form-field appearance="outline" class="form-field full-width">
-            <mat-label>Confirmar Nova Senha</mat-label>
-            <input matInput type="password" formControlName="confirmPassword" placeholder="Confirme sua nova senha" required>
-            <mat-error *ngIf="passwordForm.get('confirmPassword')?.touched && passwordForm.get('confirmPassword')?.invalid">
-              <ng-container *ngIf="passwordForm.get('confirmPassword')?.hasError('required')">Confirmação é obrigatória.</ng-container>
-              <ng-container *ngIf="passwordForm.get('confirmPassword')?.hasError('minlength')">No mínimo 6 caracteres.</ng-container>
-              <ng-container *ngIf="passwordForm.get('confirmPassword')?.hasError('passwordsMismatch')">As senhas não coincidem.</ng-container>
-            </mat-error>
-          </mat-form-field>
-        </div>
-        <div class="form-row actions-row">
-          <button mat-raised-button color="primary" type="submit" [disabled]="passwordForm.invalid">Salvar Nova Senha</button>
-        </div>
-      </form>
-    </div>
-  </div>
 </ng-template>
