@@ -16,6 +16,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthService } from 'src/app/core/auth.service';
 import { Account } from './Models/Account';
+import { MatDialog } from '@angular/material/dialog';
+import { PasswordModalComponent } from './components/password-modal/password-modal.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-account',
@@ -47,7 +50,8 @@ export class AccountComponent implements OnInit {
     private fb: FormBuilder,
     private accountService: AccountService,
     private breakpointObserver: BreakpointObserver,
-    private authService: AuthService
+    private authService: AuthService,
+    private dialog: MatDialog
   ) {
   }
 
@@ -162,7 +166,10 @@ export class AccountComponent implements OnInit {
 
   // Abre a modal para alteração de senha
   openPasswordModal(): void {
-    this.showPasswordModal = true;
+    this.dialog.open(PasswordModalComponent, {
+      width: '400px',
+      // Outras configurações...
+    });
   }
 
   // Fecha a modal e reseta o formulário de senha

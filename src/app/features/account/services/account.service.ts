@@ -43,4 +43,9 @@ export class AccountService {
       data
     }).pipe(delay(1000));
   }
+
+  changePassword(data: { currentPassword: string, newPassword: string }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/change-password`, data, { responseType: 'text' });
+  }
+  
 }
