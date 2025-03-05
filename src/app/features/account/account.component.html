@@ -48,11 +48,11 @@
       </mat-form-field>
       <mat-form-field appearance="outline" class="form-field">
         <mat-label>Telefone</mat-label>
-        <input matInput type="tel" mask="(00) 00000-0000" formControlName="phone" placeholder="(00) 00000-0000" required
+        <input matInput type="tel" mask="(00) 00000-0000" formControlName="phoneNumber" placeholder="(00) 00000-0000" required
           inputmode="numeric" pattern="[0-9]*">
-        <mat-error *ngIf="accountForm.get('phone')?.touched && accountForm.get('phone')?.invalid">
-          <ng-container *ngIf="accountForm.get('phone')?.hasError('required')">Telefone é obrigatório.</ng-container>
-          <ng-container *ngIf="accountForm.get('phone')?.hasError('telefoneInvalido')">Telefone inválido.</ng-container>
+        <mat-error *ngIf="accountForm.get('phoneNumber')?.touched && accountForm.get('phoneNumber')?.invalid">
+          <ng-container *ngIf="accountForm.get('phoneNumber')?.hasError('required')">Telefone é obrigatório.</ng-container>
+          <ng-container *ngIf="accountForm.get('phoneNumber')?.hasError('telefoneInvalido')">Telefone inválido.</ng-container>
         </mat-error>
       </mat-form-field>
     </div>
@@ -86,8 +86,8 @@
     <div class="form-row" *ngIf="accountForm.get('documentType')?.value === 'CNPJ'">
       <mat-form-field appearance="outline" class="form-field full-width">
         <mat-label>Nome da Empresa</mat-label>
-        <input matInput formControlName="companyName" placeholder="Digite o nome da empresa" required>
-        <mat-error *ngIf="accountForm.get('companyName')?.touched && accountForm.get('companyName')?.invalid">
+        <input matInput formControlName="name" placeholder="Digite o nome da empresa" required>
+        <mat-error *ngIf="accountForm.get('name')?.touched && accountForm.get('name')?.invalid">
           Nome da empresa é obrigatório.
         </mat-error>
       </mat-form-field>

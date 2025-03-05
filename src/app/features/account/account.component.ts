@@ -19,6 +19,7 @@ import { Account } from './Models/Account';
 import { MatDialog } from '@angular/material/dialog';
 import { PasswordModalComponent } from './components/password-modal/password-modal.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-account',
@@ -32,7 +33,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatFormFieldModule,
     MatSelectModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatSnackBarModule
   ],
   providers: [provideNgxMask()],
   templateUrl: './account.component.html',
@@ -50,7 +52,8 @@ export class AccountComponent implements OnInit {
     private accountService: AccountService,
     private breakpointObserver: BreakpointObserver,
     private authService: AuthService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {
   }
 
@@ -71,15 +74,15 @@ export class AccountComponent implements OnInit {
       firstName: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
       lastName: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
       email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
-      phone: ['', [Validators.required, telefoneValidator]],
+      phoneNumber: ['', [Validators.required, telefoneValidator]],
       documentType: ['CPF', Validators.required],
       document: ['', [Validators.required, cpfValidator]],
-      companyName: ['', [Validators.minLength(15), Validators.maxLength(100)]] // Será validado somente se o tipo for CNPJ
+      name: ['', [Validators.minLength(15), Validators.maxLength(100)]] // Será validado somente se o tipo for CNPJ
     });
 
     this.accountForm.get('documentType')?.valueChanges.subscribe((value: string) => {
       const documentControl = this.accountForm.get('document');
-      const companyControl = this.accountForm.get('companyName');
+      const companyControl = this.accountForm.get('name');
       if (value === 'CPF') {
         documentControl?.setValidators([Validators.required, cpfValidator]);
         companyControl?.clearValidators();
@@ -104,10 +107,10 @@ export class AccountComponent implements OnInit {
       firstName: account.firstName,
       lastName: account.lastName,
       email: account.email,
-      phone: account.phoneNumber,
+      phoneNumber: account.phoneNumber,
       documentType: account.cpf ? 'CPF' : 'CNPJ',
       document: account.cpf || account.cnpj,
-      companyName: account.cnpj ? account.name : ''
+      name: account.cnpj ? account.name : ''
     });
 
     if (account.cpf) {
@@ -116,11 +119,11 @@ export class AccountComponent implements OnInit {
     } else if (account.cnpj) {
       this.accountForm.get('documentType')?.setValue('CNPJ');
       this.accountForm.get('document')?.setValidators([Validators.required, cnpjValidator]);
-      this.accountForm.get('companyName')?.setValidators([Validators.required, Validators.maxLength(200)]);
+      this.accountForm.get('name')?.setValidators([Validators.required, Validators.maxLength(200)]);
     }
 
     this.accountForm.get('document')?.updateValueAndValidity();
-    this.accountForm.get('companyName')?.updateValueAndValidity();
+    this.accountForm.get('name')?.updateValueAndValidity();
   }
 
   passwordMatchValidator(formGroup: FormGroup): ValidationErrors | null {
@@ -156,8 +159,32 @@ export class AccountComponent implements OnInit {
   // Valida e envia o formulário de dados comuns
   submitAccountForm(): void {
     if (this.accountForm.valid) {
-      console.log('Dados atualizados:', this.accountForm.value);
-      // Exemplo: this.accountService.updateAccount(this.accountForm.value).subscribe(...);
+      let accountData: Account = this.accountForm.value;
+
+      // Se o tipo de documento for CPF, o nome é a concatenação do primeiro e último nome
+      if (this.accountForm.get('documentType')?.value === 'CPF') {
+        accountData.name = `${this.accountForm.get('firstName')?.value} ${this.accountForm.get('lastName')?.value}`;
+      }
+
+      this.accountService.updateAccount(this.authService.getUserGuid(), accountData).subscribe(
+        response => {
+          this.snackBar.open('Dados atualizados com sucesso!', 'Fechar', {
+            duration: 3000,
+            panelClass: ['snackbar-success'],
+            horizontalPosition: 'right',
+            verticalPosition: 'top'
+          });
+        },
+        error => {
+          this.snackBar.open('Erro ao atualizar os dados.', 'Fechar', {
+            duration: 3000,
+            panelClass: ['snackbar-error'],
+            horizontalPosition: 'right',
+            verticalPosition: 'top'
+          });
+          console.error(error);
+        }
+      );
     } else {
       this.accountForm.markAllAsTouched();
     }
