@@ -73,7 +73,7 @@ export class AccountComponent implements OnInit {
     this.accountForm = this.fb.group({
       firstName: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
       lastName: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
-      email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
+      email: [{ value: '', disabled: true }, [Validators.required, Validators.email, Validators.maxLength(100)]],
       phoneNumber: ['', [Validators.required, telefoneValidator]],
       documentType: ['CPF', Validators.required],
       document: ['', [Validators.required, cpfValidator]],
