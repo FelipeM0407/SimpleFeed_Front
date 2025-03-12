@@ -137,13 +137,16 @@ export class FeedbackFormComponent {
           '',
           field.required ? [Validators.required, telefoneValidator] : null
         );
-
       } else if (field.type === 'cpf') {
         control = new FormControl(
           '',
           field.required ? [Validators.required, cpfValidator] : null
         );
-
+      } else if (field.type === 'multiple_selection') {
+        control = new FormControl(
+          [],
+          field.required ? Validators.required : null
+        );
       } else {
         control = new FormControl(
           '',
@@ -211,6 +214,10 @@ export class FeedbackFormComponent {
       return '';
     }
 
+    if (field.type === 'multiple_selection' && value.length === 0) {
+      return '';
+    }
+
     if (field.type === 'cpf') {
       return value ? value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4') : '';
     }
@@ -229,7 +236,7 @@ export class FeedbackFormComponent {
       const control = this.form.get(field.id.toString());
 
       if (control) {
-        if (field.required && control.value === '') {
+        if (field.required && (control.value === '' || (field.type === 'multiple_selection' && control.value.length === 0))) {
           control.setErrors({ required: true });
           isValid = false;
         }
