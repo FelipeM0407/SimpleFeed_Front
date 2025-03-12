@@ -101,7 +101,7 @@ export class FeedbackFormComponent {
         next: (data) => {
           this.client_id = data[0].client_Id;
           this.fields = data.map((field: FormField) => {
-            if (field.type === 'dropdown' && typeof field.options === 'string') {
+            if ((field.type === 'dropdown' || field.type === 'multiple_selection') && typeof field.options === 'string') {
               if (field.options) {
                 field.options = JSON.parse(field.options);
               }

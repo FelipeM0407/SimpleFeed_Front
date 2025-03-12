@@ -5,7 +5,7 @@
             <!-- Campo de texto genérico -->
             <mat-form-field *ngIf="field.type === 'text'" appearance="outline" class="full-width">
                 <mat-label>{{ field.label }}</mat-label>
-                <input matInput [formControlName]="field.id.toString()" type="text" maxlength="100"/>
+                <input matInput [formControlName]="field.id.toString()" type="text" maxlength="100" />
                 <mat-error *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched">
                     Este campo é obrigatório
                 </mat-error>
@@ -52,6 +52,20 @@
             </mat-form-field>
 
 
+            <!-- Campo multiple_selection -->
+            <mat-form-field *ngIf="field.type === 'multiple_selection'" appearance="outline" class="full-width">
+                <mat-label>{{ field.label }}</mat-label>
+                <mat-select [formControlName]="field.id.toString()" multiple>
+                    <mat-option *ngFor="let option of field.options" [value]="option">
+                        {{ option }}
+                    </mat-option>
+                </mat-select>
+                <mat-error *ngIf="form.get(field.id.toString())?.hasError('required')">
+                    Este campo é obrigatório.
+                </mat-error>
+            </mat-form-field>
+
+
 
             <!-- Campo de rating (fora do mat-form-field) -->
             <div *ngIf="field.type === 'rating'" class="rating-field mb-4">
@@ -64,7 +78,8 @@
                     </mat-icon>
                 </div>
                 <!-- Mensagem de erro -->
-                <div *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched" class="rating-error">
+                <div *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched"
+                    class="rating-error">
                     <small>Por favor, selecione uma avaliação.</small>
                 </div>
             </div>
