@@ -14,14 +14,14 @@
         </mat-form-field>
 
         <!-- Opções para Dropdown -->
-        <div *ngIf="data.field.type === 'dropdown'" class="dropdown-options">
+        <div *ngIf="data.field.type === 'dropdown' || data.field.type === 'multiple_selection'" class="dropdown-options">
             <h3>Opções</h3>
 
             <div formArrayName="options" class="options-list">
                 <div *ngFor="let option of options.controls; let i = index" class="option-item">
                     <mat-form-field appearance="outline" class="option-field">
                         <mat-label>Opção {{ i + 1 }}</mat-label>
-                        <input matInput [formControlName]="i" placeholder="Digite a opção" required>
+                        <input matInput [formControlName]="i" placeholder="Digite a opção" maxlength="30" required>
                     </mat-form-field>
                     <div class="option-buttons">
                         <button mat-icon-button color="primary" (click)="moveOptionUp(i)" [disabled]="i === 0"

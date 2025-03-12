@@ -299,10 +299,36 @@ export class FormEditComponent {
         </div>
         `;
         }
+        else if (field.type === 'multiple_selection' && field.options) {
+          formHtml += `
+            <div class="form-group">
+              <label>${field.label}</label>
+              <div style="
+              border: 1px solid #ccc;
+              border-radius: 4px;
+              padding: 8px;
+              background: #fff;
+              margin: 0 auto;
+              ">
+              ${field.options.map((option, index) => `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; border-bottom: 1px solid #eee;">
+          <div style="flex: 1; text-align: left;">
+            <input type="checkbox" id="${field.name}-${index}" name="${field.name}" value="${option}" ${field.required ? 'required' : ''}>
+          </div>
+          <div style="flex: 9; text-align: end;">
+            <label for="${field.name}-${index}">${option}</label>
+          </div>
+          </div>
+              `).join('')}
+              </div>
+            </div>
+            `;
+        }
+
       });
 
     formHtml += `
-              <button type="submit">Enviar</button>
+              <button>Enviar</button>
             </form>
           </div>
         </body>
@@ -409,7 +435,7 @@ export class FormEditComponent {
   }
 
   saveForm() {
-    const selectEmptyFields = this.fields.filter(field => field.type === 'dropdown' && field.options.length === 0);
+    const selectEmptyFields = this.fields.filter(field => (field.type === 'dropdown' || field.type === 'multiple_selection') && field.options.length === 0);
 
     if (selectEmptyFields.length > 0) {
 
