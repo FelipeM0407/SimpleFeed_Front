@@ -43,7 +43,9 @@
           <div>
             <p><strong>Nome:</strong> {{ form.name }}</p>
             <p><strong>Respostas:</strong> {{ form.responseCount }}</p>
+            <p><strong>Criado em:</strong> {{ form.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
             <p><strong>Últ. Atualização:</strong> {{ form.lastUpdated | date: 'dd/MM/yyyy HH:mm' }}</p>
+            
           </div>
           <div class="form-actions">
             <button mat-icon-button [matMenuTriggerFor]="menu">
