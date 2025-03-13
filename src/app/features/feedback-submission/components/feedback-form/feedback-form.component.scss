@@ -107,3 +107,16 @@ mat-icon.selected {
   background-color: rgba(255, 255, 255, 0.8);
   z-index: 1000;
 }
+
+/* Utiliza ::ng-deep para afetar os elementos internos do Angular Material */
+::ng-deep .mat-mdc-option.custom-option {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+::ng-deep .mat-mdc-option.custom-option .mdc-list-item__primary-text {
+  flex: 1 !important;
+  text-align: right !important;
+}
+

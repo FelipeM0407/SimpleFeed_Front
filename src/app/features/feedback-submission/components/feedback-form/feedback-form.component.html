@@ -56,14 +56,15 @@
             <mat-form-field *ngIf="field.type === 'multiple_selection'" appearance="outline" class="full-width">
                 <mat-label>{{ field.label }}</mat-label>
                 <mat-select [formControlName]="field.id.toString()" multiple>
-                    <mat-option *ngFor="let option of field.options" [value]="option">
-                        {{ option }}
-                    </mat-option>
+                  <mat-option *ngFor="let option of field.options" [value]="option" class="custom-option">
+                    {{ option }}
+                  </mat-option>
                 </mat-select>
                 <mat-error *ngIf="form.get(field.id.toString())?.hasError('required')">
-                    Este campo é obrigatório.
+                  Este campo é obrigatório.
                 </mat-error>
-            </mat-form-field>
+              </mat-form-field>
+              
 
 
 
