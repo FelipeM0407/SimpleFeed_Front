@@ -93,6 +93,8 @@ export class FormCreateDialogComponent {
         return 'text_snippet';
       case 'dropdown':
         return 'arrow_drop_down_circle';
+      case 'multiple_selection':
+        return 'checklist';
       case 'date':
         return 'event';
       case 'text':
