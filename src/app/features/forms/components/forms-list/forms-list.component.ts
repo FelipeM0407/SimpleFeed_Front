@@ -21,14 +21,28 @@ import { HttpClient } from '@angular/common/http';
 import { DialogRenameFormComponent } from './dialog-rename-form/dialog-rename-form.component';
 import { DomSanitizer } from '@angular/platform-browser';
 import { QRCodeModule } from 'angularx-qrcode';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
 
+interface Ordenation {
+  value: string;
+  viewValue: string;
+  checked?: boolean;
+}
+
+interface OrdenationGroup {
+  disabled?: boolean;
+  name: string;
+  ordenation: Ordenation[];
+}
 
 @Component({
   selector: 'app-forms-list',
   templateUrl: './forms-list.component.html',
   styleUrls: ['./forms-list.component.scss',],
   standalone: true,
-  imports: [QRCodeModule, MatSnackBarModule, MatDialogModule, MatProgressBarModule, MatDividerModule, CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
+  imports: [ReactiveFormsModule, FormsModule, MatSelectModule, MatFormFieldModule, QRCodeModule, MatSnackBarModule, MatDialogModule, MatProgressBarModule, MatDividerModule, CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
 })
 export class FormsListComponent implements OnInit, OnDestroy {
   forms: FormDashboard[] = [];
@@ -43,6 +57,39 @@ export class FormsListComponent implements OnInit, OnDestroy {
   formNames: string[] = [];
 
   clientId!: number;
+
+
+  ordenationGroups: OrdenationGroup[] = [
+    {
+      name: 'Qtd. Respostas',
+      ordenation: [
+        { value: 'respostasDecrescente', viewValue: 'Decrescente' },
+        { value: 'respostasCrescente', viewValue: 'Crescente' },
+      ],
+    },
+    {
+      name: 'Data de Criação',
+      ordenation: [
+        { value: 'criacaoDecrescente', viewValue: 'Decrescente', checked: true },
+        { value: 'criacaoCrescente', viewValue: 'Crescente' },
+      ],
+    },
+    {
+      name: 'Data de Atualização',
+      ordenation: [
+        { value: 'atualizacaoDecrescente', viewValue: 'Decrescente' },
+        { value: 'atualizacaoCrescente', viewValue: 'Crescente' },
+      ],
+    }
+  ];
+
+  ordenationControl = new FormControl(
+    this.ordenationGroups
+      .flatMap(group => group.ordenation) // Achata a lista para buscar diretamente nas opções
+      .find(order => order.checked)?.value || ''
+  );
+  
+  
 
   constructor(private snackBar: MatSnackBar, private formsService: FormsService, private authService: AuthService, private router: Router,
     public dialog: MatDialog, private sanitizer: DomSanitizer
@@ -146,7 +193,7 @@ export class FormsListComponent implements OnInit, OnDestroy {
 
   duplicateForm(id: number) {
     const dialogRef = this.dialog.open(DialogRenameFormComponent, {
-      data: { formName: '' , title: 'Duplicar Formulário'},
+      data: { formName: '', title: 'Duplicar Formulário' },
       width: '500px'
     });
 
@@ -264,6 +311,33 @@ export class FormsListComponent implements OnInit, OnDestroy {
           verticalPosition: 'top'
         });
       });
+    }
+  }
+
+  onOrdenationChange(event: string) {
+    const ordenationValue = event;
+
+    switch (ordenationValue) {
+      case 'respostasDecrescente':
+        this.forms.sort((a, b) => b.responseCount - a.responseCount);
+        break;
+      case 'respostasCrescente':
+        this.forms.sort((a, b) => a.responseCount - b.responseCount);
+        break;
+      case 'criacaoDecrescente':
+        this.forms.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        break;
+      case 'criacaoCrescente':
+        this.forms.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+        break;
+      case 'atualizacaoDecrescente':
+        this.forms.sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime());
+        break;
+      case 'atualizacaoCrescente':
+        this.forms.sort((a, b) => new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime());
+        break;
+      default:
+        break;
     }
   }
 }

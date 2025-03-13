@@ -22,6 +22,21 @@
 
   <!-- Lista de formulários -->
   <div class="forms-list-container">
+    <div class="form-field-center">
+      <mat-form-field class="col-lg-6 col-10">
+        <mat-label>Ordenação: </mat-label>
+        <mat-select [formControl]="ordenationControl" (selectionChange)="onOrdenationChange($event.value)">
+          <mat-optgroup *ngFor="let group of ordenationGroups" [label]="group.name" [disabled]="group.disabled">
+            <mat-option *ngFor="let order of group.ordenation" [value]="order.value">
+              {{group.name + "/" + order.viewValue}}
+            </mat-option>
+          </mat-optgroup>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    
+    <mat-divider></mat-divider>
+
     <div *ngIf="isLoading" class="spinner-container">
       <mat-spinner></mat-spinner>
     </div>

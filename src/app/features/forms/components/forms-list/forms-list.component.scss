@@ -1,18 +1,25 @@
 .forms-container {
   display: flex;
   flex-direction: row;
-  gap: 2rem; /* Maior espaçamento entre a lateral e a lista */
+  gap: 2rem;
+  /* Maior espaçamento entre a lateral e a lista */
   justify-content: space-between;
   margin: 1rem auto;
-  max-width: 85%; /* Aproveita toda a largura */
-  padding: 0 2rem; /* Margens laterais */
+  max-width: 85%;
+  /* Aproveita toda a largura */
+  padding: 0 2rem;
+  /* Margens laterais */
 }
 
 .forms-list-container {
-  flex-grow: 1; /* Faz a lista de formulários ocupar o espaço restante */
-  max-width: 70%; /* Define um limite para evitar que fique muito largo */
-  overflow-y: auto; /* Habilita o scroll vertical */
-  max-height: 89vh; /* Limita a altura máxima à altura da tela */
+  flex-grow: 1;
+  /* Faz a lista de formulários ocupar o espaço restante */
+  max-width: 70%;
+  /* Define um limite para evitar que fique muito largo */
+  overflow-y: auto;
+  /* Habilita o scroll vertical */
+  max-height: 89vh;
+  /* Limita a altura máxima à altura da tela */
 }
 
 mat-card {
@@ -27,7 +34,8 @@ mat-card {
 .forms-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; /* Espaçamento maior entre os itens */
+  gap: 1.5rem;
+  /* Espaçamento maior entre os itens */
   margin-bottom: 30px;
 }
 
@@ -42,13 +50,17 @@ mat-card {
 
 /* Cores Alternadas */
 .form-color-a {
-  background-color: #e3f2fd; /* Azul Claro */
-  color: #0d47a1; /* Azul Escuro para contraste */
+  background-color: #e3f2fd;
+  /* Azul Claro */
+  color: #0d47a1;
+  /* Azul Escuro para contraste */
 }
 
 .form-color-b {
-  background-color: #f1f8e9; /* Verde Claro */
-  color: #33691e; /* Verde Escuro para contraste */
+  background-color: #f1f8e9;
+  /* Verde Claro */
+  color: #33691e;
+  /* Verde Escuro para contraste */
 }
 
 .form-content {
@@ -70,11 +82,13 @@ p {
 
 /* Seção lateral */
 .side-section {
-  flex-basis: 25%; /* Define a largura fixa da seção lateral */
-  max-width: 300px; /* Limite máximo para a lateral */
+  flex-basis: 25%;
+  /* Define a largura fixa da seção lateral */
+  max-width: 300px;
+  /* Limite máximo para a lateral */
 }
 
-.button-center{
+.button-center {
   display: flex;
   justify-content: center;
 }
@@ -101,7 +115,8 @@ p {
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   background-color: #fafafa;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra discreta */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  /* Sombra discreta */
 }
 
 .progress-section p {
@@ -112,7 +127,8 @@ p {
 }
 
 mat-progress-bar {
-  height: 8px; /* Barra mais fina */
+  height: 8px;
+  /* Barra mais fina */
   border-radius: 4px;
 }
 
@@ -121,9 +137,12 @@ mat-divider {
 }
 
 .button-icon {
-  margin-right: 0.5rem; /* Espaço entre o ícone e o texto */
-  font-size: 1.2rem; /* Ajusta o tamanho do ícone */
-  vertical-align: middle; /* Alinha verticalmente com o texto */
+  margin-right: 0.5rem;
+  /* Espaço entre o ícone e o texto */
+  font-size: 1.2rem;
+  /* Ajusta o tamanho do ícone */
+  vertical-align: middle;
+  /* Alinha verticalmente com o texto */
 }
 
 .spinner-container {
@@ -143,6 +162,18 @@ mat-divider {
   justify-content: center;
 }
 
+.form-field-center {
+  display: flex;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  /* Garante que não fique transparente */
+  z-index: 10;
+  /* Para manter acima do conteúdo */
+}
+
+
 /* Responsividade */
 @media (max-width: 768px) {
 
@@ -154,26 +185,31 @@ mat-divider {
     margin: 0 auto;
     padding: 0.75rem 1.5rem;
     font-size: 0.9rem;
-    border-radius: 0; /* Sem bordas arredondadas */
+    border-radius: 0;
+    /* Sem bordas arredondadas */
     box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
-    background-color: #1976d2; /* Cor fixa para o botão */
+    background-color: #1976d2;
+    /* Cor fixa para o botão */
     color: #fff;
     text-align: center;
     z-index: 100;
   }
 
   .forms-wrapper {
-    padding-bottom: 4rem; /* Espaço suficiente para o botão */
+    padding-bottom: 4rem;
+    /* Espaço suficiente para o botão */
     margin: 0;
   }
 
   .progress-section {
-    order: -1; /* Move o progresso para o topo */
+    order: -1;
+    /* Move o progresso para o topo */
   }
 
   mat-divider {
-    order: 1; 
-    margin-bottom: -15px; /* Coloca o divider abaixo da barra de progresso */
+    order: 1;
+    margin-bottom: -15px;
+    /* Coloca o divider abaixo da barra de progresso */
   }
 
   .side-section {
@@ -190,7 +226,8 @@ mat-divider {
 
   .forms-list-container,
   .side-section {
-    max-width: 100%; /* Ambos ocupam toda a largura no mobile */
+    max-width: 100%;
+    /* Ambos ocupam toda a largura no mobile */
     max-height: 65vh;
   }
 
