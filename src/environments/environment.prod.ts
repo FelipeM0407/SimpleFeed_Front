@@ -1,6 +1,6 @@
 export const environment = {
     production: true,
-    apiUrl: 'https://gestaonex.com.br/api',
+    apiUrl: 'https://simplefeed.onrender.com/api',
     frontUrl: 'https://simple-feed-front.vercel.app/'
   };
   
