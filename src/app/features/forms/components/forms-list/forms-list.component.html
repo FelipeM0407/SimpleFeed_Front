@@ -34,7 +34,7 @@
         </mat-select>
       </mat-form-field>
     </div>
-    
+
     <mat-divider></mat-divider>
 
     <div *ngIf="isLoading" class="spinner-container">
@@ -57,10 +57,18 @@
         <div class="form-content">
           <div>
             <p><strong>Nome:</strong> {{ form.name }}</p>
-            <p><strong>Respostas:</strong> {{ form.responseCount }}</p>
+            <!-- <p><strong>Respostas:</strong> {{ form.responseCount }}</p> -->
+            <p><strong>Respostas:</strong>{{form.responseCount}}
+                <mat-chip (click)="onViewResponses(form.id)" *ngIf="form.newFeedbackCount > 0" cdkDrag
+                style="cursor: pointer; background-color: green;"><span style="color: white;">
+                  {{form.newFeedbackCount}} {{form.newFeedbackCount === 1 ? 'Nova resposta!' : 'Novas respostas!'}}
+
+                </span>
+                </mat-chip>
+            </p>
             <p><strong>Criado em:</strong> {{ form.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
             <p><strong>Últ. Atualização:</strong> {{ form.lastUpdated | date: 'dd/MM/yyyy HH:mm' }}</p>
-            
+
           </div>
           <div class="form-actions">
             <button mat-icon-button [matMenuTriggerFor]="menu">
@@ -123,9 +131,10 @@
   <mat-dialog-content class="pt-0">
     <qrcode [qrdata]="qrCodeUrl || ''" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
     <div class="d-flex justify-content-center" style="width: 240px;">
-      <h1 class="m-0 text-center" style="word-wrap: break-word; white-space: normal; max-width: 100%; overflow-wrap: break-word;">
+      <h1 class="m-0 text-center"
+        style="word-wrap: break-word; white-space: normal; max-width: 100%; overflow-wrap: break-word;">
         {{nameForm}}
-      </h1>      
+      </h1>
     </div>
   </mat-dialog-content>
   <mat-dialog-actions>

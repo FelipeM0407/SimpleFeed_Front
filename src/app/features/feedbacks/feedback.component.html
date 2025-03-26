@@ -45,10 +45,11 @@
               <mat-checkbox (change)="toggleSelectAll($event)" [color]="'primary'"></mat-checkbox>
             </th>
             <td mat-cell *matCellDef="let element" sticky>
-              <mat-checkbox [(ngModel)]="element.selected" (change)="updateSelectedCount()"
-                [color]="'primary'"></mat-checkbox>
+              <mat-checkbox [(ngModel)]="element.selected" (change)="updateSelectedCount()" [color]="'primary'"></mat-checkbox>
+              <span *ngIf="element.isNew" matBadge="!" matBadgeColor="accent" class="new-badge"></span>
             </td>
           </ng-container>
+          
 
           <!-- Colunas Dinâmicas -->
           <ng-container *ngFor="let column of dynamicColumns" [matColumnDef]="column.field_Id">
