@@ -337,7 +337,7 @@ export class FeedbacksComponent implements OnInit {
             verticalPosition: 'top'
           });
           this.clearSelection();
-          this.fetchFeedbacks();
+          this.applyFilters();
         },
         error: (error) => {
           console.error('Erro ao remover feedbacks:', error);

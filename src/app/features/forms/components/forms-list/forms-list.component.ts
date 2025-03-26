@@ -24,6 +24,10 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatChipsModule } from '@angular/material/chips';
+import { CdkDrag } from '@angular/cdk/drag-drop';
+
 
 interface Ordenation {
   value: string;
@@ -42,7 +46,7 @@ interface OrdenationGroup {
   templateUrl: './forms-list.component.html',
   styleUrls: ['./forms-list.component.scss',],
   standalone: true,
-  imports: [ReactiveFormsModule, FormsModule, MatSelectModule, MatFormFieldModule, QRCodeModule, MatSnackBarModule, MatDialogModule, MatProgressBarModule, MatDividerModule, CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
+  imports: [CdkDrag, MatChipsModule, MatBadgeModule, ReactiveFormsModule, FormsModule, MatSelectModule, MatFormFieldModule, QRCodeModule, MatSnackBarModule, MatDialogModule, MatProgressBarModule, MatDividerModule, CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
 })
 export class FormsListComponent implements OnInit, OnDestroy {
   forms: FormDashboard[] = [];
@@ -88,8 +92,8 @@ export class FormsListComponent implements OnInit, OnDestroy {
       .flatMap(group => group.ordenation) // Achata a lista para buscar diretamente nas opções
       .find(order => order.checked)?.value || ''
   );
-  
-  
+
+
 
   constructor(private snackBar: MatSnackBar, private formsService: FormsService, private authService: AuthService, private router: Router,
     public dialog: MatDialog, private sanitizer: DomSanitizer

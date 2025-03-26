@@ -173,6 +173,11 @@ mat-divider {
   /* Para manter acima do conteúdo */
 }
 
+mat-chip, mat-chip * {
+  cursor: pointer !important;
+}
+
+
 
 /* Responsividade */
 @media (max-width: 768px) {
