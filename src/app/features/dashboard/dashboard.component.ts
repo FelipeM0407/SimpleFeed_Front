@@ -12,14 +12,14 @@ import { RouterModule } from '@angular/router';
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-    standalone: true,
-    imports: [ RouterModule, MatDividerModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule],
+  standalone: true,
+  imports: [RouterModule, MatDividerModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule],
 })
 export class DashboardComponent implements OnInit {
   userName: string | null = null;
   userEmail: string | null = null;
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService) { }
 
   ngOnInit() {
     this.userName = this.authService.getUserName();
@@ -33,20 +33,27 @@ export class DashboardComponent implements OnInit {
         },
         error: (err) => {
           console.error('Erro ao buscar os dados do cliente:', err);
-          this.logout(); 
+          this.logout();
         },
       });
     } else {
-      this.logout(); 
+      this.logout();
     }
   }
 
   goToAccount() {
-     this.router.navigate(['/dashboard/account']);
+    this.router.navigate(['/dashboard/account']);
   }
 
   logout(): void {
-    localStorage.removeItem('authToken'); 
+    localStorage.removeItem('authToken');
     this.router.navigate(['/login']);
   }
+
+  openWhatsApp(): void {
+    const phoneNumber = '5511985159703'; // Substitua pelo número desejado (código do país incluso, sem espaços ou sinais)
+    const message = encodeURIComponent('Olá, gostaria de enviar um feedback.');
+    window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+  }
+
 }
