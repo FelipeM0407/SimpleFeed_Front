@@ -218,7 +218,7 @@ export class FormEditComponent {
             border-radius: 4px;
           }
           button {
-            background-color: #3f51b5;
+            background-color: #2C3E50 ;
             color: white;
             border: none;
             padding: 10px 20px;
