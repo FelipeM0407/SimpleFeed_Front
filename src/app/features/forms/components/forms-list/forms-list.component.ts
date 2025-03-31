@@ -52,7 +52,7 @@ export class FormsListComponent implements OnInit, OnDestroy {
   forms: FormDashboard[] = [];
   isLoading = true;
   errorMessage: string | null = null;
-  maxResponses = 100; // Limite temporário de respostas
+  maxResponses = 500; // Limite temporário de respostas
   private clientDataSubscription: Subscription | null = null;
   @ViewChild('confirmDialog', { static: true }) confirmDialog!: TemplateRef<any>;
   qrCodeUrl: string | null = null;
