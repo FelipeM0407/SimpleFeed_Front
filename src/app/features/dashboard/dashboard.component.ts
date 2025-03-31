@@ -7,13 +7,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
+import { MatTooltipModule} from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
   standalone: true,
-  imports: [RouterModule, MatDividerModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule],
+  imports: [MatTooltipModule, RouterModule, MatDividerModule, MatToolbarModule, MatButtonModule, MatIconModule, MatMenuModule],
 })
 export class DashboardComponent implements OnInit {
   userName: string | null = null;
