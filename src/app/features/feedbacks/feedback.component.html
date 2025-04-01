@@ -25,9 +25,11 @@
 
   <div class="d-flex justify-content-between mt-3" style="width: 100%;">
     <h2>📝 {{formName}}</h2>
-    <button mat-raised-button color="primary" (click)="exportToExcel()">
-      <mat-icon>download</mat-icon> .xlsx
-      <!-- <mat-icon>description</mat-icon> -->
+    <button *ngIf="!isMobile" mat-raised-button color="primary" (click)="exportToExcel()" class="export-button">
+      <mat-icon>download</mat-icon> <span class="d-none d-md-inline">.xlsx</span>
+    </button>
+    <button *ngIf="isMobile" mat-mini-fab color="primary" (click)="exportToExcel()" class="export-button">
+      <mat-icon>download</mat-icon>
     </button>
   </div>
 
