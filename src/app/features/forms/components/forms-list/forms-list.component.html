@@ -24,7 +24,7 @@
   <div class="forms-list-container">
     <div class="form-field-center">
       <mat-form-field class="col-lg-6 col-10">
-        <mat-label>Ordenação: </mat-label>
+        <mat-label>🔃Ordenação: </mat-label>
         <mat-select [formControl]="ordenationControl" (selectionChange)="onOrdenationChange($event.value)">
           <mat-optgroup *ngFor="let group of ordenationGroups" [label]="group.name" [disabled]="group.disabled">
             <mat-option *ngFor="let order of group.ordenation" [value]="order.value">
@@ -52,18 +52,18 @@
     </mat-card>
 
     <div class="forms-wrapper" *ngIf="!isLoading && !errorMessage">
-      <div *ngFor="let form of forms; let i = index"
+      <div *ngFor="let form of forms; let i = index" (click)="onViewResponses(form.id)"
         [ngClass]="{'form-color-a': i % 2 === 0, 'form-color-b': i % 2 !== 0}" class="form-item mat-elevation-z8">
         <div class="form-content">
           <div>
             <p><strong>Nome:</strong> {{ form.name }}</p>
             <!-- <p><strong>Respostas:</strong> {{ form.responseCount }}</p> -->
             <p><strong>Respostas:</strong>{{form.responseCount}}
-                <mat-chip (click)="onViewResponses(form.id)" *ngIf="form.newFeedbackCount > 0" cdkDrag
-                style="cursor: pointer; background-color: green;"><span style="color: white;">
-                  {{form.newFeedbackCount}} {{form.newFeedbackCount === 1 ? 'Nova resposta!' : 'Novas respostas!'}}
+                <mat-chip (click)="onViewResponses(form.id)" *ngIf="form.newFeedbackCount > 0" class="pulse-badge" cdkDrag
+                    style="cursor: pointer; background-color: green;"><span style="color: white;">
+                    {{form.newFeedbackCount}} {{form.newFeedbackCount === 1 ? 'Nova resposta!' : 'Novas respostas!'}} 📩
 
-                </span>
+                    </span>
                 </mat-chip>
             </p>
             <p><strong>Criado em:</strong> {{ form.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
