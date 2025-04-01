@@ -52,7 +52,7 @@
     </mat-card>
 
     <div class="forms-wrapper" *ngIf="!isLoading && !errorMessage">
-      <div *ngFor="let form of forms; let i = index" (click)="onViewResponses(form.id)"
+      <div *ngFor="let form of forms; let i = index"
         [ngClass]="{'form-color-a': i % 2 === 0, 'form-color-b': i % 2 !== 0}" class="form-item mat-elevation-z8">
         <div class="form-content">
           <div>
