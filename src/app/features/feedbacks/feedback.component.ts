@@ -78,6 +78,7 @@ export const MY_DATE_FORMATS = {
 })
 export class FeedbacksComponent implements OnInit {
   formId!: number;
+  formName!: string;
   feedbacks: any[] = [];
   isLoading = true;
   errorMessage: string | null = null;
@@ -137,6 +138,7 @@ export class FeedbacksComponent implements OnInit {
     // Buscar a estrutura do formulário
     this.formService.getFormStructure(this.formId).subscribe({
       next: (structure) => {
+        this.formName = structure[0].formName;
         // Criar as colunas dinâmicas com base na estrutura
         this.dynamicColumns = structure
           .sort((a: any, b: any) => a.ordenation - b.ordenation) // Ordena pela propriedade 'ordenation'
