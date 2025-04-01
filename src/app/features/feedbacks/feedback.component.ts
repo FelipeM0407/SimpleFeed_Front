@@ -1,4 +1,4 @@
-import { Component, HostListener, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, Inject, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CommonModule } from '@angular/common';
@@ -88,6 +88,8 @@ export class FeedbacksComponent implements OnInit {
 
   @ViewChild(MatSort) sort: MatSort | undefined; // ViewChild para o MatSort
   @ViewChild(MatPaginator) paginator: MatPaginator | undefined; // ViewChild para o MatPaginator
+  @ViewChild('confirmDialog') confirmDialog!: TemplateRef<any>;
+
 
   feedbacksSorted: MatTableDataSource<any> = new MatTableDataSource<any>();
 
@@ -112,8 +114,8 @@ export class FeedbacksComponent implements OnInit {
 
     this.filterForm = this.fb.group({
       data_do_feedback: this.fb.group({
-      start: [thirtyDaysAgo],
-      end: [today]
+        start: [thirtyDaysAgo],
+        end: [today]
       })
     });
 
@@ -199,7 +201,7 @@ export class FeedbacksComponent implements OnInit {
 
   applyFilters() {
     this.isLoading = true;
-    
+
     const dateRange = this.filterForm.value.data_do_feedback;
 
     const startDate = dateRange.start ? new Date(dateRange.start) : null;
@@ -323,33 +325,38 @@ export class FeedbacksComponent implements OnInit {
 
   // Método para excluir os registros selecionados
   deleteSelected(): void {
-    const selectedFeedbackIds = this.feedbacks
-      .filter((feedback) => feedback.selected)
-      .map((feedback) => feedback.id);
+    const dialogRef = this.dialog.open(this.confirmDialog);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) { // Se o usuário confirmou
+        const selectedFeedbackIds = this.feedbacks
+          .filter((feedback) => feedback.selected)
+          .map((feedback) => feedback.id);
 
-    if (selectedFeedbackIds.length > 0) {
-      this.feedbacksService.deleteFeedbacks(selectedFeedbackIds).subscribe({
-        next: () => {
-          this.snackBar.open('Feedbacks removidos com sucesso!', 'Fechar', {
-            duration: 3000,
-            panelClass: ['snackbar-success'],
-            horizontalPosition: 'right',
-            verticalPosition: 'top'
-          });
-          this.clearSelection();
-          this.applyFilters();
-        },
-        error: (error) => {
-          console.error('Erro ao remover feedbacks:', error);
-          this.snackBar.open('Erro ao remover feedbacks.', 'Fechar', {
-            duration: 3000,
-            panelClass: ['snackbar-error'],
-            horizontalPosition: 'right',
-            verticalPosition: 'top'
+        if (selectedFeedbackIds.length > 0) {
+          this.feedbacksService.deleteFeedbacks(selectedFeedbackIds).subscribe({
+            next: () => {
+              this.snackBar.open('Feedbacks removidos com sucesso!', 'Fechar', {
+                duration: 3000,
+                panelClass: ['snackbar-success'],
+                horizontalPosition: 'right',
+                verticalPosition: 'top'
+              });
+              this.clearSelection();
+              this.applyFilters();
+            },
+            error: (error) => {
+              console.error('Erro ao remover feedbacks:', error);
+              this.snackBar.open('Erro ao remover feedbacks.', 'Fechar', {
+                duration: 3000,
+                panelClass: ['snackbar-error'],
+                horizontalPosition: 'right',
+                verticalPosition: 'top'
+              });
+            }
           });
         }
-      });
-    }
+      }
+    });
   }
 
   clearSelection(): void {
@@ -375,22 +382,22 @@ export class FeedbacksComponent implements OnInit {
       this.snackBar.open('Nenhum dado para exportar.', 'Fechar', { duration: 3000 });
       return;
     }
-  
+
     const dataToExport = this.feedbacks.map(feedback => {
       const row: any = {};
       this.dynamicColumns.forEach(column => {
-      row[column.label] = feedback.answers[column.field_Id] || '';
+        row[column.label] = feedback.answers[column.field_Id] || '';
       });
       return row;
     });
-  
+
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(dataToExport);
     const workbook: XLSX.WorkBook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Feedbacks');
-  
+
     const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const data: Blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-  
+
     saveAs(data, `feedbacks_${new Date().toISOString().split('T')[0]}.xlsx`);
   }
 }
