@@ -14,12 +14,13 @@
 .forms-list-container {
   flex-grow: 1;
   /* Faz a lista de formulários ocupar o espaço restante */
-  max-width: 70%;
+  max-width: 73%;
   /* Define um limite para evitar que fique muito largo */
   overflow-y: auto;
   /* Habilita o scroll vertical */
   max-height: 89vh;
   /* Limita a altura máxima à altura da tela */
+  padding: 0 10px 0 10px;
 }
 
 mat-card {
@@ -41,11 +42,18 @@ mat-card {
 
 .form-item {
   padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.2);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer; /* Muda o ponteiro para indicar que é clicável */
+  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Adiciona transição suave */
+
+  &:hover {
+    transform: scale(1.02); /* Aumenta ligeiramente o tamanho */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); /* Destaca a sombra */
+  }
 }
 
 /* Cores Alternadas */
@@ -238,3 +246,23 @@ mat-chip, mat-chip * {
   }
 
 }
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  30% {
+    transform: scale(1.06);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.pulse-badge {
+  animation: pulse 1.5s infinite;
+}
+
