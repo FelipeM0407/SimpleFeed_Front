@@ -190,7 +190,8 @@ h3 {
   background: #f5f5f5;
   border-bottom: 1px solid #ddd;
   position: fixed;
-  width: 100%; /* Garante que ocupe toda a largura do contêiner */
+  width: 100%;
+  /* Garante que ocupe toda a largura do contêiner */
 
 }
 
@@ -217,19 +218,25 @@ h3 {
 
 .floating-button {
   position: fixed;
-  bottom: 16px; /* Distância do rodapé */
-  right: 16px; /* Distância do lado direito */
-  z-index: 1000; /* Garantir que fique acima de outros elementos */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra para destaque */
-  background-color: #2C3E50 ; /* Cor do botão */
+  bottom: 16px;
+  /* Distância do rodapé */
+  right: 16px;
+  /* Distância do lado direito */
+  z-index: 1000;
+  /* Garantir que fique acima de outros elementos */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  /* Sombra para destaque */
+  background-color: #2C3E50;
+  /* Cor do botão */
   color: white;
 }
 
 .floating-button:hover {
-  background-color: #303f9f; /* Cor ao passar o mouse */
+  background-color: #303f9f;
+  /* Cor ao passar o mouse */
 }
 
-.empty-field{
+.empty-field {
   border: 1px solid #e75f5f;
 }
 
@@ -244,6 +251,31 @@ h3 {
   left: 0;
   background-color: rgba(255, 255, 255, 0.8);
   z-index: 1000;
+}
+
+.editor-layout {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+}
+
+.editor-sidebar {
+  width: 300px;
+}
+
+.editor-main {
+  flex: 1;
+}
+
+.compact-field {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.small-btn {
+  padding: 2px !important;
+  width: 28px !important;
+  height: 28px !important;
 }
 
 

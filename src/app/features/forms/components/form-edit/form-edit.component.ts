@@ -20,11 +20,12 @@ import { Observable } from 'rxjs';
 import { TemplateRef } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarRef, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-form-edit',
   standalone: true,
-  imports: [MatSnackBarModule, MatProgressSpinnerModule, MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
+  imports: [MatExpansionModule, MatSnackBarModule, MatProgressSpinnerModule, MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
   templateUrl: './form-edit.component.html',
   styleUrls: ['./form-edit.component.scss'],
 })
@@ -36,9 +37,11 @@ export class FormEditComponent {
   formFields: FieldTypes[] = []; // Lista de campos retornados
   hasFeedbacks: boolean = false;
   @ViewChild('confirmDialog', { static: true }) confirmDialog!: TemplateRef<any>;
+  @ViewChild('logoInput') logoInput!: any;
   fieldsDeletedsWithFeedbacks: number[] = [];
   fieldsDeleteds: number[] = [];
   isLoading = true;
+  logoBase64: string = '';
 
   constructor(private snackBar: MatSnackBar, private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
     private authService: AuthService, private dialog: MatDialog,
@@ -112,6 +115,30 @@ export class FormEditComponent {
   onResize() {
     this.checkIfMobile();
   }
+
+  onLogoSelected(event: any): void {
+    const file = event.target.files[0];
+    if (!file) return;
+  
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.logoBase64 = reader.result as string;
+      this.updateIframe();
+    };
+    reader.readAsDataURL(file);
+  }
+  
+
+  removerLogo(): void {
+    if (confirm('Deseja realmente remover o logo?')) {
+      this.logoBase64 = '';
+      this.logoInput.nativeElement.value = '';
+      this.updateIframe();
+    }
+  }
+  
+  
+
 
   checkIfMobile() {
     this.isMobile = window.innerWidth <= 768; // Define como mobile para telas menores que 768px
@@ -233,6 +260,10 @@ export class FormEditComponent {
       </head>
       <body>
         <div class="form-container">
+        ${this.logoBase64 ? `<div style="text-align: center; margin-bottom: 20px;">
+          <img src="${this.logoBase64}" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover;" />
+        </div>` : ''}
+        
           <form>
     `;
 
@@ -467,7 +498,8 @@ export class FormEditComponent {
           IsNew: field.isNew
         })),
         fieldsDeletedsWithFeedbacks: this.fieldsDeletedsWithFeedbacks,
-        fieldsDeleteds: this.fieldsDeleteds
+        fieldsDeleteds: this.fieldsDeleteds,
+        logoBase64: this.logoBase64
       };
 
       this.isLoading = true;

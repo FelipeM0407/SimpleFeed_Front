@@ -2,7 +2,8 @@
   <mat-card>
     <mat-card-actions class="justify-content-between" align="end">
       <button mat-raised-button color="warn" (click)="cancel()">Cancelar</button>
-      <button mat-raised-button color="primary" (click)="saveForm()" [disabled]="visibleFields.length == 0">Salvar</button>
+      <button mat-raised-button color="primary" (click)="saveForm()"
+        [disabled]="visibleFields.length == 0">Salvar</button>
     </mat-card-actions>
   </mat-card>
 </div>
@@ -28,55 +29,97 @@
 
   <!-- Editor -->
   <div class="editor-container" [class.hidden]="isMobile && activeTab !== 0">
-    <div class="d-flex"
-      [ngClass]="isMobile ? 'justify-content-center mb-3 mt-5 align-items-end' : 'justify-content-between mb-3'">
 
-      <h3 *ngIf="!isMobile" style="margin: 0;">Edição de Campos</h3>
-      <button mat-raised-button color="primary" [matMenuTriggerFor]="belowMenu" style="margin: 0;">
-        <mat-icon>add</mat-icon>Adicionar campo
-      </button>
-      <mat-menu #belowMenu="matMenu" yPosition="below">
-        <button mat-menu-item *ngFor="let field of formFields" (click)="addField(field)">
-          {{ field.label }}</button>
-      </mat-menu>
+    <!-- Painel lateral com mat-accordion -->
+    <div class="editor-sidebar" style="width: auto;">
+      <mat-accordion multi>
+        <!-- Panel 1: Logo -->
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>Logo</mat-panel-title>
+            <mat-panel-description>Adicione seu logo</mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <input #logoInput type="file" accept="image/*" (change)="onLogoSelected($event)" style="margin-top: 10px;" />
+
+          <div *ngIf="logoBase64" style="margin-top: 10px; display: flex; flex-direction: column; align-items: center;">
+            <img [src]="logoBase64" style="width: 50%; object-fit: cover;" />
+            <button mat-stroked-button color="warn" (click)="removerLogo()" style="margin-top: 8px;">
+              <mat-icon>delete</mat-icon> Remover logo
+            </button>
+          </div>
+        </mat-expansion-panel>
+
+        <!-- Panel 2: Edição de Campos -->
+        <mat-expansion-panel [expanded]="true">
+          <mat-expansion-panel-header>
+            <mat-panel-title>Campos</mat-panel-title>
+            <mat-panel-description>Edite os campos do formulário</mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div>
+            <div class="d-flex justify-content-center mb-2">
+              <button mat-raised-button color="primary" [matMenuTriggerFor]="belowMenu">
+                <mat-icon>add</mat-icon>Adicionar campo
+              </button>
+              <mat-menu #belowMenu="matMenu" yPosition="below">
+                <button mat-menu-item *ngFor="let field of formFields" (click)="addField(field)">
+                  {{ field.label }}
+                </button>
+              </mat-menu>
+            </div>
+
+            <div *ngFor="let field of visibleFields; let i = index" class="field-item compact-field"
+              [ngClass]="{'empty-field': field.isEmpty}">
+              <div class="d-flex justify-content-between align-items-center" style="gap: 8px;">
+                <strong style="flex: 1;">{{ field.label }}</strong>
+
+                <mat-slide-toggle [color]="'primary'" [checked]="field.required"
+                  (change)="chageSlide(field.name, $event)">
+                  Obrigatório
+                </mat-slide-toggle>
+
+                <div class="field-actions d-flex align-items-center" style="gap: 4px;">
+                  <button mat-icon-button (click)="editField(i)" title="Edistar">
+                    <mat-icon style="font-size: 20px;">edit</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="deleteField(i)" title="Excluir">
+                    <mat-icon style="font-size: 20px;">delete</mat-icon>
+                  </button>
+                  <div class="d-flex align-items-center">
+                    <button mat-icon-button class="arrow-btn small-btn" style="margin-right: 3px;" (click)="moveUp(i)"
+                      [disabled]="i === 0" title="Mover para cima">
+                      <mat-icon style="font-size: 18px;">arrow_upward</mat-icon>
+                    </button>
+                    <button mat-icon-button class="arrow-btn small-btn" (click)="moveDown(i)"
+                      [disabled]="i === visibleFields.length - 1" title="Mover para baixo">
+                      <mat-icon style="font-size: 18px;">arrow_downward</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <ng-container *ngIf="field.isEmpty">
+                <small style="color: red; font-size: 0.75em; padding-left: 4px;">Não há opções criadas para esse
+                  campo</small>
+              </ng-container>
+            </div>
+
+          </div>
+        </mat-expansion-panel>
+
+        <!-- Panel 3: Estilo Visual -->
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>Estilo Visual</mat-panel-title>
+            <mat-panel-description>Configurações visuais</mat-panel-description>
+          </mat-expansion-panel-header>
+          <p>Em breve você poderá customizar o estilo do formulário por aqui.</p>
+        </mat-expansion-panel>
+      </mat-accordion>
     </div>
 
-    <div *ngFor="let field of visibleFields; let i = index" class="field-item"
-      [ngClass]="{'empty-field': field.isEmpty}">
-      <div class="field-header">
-        <div class="d-flex justify-content-between">
-          <strong>{{ field.label }}</strong>
-          <mat-slide-toggle [color]="'primary'" [checked]="field.required" (change)="chageSlide(field.name, $event)">Obrigatório</mat-slide-toggle>
-        </div>
 
-        <ng-container *ngIf="field.isEmpty">
-          <br />
-          <small style="color: red; font-size: 0.75em;">Não há opções criadas para esse campo</small>
-        </ng-container>
-        <br />
-        <small>Tipo: {{ field.type }}</small>
-      </div>
-      <div class="field-actions">
-        <div>
-          <button class="arrow-btn" (click)="moveUp(i)" [disabled]="i === 0" aria-label="Move field up"
-            title="Move field up">
-            <mat-icon>arrow_upward</mat-icon>
-          </button>
-          <button class="arrow-btn" (click)="moveDown(i)" [disabled]="i === visibleFields.length - 1"
-            aria-label="Move field down" title="Move field down">
-            <mat-icon>arrow_downward</mat-icon>
-          </button>
-        </div>
-        <div>
-          <span class="edit-btn" (click)="editField(i)" aria-label="Edit field" title="Edit field">
-            <mat-icon>edit</mat-icon>
-          </span>
-          <button class="delete-btn" (click)="deleteField(i)" aria-label="Delete field" title="Delete field">
-            <mat-icon>delete</mat-icon>
-          </button>          
-        </div>
-      </div>
-    </div>
 
 
     <button mat-fab class="floating-button" *ngIf="isMobile" [matMenuTriggerFor]="menu"
@@ -98,8 +141,9 @@
   </div>
 
   <!-- Preview -->
-  <div class="preview-container" [class.hidden]="isMobile && activeTab !== 1">
-    <h3 *ngIf="!isMobile" >Pré Visualização</h3>
+  <!-- Container de pré-visualização lado direito -->
+  <div class="editor-main" style="flex: 1;">
+    <h3 *ngIf="!isMobile">Pré Visualização</h3>
     <div class="iframe-container" style="height: 100%;">
       <iframe id="formPreview" frameborder="0" class="iframe-preview"
         [srcdoc]="iframeContent || '<p>No content available</p>'" title="Form Preview"></iframe>
@@ -121,5 +165,3 @@
 <div *ngIf="isLoading" class="spinner-container">
   <mat-spinner></mat-spinner>
 </div>
-
-
