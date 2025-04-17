@@ -43,7 +43,7 @@
           <input #logoInput type="file" accept="image/*" (change)="onLogoSelected($event)" style="margin-top: 10px;" />
 
           <div *ngIf="logoBase64" style="margin-top: 10px; display: flex; flex-direction: column; align-items: center;">
-            <img [src]="logoBase64" style="width: 50%; object-fit: cover;" />
+            <img [src]="logoBase64" style="width: 150px; object-fit: cover;" />
             <button mat-stroked-button color="warn" (click)="removerLogo()" style="margin-top: 8px;">
               <mat-icon>delete</mat-icon> Remover logo
             </button>

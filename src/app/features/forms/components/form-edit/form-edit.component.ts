@@ -21,6 +21,7 @@ import { TemplateRef } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarRef, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-form-edit',
@@ -71,6 +72,11 @@ export class FormEditComponent {
             .sort((a: { ordenation: number; }, b: { ordenation: number; }) => a.ordenation - b.ordenation); // Ordena os campos pela ordenation
           this.updateIframe();
         });
+        this.formsService.getLogoBase64ByFormId(numericFormId).subscribe(response => {
+          this.logoBase64 = response.logoBase64 || '';
+          this.updateIframe();
+        });
+
         this.isLoading = false;
       });
     }

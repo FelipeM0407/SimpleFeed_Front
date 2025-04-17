@@ -9,7 +9,7 @@
 }
 
 .container.mobile-view {
-  height: 80vh;
+  height: 92vh;
   /* Limita a altura total à altura da tela */
 }
 
@@ -299,12 +299,17 @@ h3 {
   }
 
   .iframe-preview {
-    height: calc(115% - 50px);
+    height: calc(115% - 70px);
     margin-top: 40px;
   }
 
   .iframe-container {
     height: 90% !important;
   }
+
+  .editor-sidebar {
+    margin-top: 40px;
+  }
+  
 
 }
