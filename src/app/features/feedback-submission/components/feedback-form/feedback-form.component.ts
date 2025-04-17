@@ -64,6 +64,7 @@ export class FeedbackFormComponent {
   isLoading = true;
   client_id!: number;
   exibirForm: boolean = true;
+  logoBase64: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -108,6 +109,9 @@ export class FeedbackFormComponent {
             }
             return field;
           }).sort((a: { ordenation: number; }, b: { ordenation: number; }) => a.ordenation - b.ordenation);
+          this.formsService.getLogoBase64ByFormId(parseInt(this.formId, 10)).subscribe((res: any) => {
+            this.logoBase64 = res.logoBase64 || '';
+          });
           this.createForm();
           this.isLoading = false;
         },

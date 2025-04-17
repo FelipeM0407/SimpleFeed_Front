@@ -65,6 +65,8 @@ export class FormsService {
   renameForm(formId: number, name: string): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/forms/${formId}/rename`, { name });
   }
-  
-  
+
+  getLogoBase64ByFormId(formId: number): Observable<{ logoBase64: string }> {
+    return this.http.get<{ logoBase64: string }>(`${this.apiUrl}/forms/${formId}/logo`);
+  }
 }
