@@ -1,5 +1,10 @@
 <div *ngIf="!isLoading" class="form-container">
     <form *ngIf="exibirForm" [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
+        <!-- Exibição do logo -->
+        <div *ngIf="logoBase64" class="logo-container">
+            <img [src]="logoBase64" alt="Logo do formulário" class="logo-image" />
+        </div>
+        
         <div *ngFor="let field of fields" class="form-field">
 
             <!-- Campo de texto genérico -->
@@ -56,15 +61,15 @@
             <mat-form-field *ngIf="field.type === 'multiple_selection'" appearance="outline" class="full-width">
                 <mat-label>{{ field.label }}</mat-label>
                 <mat-select [formControlName]="field.id.toString()" multiple>
-                  <mat-option *ngFor="let option of field.options" [value]="option" class="custom-option">
-                    {{ option }}
-                  </mat-option>
+                    <mat-option *ngFor="let option of field.options" [value]="option" class="custom-option">
+                        {{ option }}
+                    </mat-option>
                 </mat-select>
                 <mat-error *ngIf="form.get(field.id.toString())?.hasError('required')">
-                  Este campo é obrigatório.
+                    Este campo é obrigatório.
                 </mat-error>
-              </mat-form-field>
-              
+            </mat-form-field>
+
 
 
 

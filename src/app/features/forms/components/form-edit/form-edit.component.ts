@@ -22,11 +22,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarRef, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { forkJoin } from 'rxjs';
-
+import { MatTooltipModule } from '@angular/material/tooltip';
 @Component({
   selector: 'app-form-edit',
   standalone: true,
-  imports: [MatExpansionModule, MatSnackBarModule, MatProgressSpinnerModule, MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
+  imports: [MatTooltipModule, MatExpansionModule, MatSnackBarModule, MatProgressSpinnerModule, MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
   templateUrl: './form-edit.component.html',
   styleUrls: ['./form-edit.component.scss'],
 })
@@ -125,7 +125,7 @@ export class FormEditComponent {
   onLogoSelected(event: any): void {
     const file = event.target.files[0];
     if (!file) return;
-  
+
     const reader = new FileReader();
     reader.onload = () => {
       this.logoBase64 = reader.result as string;
@@ -133,7 +133,7 @@ export class FormEditComponent {
     };
     reader.readAsDataURL(file);
   }
-  
+
 
   removerLogo(): void {
     if (confirm('Deseja realmente remover o logo?')) {
@@ -142,8 +142,8 @@ export class FormEditComponent {
       this.updateIframe();
     }
   }
-  
-  
+
+
 
 
   checkIfMobile() {
@@ -278,89 +278,89 @@ export class FormEditComponent {
       .filter((field) => field.name !== 'data_do_envio') // Filtrar o campo `data_do_envio`
       .sort((a, b) => a.ordenation - b.ordenation) // Ordenar os campos pela ordenation
       .forEach((field) => {
-        if (field.type === 'text' || field.type === 'email') {
-          formHtml += `
-        <div class="form-group">
-          <label>${field.label}</label>
-          <input type="${field.type}" ${field.required ? 'required' : ''}>
-        </div>
+      if (field.type === 'text' || field.type === 'email') {
+        formHtml += `
+      <div class="form-group">
+        <label style="word-wrap: break-word; white-space: normal;">${field.label}</label>
+        <input type="${field.type}" ${field.required ? 'required' : ''}>
+      </div>
+      `;
+      } else if (field.type === 'textarea') {
+        formHtml += `
+      <div class="form-group">
+        <label style="word-wrap: break-word; white-space: normal;">${field.label}</label>
+        <textarea ${field.required ? 'required' : ''}></textarea>
+      </div>
+      `;
+      } else if (field.type === 'cpf') {
+        formHtml += `
+          <div class="form-group">
+            <label style="word-wrap: break-word; white-space: normal;">${field.label}</label>
+            <input type="text" id="cpfField" placeholder="000.000.000-00" ${field.required ? 'required' : ''}>
+          </div>
         `;
-        } else if (field.type === 'textarea') {
-          formHtml += `
-        <div class="form-group">
-          <label>${field.label}</label>
-          <textarea ${field.required ? 'required' : ''}></textarea>
-        </div>
+      } else if (field.type === 'telephone') {
+        formHtml += `
+          <div class="form-group">
+            <label style="word-wrap: break-word; white-space: normal;">${field.label}</label>
+            <input type="text" id="phoneField" placeholder="(00) 00000-0000" ${field.required ? 'required' : ''}>
+          </div>
         `;
-        } else if (field.type === 'cpf') {
-          formHtml += `
-              <div class="form-group">
-                  <label>${field.label}</label>
-                  <input type="text" id="cpfField" placeholder="000.000.000-00" ${field.required ? 'required' : ''}>
-              </div>
-          `;
-        } else if (field.type === 'telephone') {
-          formHtml += `
-              <div class="form-group">
-                  <label>${field.label}</label>
-                  <input type="text" id="phoneField" placeholder="(00) 00000-0000" ${field.required ? 'required' : ''}>
-              </div>
-          `;
-        } else if (field.type === 'date') {
-          formHtml += `
-        <div class="form-group">
-          <label>${field.label}</label>
-          <input type="date" ${field.required ? 'required' : ''}>
+      } else if (field.type === 'date') {
+        formHtml += `
+      <div class="form-group">
+        <label style="word-wrap: break-word; white-space: normal;">${field.label}</label>
+        <input type="date" ${field.required ? 'required' : ''}>
+      </div>
+      `;
+      } else if (field.type === 'dropdown' && field.options) {
+        formHtml += `
+      <div class="form-group">
+        <label style="word-wrap: break-word; white-space: normal;">${field.label}</label>
+        <select ${field.required ? 'required' : ''}>
+        <option value="0">Selecione uma opção</option>
+        ${field.options.map((option) => `<option value="${option}">${option}</option>`).join('')}
+        </select>
+      </div>
+      `;
+      } else if (field.type === 'rating') {
+        formHtml += `
+      <div class="form-group">
+        <label style="word-wrap: break-word; white-space: normal;">${field.label}</label>
+        <div class="rating">
+        ${Array.from({ length: 5 }, (_, i) => i + 1).reverse().map((i) => `
+        <input type="radio" id="${field.name}-${i}" name="${field.name}" value="${i}" ${field.required ? 'required' : ''}>
+        <label for="${field.name}-${i}">★</label>
+        `).join('')}
         </div>
-        `;
-        } else if (field.type === 'dropdown' && field.options) {
-          formHtml += `
+      </div>
+      `;
+      }
+      else if (field.type === 'multiple_selection' && field.options) {
+        formHtml += `
         <div class="form-group">
-          <label>${field.label}</label>
-          <select ${field.required ? 'required' : ''}>
-          <option value="0">Selecione uma opção</option>
-          ${field.options.map((option) => `<option value="${option}">${option}</option>`).join('')}
-          </select>
+          <label style="word-wrap: break-word; white-space: normal;">${field.label}</label>
+          <div style="
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          padding: 8px;
+          background: #fff;
+          margin: 0 auto;
+          ">
+          ${field.options.map((option, index) => `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; border-bottom: 1px solid #eee;">
+        <div style="flex: 1; text-align: left;">
+        <input type="checkbox" id="${field.name}-${index}" name="${field.name}" value="${option}" ${field.required ? 'required' : ''}>
         </div>
-        `;
-        } else if (field.type === 'rating') {
-          formHtml += `
-        <div class="form-group">
-          <label>${field.label}</label>
-          <div class="rating">
-          ${Array.from({ length: 5 }, (_, i) => i + 1).reverse().map((i) => `
-            <input type="radio" id="${field.name}-${i}" name="${field.name}" value="${i}" ${field.required ? 'required' : ''}>
-            <label for="${field.name}-${i}">★</label>
+        <div style="flex: 9; text-align: end;">
+        <label for="${field.name}-${index}" style="word-wrap: break-word; white-space: normal;">${option}</label>
+        </div>
+        </div>
           `).join('')}
           </div>
         </div>
         `;
-        }
-        else if (field.type === 'multiple_selection' && field.options) {
-          formHtml += `
-            <div class="form-group">
-              <label>${field.label}</label>
-              <div style="
-              border: 1px solid #ccc;
-              border-radius: 4px;
-              padding: 8px;
-              background: #fff;
-              margin: 0 auto;
-              ">
-              ${field.options.map((option, index) => `
-          <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; border-bottom: 1px solid #eee;">
-          <div style="flex: 1; text-align: left;">
-            <input type="checkbox" id="${field.name}-${index}" name="${field.name}" value="${option}" ${field.required ? 'required' : ''}>
-          </div>
-          <div style="flex: 9; text-align: end;">
-            <label for="${field.name}-${index}">${option}</label>
-          </div>
-          </div>
-              `).join('')}
-              </div>
-            </div>
-            `;
-        }
+      }
 
       });
 

@@ -6,7 +6,7 @@
         <!-- Campo de Nome -->
         <mat-form-field appearance="outline">
             <mat-label>Nome do Campo</mat-label>
-            <input matInput formControlName="label" placeholder="Digite o nome do campo" maxlength="255">
+            <input matInput formControlName="label" placeholder="Digite o nome do campo" maxlength="150">
             <mat-hint>Insira um nome claro e objetivo.</mat-hint>
             <mat-error *ngIf="fieldForm.get('label')?.hasError('duplicate')">
                 O nome do campo já existe. Escolha outro.

@@ -36,12 +36,18 @@
         <!-- Panel 1: Logo -->
         <mat-expansion-panel>
           <mat-expansion-panel-header>
-            <mat-panel-title>Logo</mat-panel-title>
+            <mat-panel-title>
+              <mat-icon class="mr-1" style="margin-right: 6px;">image</mat-icon>
+              Logo
+            </mat-panel-title>
             <mat-panel-description>Adicione seu logo</mat-panel-description>
           </mat-expansion-panel-header>
 
-          <input #logoInput type="file" accept="image/*" (change)="onLogoSelected($event)" style="margin-top: 10px;" />
-
+          <label class="logo-upload-button">
+            <mat-icon>upload</mat-icon>
+            Escolher Logo
+            <input #logoInput type="file" accept="image/*" (change)="onLogoSelected($event)" />
+          </label>
           <div *ngIf="logoBase64" style="margin-top: 10px; display: flex; flex-direction: column; align-items: center;">
             <img [src]="logoBase64" style="width: 150px; object-fit: cover;" />
             <button mat-stroked-button color="warn" (click)="removerLogo()" style="margin-top: 8px;">
@@ -53,7 +59,10 @@
         <!-- Panel 2: Edição de Campos -->
         <mat-expansion-panel [expanded]="true">
           <mat-expansion-panel-header>
-            <mat-panel-title>Campos</mat-panel-title>
+            <mat-panel-title>
+              <mat-icon class="mr-1" style="margin-right: 6px;">list_alt</mat-icon>
+              Campos
+            </mat-panel-title>
             <mat-panel-description>Edite os campos do formulário</mat-panel-description>
           </mat-expansion-panel-header>
 
@@ -72,7 +81,9 @@
             <div *ngFor="let field of visibleFields; let i = index" class="field-item compact-field"
               [ngClass]="{'empty-field': field.isEmpty}">
               <div class="d-flex justify-content-between align-items-center" style="gap: 8px;">
-                <strong style="flex: 1;">{{ field.label }}</strong>
+                <strong style="flex: 1;" matTooltip="{{ field.label }}" [matTooltipPosition]="'above'">
+                  {{ field.label.length > 30 ? (field.label | slice:0:27) + '...' : field.label }}
+                </strong>
 
                 <mat-slide-toggle [color]="'primary'" [checked]="field.required"
                   (change)="chageSlide(field.name, $event)">
@@ -111,7 +122,10 @@
         <!-- Panel 3: Estilo Visual -->
         <mat-expansion-panel>
           <mat-expansion-panel-header>
-            <mat-panel-title>Estilo Visual</mat-panel-title>
+            <mat-panel-title>
+              <mat-icon class="mr-1" style="margin-right: 6px;">format_color_fill</mat-icon>
+              Estilos Visuais
+            </mat-panel-title>
             <mat-panel-description>Configurações visuais</mat-panel-description>
           </mat-expansion-panel-header>
           <p>Em breve você poderá customizar o estilo do formulário por aqui.</p>
