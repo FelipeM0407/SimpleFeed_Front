@@ -43,16 +43,19 @@
             <mat-panel-description>Adicione seu logo</mat-panel-description>
           </mat-expansion-panel-header>
 
-          <label class="logo-upload-button">
-            <mat-icon>upload</mat-icon>
-            Escolher Logo
-            <input #logoInput type="file" accept="image/*" (change)="onLogoSelected($event)" />
-          </label>
-          <div *ngIf="logoBase64" style="margin-top: 10px; display: flex; flex-direction: column; align-items: center;">
-            <img [src]="logoBase64" style="width: 150px; object-fit: cover;" />
-            <button mat-stroked-button color="warn" (click)="removerLogo()" style="margin-top: 8px;">
+          <div class="d-flex justify-content-between align-items-center">
+            <button mat-stroked-button color="primary" (click)="logoInput.click()">
+              <mat-icon style="font-size: 1rem; margin-right: 4px;">upload</mat-icon>
+              Escolher Logo
+            </button>
+            <input #logoInput type="file" accept="image/*" (change)="onLogoSelected($event)" style="display: none;" />
+            <button *ngIf="logoBase64" mat-stroked-button color="warn" (click)="removerLogo()">
               <mat-icon>delete</mat-icon> Remover logo
             </button>
+          </div>
+          <div *ngIf="logoBase64" style="margin-top: 10px; display: flex; flex-direction: column; align-items: center;">
+            <img [src]="logoBase64" style="width: 150px; object-fit: cover;" />
+
           </div>
         </mat-expansion-panel>
 
@@ -90,24 +93,26 @@
                   Obrigatório
                 </mat-slide-toggle>
 
-                <div class="field-actions d-flex align-items-center" style="gap: 4px;">
-                  <button mat-icon-button (click)="editField(i)" title="Edistar">
+                <div class="field-actions d-flex align-items-center">
+                  <button mat-icon-button class="compact-icon-button" (click)="editField(i)" title="Editar">
                     <mat-icon style="font-size: 20px;">edit</mat-icon>
                   </button>
-                  <button mat-icon-button color="warn" (click)="deleteField(i)" title="Excluir">
+                  <button mat-icon-button class="compact-icon-button" color="warn" (click)="deleteField(i)"
+                    title="Excluir">
                     <mat-icon style="font-size: 20px;">delete</mat-icon>
                   </button>
                   <div class="d-flex align-items-center">
-                    <button mat-icon-button class="arrow-btn small-btn" style="margin-right: 3px;" (click)="moveUp(i)"
-                      [disabled]="i === 0" title="Mover para cima">
+                    <button mat-icon-button class="arrow-btn small-btn compact-icon-button" style="margin-right: 3px;"
+                      (click)="moveUp(i)" [disabled]="i === 0" title="Mover para cima">
                       <mat-icon style="font-size: 18px;">arrow_upward</mat-icon>
                     </button>
-                    <button mat-icon-button class="arrow-btn small-btn" (click)="moveDown(i)"
+                    <button mat-icon-button class="arrow-btn small-btn compact-icon-button" (click)="moveDown(i)"
                       [disabled]="i === visibleFields.length - 1" title="Mover para baixo">
                       <mat-icon style="font-size: 18px;">arrow_downward</mat-icon>
                     </button>
                   </div>
                 </div>
+
               </div>
 
               <ng-container *ngIf="field.isEmpty">
@@ -159,8 +164,9 @@
   <div class="editor-main" style="flex: 1;">
     <h3 *ngIf="!isMobile">Pré Visualização</h3>
     <div class="iframe-container" style="height: 100%;">
-      <iframe id="formPreview" frameborder="0" class="iframe-preview"
-        [srcdoc]="iframeContent || '<p>No content available</p>'" title="Form Preview"></iframe>
+      <app-form-preview [fields]="visibleFields" [logoBase64]="logoBase64" [isMobile]="isMobile">
+      </app-form-preview>
+
     </div>
   </div>
 </div>

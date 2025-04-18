@@ -64,7 +64,7 @@ h3 {
 .field-actions {
   display: flex;
   align-items: center;
-  justify-content: space-between
+  justify-content: space-between;
 }
 
 .arrow-btn {
@@ -126,17 +126,7 @@ h3 {
   color: #303030;
 }
 
-.iframe-preview {
-  flex: 1;
-  width: 100%;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: auto;
-  /* Scroll interno no iframe */
-  height: calc(90% - 50px);
-  /* Compensa o espaço do título */
-}
+
 
 /* Mobile-specific layout */
 .mobile-view .editor-container,
@@ -348,10 +338,39 @@ input[type="file"] {
     flex-direction: column;
   }
 
+  .editor-container {
+    flex: 1;
+    border-right: 1px solid #e8e9eb;
+    background-color: #ffffff;
+    overflow-y: auto;
+    /* Scroll apenas se o conteúdo exceder */
+    padding: 15px 0px;
+    box-sizing: border-box;
+    height: calc(85vh - 20px);
+    /* Compensa o padding */
+  }
+
+  // form-edit.component.scss
+  .compact-icon-button {
+    width: 32px !important;
+    height: 32px !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .editor-container {
+    border-right: none;
+  }
+
+
   .editor-container,
   .preview-container {
     flex: none;
     height: 50vh;
+    padding: 15px 0px;
   }
 
   .iframe-preview {
@@ -367,7 +386,10 @@ input[type="file"] {
     margin-top: 40px;
   }
 
-
+  ::ng-deep .mat-expansion-panel-body {
+    padding: 0 8px 8px !important;
+  }
+  
 
 
 
