@@ -1,14 +1,15 @@
-<div class="container-md mt-3" *ngIf="!isMobile">
-  <mat-card>
-    <mat-card-actions class="justify-content-between" align="end">
-      <button mat-raised-button color="warn" (click)="cancel()">Cancelar</button>
-      <button mat-raised-button color="primary" (click)="saveForm()"
-        [disabled]="visibleFields.length == 0">Salvar</button>
-    </mat-card-actions>
-  </mat-card>
+<!-- Footer fixo com ações -->
+<div class="action-footer" *ngIf="!isMobile">
+  <div class="action-buttons">
+    <button mat-flat-button color="warn" (click)="cancel()">Cancelar</button>
+    <button mat-flat-button color="primary" (click)="saveForm()" [disabled]="visibleFields.length == 0">
+      Salvar
+    </button>
+  </div>
 </div>
 
-<div class="container" [ngClass]="{'mobile-view': isMobile}">
+
+<div class="container-lg" [ngClass]="{'mobile-view': isMobile}">
 
 
   <!-- Tabs para Mobile -->
