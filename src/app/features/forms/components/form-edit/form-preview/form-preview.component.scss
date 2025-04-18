@@ -1,0 +1,41 @@
+// .iframe-preview {
+//     width: 100%;
+//     height: 100%;
+//     border: none;
+//     border-radius: 8px;
+//     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+//   }
+
+  .iframe-preview {
+    flex: 1;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: auto;
+    /* Scroll interno no iframe */
+    height: calc(90% - 50px);
+    /* Compensa o espaço do título */
+  }
+  
+  @media (max-width: 768px) {
+
+    .editor-container,
+    .preview-container {
+      flex: none;
+      height: 50vh;
+    }
+  
+    .iframe-preview {
+      height: calc(115% - 70px);
+      margin-top: 40px;
+    }
+  
+    .iframe-container {
+      height: 90% !important;
+    }
+
+  
+  
+  
+  }

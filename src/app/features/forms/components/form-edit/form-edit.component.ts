@@ -23,10 +23,13 @@ import { MatSnackBar, MatSnackBarRef, MatSnackBarModule } from '@angular/materia
 import { MatExpansionModule } from '@angular/material/expansion';
 import { forkJoin } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { FormPreviewComponent } from './form-preview/form-preview.component';
+
+
 @Component({
   selector: 'app-form-edit',
   standalone: true,
-  imports: [MatTooltipModule, MatExpansionModule, MatSnackBarModule, MatProgressSpinnerModule, MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
+  imports: [FormPreviewComponent, MatTooltipModule, MatExpansionModule, MatSnackBarModule, MatProgressSpinnerModule, MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
   templateUrl: './form-edit.component.html',
   styleUrls: ['./form-edit.component.scss'],
 })
@@ -70,11 +73,9 @@ export class FormEditComponent {
               isNew: false
             })) // Converte options para um array usando JSON.parse
             .sort((a: { ordenation: number; }, b: { ordenation: number; }) => a.ordenation - b.ordenation); // Ordena os campos pela ordenation
-          this.updateIframe();
         });
         this.formsService.getLogoBase64ByFormId(numericFormId).subscribe(response => {
           this.logoBase64 = response.logoBase64 || '';
-          this.updateIframe();
         });
 
         this.isLoading = false;
@@ -114,7 +115,6 @@ export class FormEditComponent {
       isEmpty: false,
       hasFeedbacks: false
     });
-    this.updateIframe();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -129,7 +129,6 @@ export class FormEditComponent {
     const reader = new FileReader();
     reader.onload = () => {
       this.logoBase64 = reader.result as string;
-      this.updateIframe();
     };
     reader.readAsDataURL(file);
   }
@@ -139,7 +138,6 @@ export class FormEditComponent {
     if (confirm('Deseja realmente remover o logo?')) {
       this.logoBase64 = '';
       this.logoInput.nativeElement.value = '';
-      this.updateIframe();
     }
   }
 
@@ -157,226 +155,6 @@ export class FormEditComponent {
     return this.fields.filter((field) => field.name !== 'data_do_envio');
   }
 
-  // Atualiza o conteúdo do iframe
-  updateIframe() {
-    let formHtml = `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="https://cdn.jsdelivr.net/npm/@angular/material@16.0.0/prebuilt-themes/indigo-pink.css" rel="stylesheet">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.7/inputmask.min.js"></script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                setTimeout(function() {
-                    // Aplicando a máscara no CPF
-                    let cpfInput = document.querySelector("#cpfField");
-                    if (cpfInput) {
-                        Inputmask("999.999.999-99").mask(cpfInput);
-                    }
-
-                    // Aplicando a máscara no celular
-                    let phoneInput = document.querySelector("#phoneField");
-                    if (phoneInput) {
-                        Inputmask("(99) 99999-9999").mask(phoneInput);
-                    }
-                }, 500); // Pequeno delay para garantir que o DOM foi carregado
-            });
-        </script>
-
-        <style>
-          body {
-            font-family: Roboto, Arial, sans-serif;
-            padding: 20px;
-            background: #333; /* Fundo escuro */
-            display: flex;
-            justify-content: center;
-            align-items: flex-start !important; /* Mantém o formulário no topo */
-            height: 100vh;
-            overflow-y: auto; /* Habilita scroll vertical */
-          }
-            input, textarea, select {
-            margin: 0;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box; /* Garante que o padding seja considerado no tamanho total */
-            width: 100%; /* Garante que todos os elementos ocupem a largura total do container */
-          }
-          .form-container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            max-width: 500px;
-            width: 80%;
-          }
-          .form-group {
-            margin-bottom: 20px;
-          }
-          .rating {
-          display: flex;
-          flex-direction: row-reverse;
-          justify-content: space-between;
-          }
-          .rating input {
-            display: none;
-          }
-          .rating label {
-            font-size: 4rem;
-            font-size: ${this.isMobile ? '2rem' : '4rem'};
-            color: #ccc;
-            cursor: pointer;
-            padding: 0 5px;
-          }
-          .rating input:checked ~ label {
-            color: #f5b301;
-          }
-          .rating label:hover,
-          .rating label:hover ~ label {
-            color: #f5b301;
-          }
-          label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 5px;
-          }
-          input, textarea, select {
-            width: 100%;
-            padding: 8px;
-            font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-          }
-          button {
-            background-color: #2C3E50 ;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-          }
-          button:hover {
-            background-color: #303f9f;
-          }
-
-        </style>
-      </head>
-      <body>
-        <div class="form-container">
-        ${this.logoBase64 ? `<div style="text-align: center; margin-bottom: 20px;">
-          <img src="${this.logoBase64}" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover;" />
-        </div>` : ''}
-        
-          <form>
-    `;
-
-    // Adicionar somente os campos que não sejam "data_do_envio"
-    this.fields
-      .filter((field) => field.name !== 'data_do_envio') // Filtrar o campo `data_do_envio`
-      .sort((a, b) => a.ordenation - b.ordenation) // Ordenar os campos pela ordenation
-      .forEach((field) => {
-      if (field.type === 'text' || field.type === 'email') {
-        formHtml += `
-      <div class="form-group">
-        <label style="word-wrap: break-word; white-space: normal;">${field.label}</label>
-        <input type="${field.type}" ${field.required ? 'required' : ''}>
-      </div>
-      `;
-      } else if (field.type === 'textarea') {
-        formHtml += `
-      <div class="form-group">
-        <label style="word-wrap: break-word; white-space: normal;">${field.label}</label>
-        <textarea ${field.required ? 'required' : ''}></textarea>
-      </div>
-      `;
-      } else if (field.type === 'cpf') {
-        formHtml += `
-          <div class="form-group">
-            <label style="word-wrap: break-word; white-space: normal;">${field.label}</label>
-            <input type="text" id="cpfField" placeholder="000.000.000-00" ${field.required ? 'required' : ''}>
-          </div>
-        `;
-      } else if (field.type === 'telephone') {
-        formHtml += `
-          <div class="form-group">
-            <label style="word-wrap: break-word; white-space: normal;">${field.label}</label>
-            <input type="text" id="phoneField" placeholder="(00) 00000-0000" ${field.required ? 'required' : ''}>
-          </div>
-        `;
-      } else if (field.type === 'date') {
-        formHtml += `
-      <div class="form-group">
-        <label style="word-wrap: break-word; white-space: normal;">${field.label}</label>
-        <input type="date" ${field.required ? 'required' : ''}>
-      </div>
-      `;
-      } else if (field.type === 'dropdown' && field.options) {
-        formHtml += `
-      <div class="form-group">
-        <label style="word-wrap: break-word; white-space: normal;">${field.label}</label>
-        <select ${field.required ? 'required' : ''}>
-        <option value="0">Selecione uma opção</option>
-        ${field.options.map((option) => `<option value="${option}">${option}</option>`).join('')}
-        </select>
-      </div>
-      `;
-      } else if (field.type === 'rating') {
-        formHtml += `
-      <div class="form-group">
-        <label style="word-wrap: break-word; white-space: normal;">${field.label}</label>
-        <div class="rating">
-        ${Array.from({ length: 5 }, (_, i) => i + 1).reverse().map((i) => `
-        <input type="radio" id="${field.name}-${i}" name="${field.name}" value="${i}" ${field.required ? 'required' : ''}>
-        <label for="${field.name}-${i}">★</label>
-        `).join('')}
-        </div>
-      </div>
-      `;
-      }
-      else if (field.type === 'multiple_selection' && field.options) {
-        formHtml += `
-        <div class="form-group">
-          <label style="word-wrap: break-word; white-space: normal;">${field.label}</label>
-          <div style="
-          border: 1px solid #ccc;
-          border-radius: 4px;
-          padding: 8px;
-          background: #fff;
-          margin: 0 auto;
-          ">
-          ${field.options.map((option, index) => `
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; border-bottom: 1px solid #eee;">
-        <div style="flex: 1; text-align: left;">
-        <input type="checkbox" id="${field.name}-${index}" name="${field.name}" value="${option}" ${field.required ? 'required' : ''}>
-        </div>
-        <div style="flex: 9; text-align: end;">
-        <label for="${field.name}-${index}" style="word-wrap: break-word; white-space: normal;">${option}</label>
-        </div>
-        </div>
-          `).join('')}
-          </div>
-        </div>
-        `;
-      }
-
-      });
-
-    formHtml += `
-              <button>Enviar</button>
-            </form>
-          </div>
-        </body>
-        </html>
-      `;
-
-    // Sanitizar o conteúdo do iframe
-    this.iframeContent = this.sanitizer.bypassSecurityTrustHtml(formHtml);
-  }
-
-
   // Atualizar métodos de manipulação para filtrar `data_do_envio`
   moveUp(index: number) {
     // Obtenha o índice real no array `fields` com base no índice do array visível
@@ -389,7 +167,6 @@ export class FormEditComponent {
       // Atualize a ordenation dos campos trocados
       this.fields[realIndex - 1].ordenation--;
       this.fields[realIndex].ordenation++;
-      this.updateIframe();
     }
   }
 
@@ -404,7 +181,6 @@ export class FormEditComponent {
       // Atualize a ordenation dos campos trocados
       this.fields[realIndex + 1].ordenation++;
       this.fields[realIndex].ordenation--;
-      this.updateIframe();
     }
   }
 
@@ -423,7 +199,6 @@ export class FormEditComponent {
       if (result) {
         this.fields[realIndex] = result;
         this.visibleFields.forEach(field => field.isEmpty = false);
-        this.updateIframe();
       }
     });
 
@@ -443,13 +218,11 @@ export class FormEditComponent {
             if (String(confirmed) === 'true') {
               this.fieldsDeletedsWithFeedbacks.push(this.fields[realIndex].id);
               this.fields.splice(realIndex, 1);
-              this.updateIframe();
             }
           });
       } else {
         this.fieldsDeleteds.push(this.fields[realIndex].id);
         this.fields.splice(realIndex, 1);
-        this.updateIframe();
       }
     }
   }
@@ -468,7 +241,6 @@ export class FormEditComponent {
     if (field) {
       field.required = event.checked;
     }
-    this.updateIframe();
   }
 
   saveForm() {
@@ -482,8 +254,6 @@ export class FormEditComponent {
           field.isEmpty = true :
           field.isEmpty = false;
       });
-
-      this.updateIframe();
       return;
     }
 
