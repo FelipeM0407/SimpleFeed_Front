@@ -24,14 +24,38 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { forkJoin } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormPreviewComponent } from './form-preview/form-preview.component';
-
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
+import { DateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-form-edit',
   standalone: true,
-  imports: [FormPreviewComponent, MatTooltipModule, MatExpansionModule, MatSnackBarModule, MatProgressSpinnerModule, MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
+  imports: [MatDatepickerModule, MatNativeDateModule, FormsModule, MatInputModule, MatFormFieldModule, FormPreviewComponent, MatTooltipModule, MatExpansionModule, MatSnackBarModule, MatProgressSpinnerModule, MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
   templateUrl: './form-edit.component.html',
   styleUrls: ['./form-edit.component.scss'],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    {
+      provide: MAT_DATE_FORMATS,
+      useValue: {
+        parse: {
+          dateInput: 'DD/MM/YYYY',
+        },
+        display: {
+          dateInput: 'DD/MM/YYYY',
+          monthYearLabel: 'MMM YYYY',
+          dateA11yLabel: 'LL',
+          monthYearA11yLabel: 'MMMM YYYY',
+        },
+      },
+    },
+  ]
 })
 export class FormEditComponent {
   fields: { id: number; type: string; name: string; label: string; ordenation: number; required: boolean; options: string[]; fieldTypeId: number; isNew: boolean; isEmpty: boolean; hasFeedbacks: boolean }[] = [];
@@ -46,11 +70,14 @@ export class FormEditComponent {
   fieldsDeleteds: number[] = [];
   isLoading = true;
   logoBase64: string = '';
+  expirationDate: string = '';
 
   constructor(private snackBar: MatSnackBar, private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
     private authService: AuthService, private dialog: MatDialog,
-    private router: Router) {
-
+    private router: Router, private fb: FormBuilder,
+    private dateAdapter: DateAdapter<Date>) {
+      
+    this.dateAdapter.setLocale('pt-BR');
     this.checkIfMobile();
   }
 
@@ -121,6 +148,7 @@ export class FormEditComponent {
   onResize() {
     this.checkIfMobile();
   }
+
 
   onLogoSelected(event: any): void {
     const file = event.target.files[0];
@@ -275,7 +303,8 @@ export class FormEditComponent {
         })),
         fieldsDeletedsWithFeedbacks: this.fieldsDeletedsWithFeedbacks,
         fieldsDeleteds: this.fieldsDeleteds,
-        logoBase64: this.logoBase64
+        logoBase64: this.logoBase64,
+        expirationDate: this.expirationDate
       };
 
       this.isLoading = true;
