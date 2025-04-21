@@ -19,6 +19,7 @@ import { ThankYouDialogComponent } from './thank-you-dialog/thank-you-dialog/tha
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { cpfValidator, telefoneValidator } from '../../../../shared/Util/validators';
+import { ExpiredFormDialogComponent } from './expired-form-dialog/expired-form-dialog.component';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -77,52 +78,61 @@ export class FeedbackFormComponent {
 
   ngOnInit(): void {
     this.renderer.setStyle(document.body, 'overflow', 'auto');
-
+  
     this.route.params.subscribe((params) => {
       this.formId = params['formId'];
+  
+      // Nova chamada para buscar dados de configuração (incluindo expiration_date)
+      this.formsService.getSettingsByFormIdAsync(parseInt(this.formId, 10)).subscribe(settings => {
+        const expiration = settings?.expirationDate;
+  
+        if (expiration) {
+          const expirationDate = new Date(expiration);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0); // Zera as horas para comparar apenas a data
 
-      const feedbackData = localStorage.getItem(this.formId);
-      if (feedbackData) {
-        const feedback = JSON.parse(feedbackData);
-        const expirationDate = new Date(feedback.expiration);
-
-        if (new Date() < expirationDate) {
-          this.exibirForm = false;
-          this.dialog.open(ThankYouDialogComponent, {
-            width: '300px',
-            panelClass: 'thank-you-dialog',
-            disableClose: true
-          });
-          this.isLoading = false;
-          return;
-        }
-      }
-
-      this.formsService.getFormStructure(parseInt(this.formId, 10)).subscribe({
-        next: (data) => {
-          this.client_id = data[0].client_Id;
-          this.fields = data.map((field: FormField) => {
-            if ((field.type === 'dropdown' || field.type === 'multiple_selection') && typeof field.options === 'string') {
-              if (field.options) {
-                field.options = JSON.parse(field.options);
-              }
-            }
-            return field;
-          }).sort((a: { ordenation: number; }, b: { ordenation: number; }) => a.ordenation - b.ordenation);
-          this.formsService.getLogoBase64ByFormId(parseInt(this.formId, 10)).subscribe((res: any) => {
-            this.logoBase64 = res.logoBase64 || '';
-          });
-          this.createForm();
-          this.isLoading = false;
-        },
-        error: (error) => {
-          if (error.status === 403) {
-            alert("Você já respondeu a este formulário hoje.");
+          if (expirationDate < today) {
+            this.exibirForm = false;
+            this.dialog.open(ExpiredFormDialogComponent, {
+              width: '300px',
+              panelClass: 'thank-you-dialog',
+              disableClose: true
+            });
+            this.isLoading = false;
+            return;
           }
         }
+  
+        // Se não expirou, continua carregando estrutura do formulário
+        this.formsService.getFormStructure(parseInt(this.formId, 10)).subscribe({
+          next: (data) => {
+            this.client_id = data[0].client_Id;
+            this.fields = data.map((field: FormField) => {
+              if ((field.type === 'dropdown' || field.type === 'multiple_selection') && typeof field.options === 'string') {
+                if (field.options) {
+                  field.options = JSON.parse(field.options);
+                }
+              }
+              return field;
+            }).sort((a: { ordenation: number; }, b: { ordenation: number; }) => a.ordenation - b.ordenation);
+  
+            this.formsService.getLogoBase64ByFormId(parseInt(this.formId, 10)).subscribe((res: any) => {
+              this.logoBase64 = res.logoBase64 || '';
+            });
+  
+            this.createForm();
+            this.isLoading = false;
+          },
+          error: (error) => {
+            if (error.status === 403) {
+              alert("Você já respondeu a este formulário hoje.");
+            }
+          }
+        });
       });
     });
   }
+  
 
   createForm(): void {
     this.fields.forEach((field) => {

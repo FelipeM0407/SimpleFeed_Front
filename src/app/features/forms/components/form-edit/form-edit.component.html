@@ -34,7 +34,43 @@
     <!-- Painel lateral com mat-accordion -->
     <div class="editor-sidebar" style="width: auto;">
       <mat-accordion multi>
-        <!-- Panel 1: Logo -->
+
+        <!-- Panel 1: Configurações gerais do formulário -->
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <mat-icon class="mr-1" style="margin-right: 6px;">settings</mat-icon>
+              Configurações
+            </mat-panel-title>
+            <mat-panel-description>Configurações gerais</mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="p-2 d-flex flex-row gap-3" style="align-items: baseline;">
+            <mat-form-field appearance="outline" style="flex: 1;">
+              <mat-label>Data de Expiração</mat-label>
+                <input matInput [matDatepicker]="picker" [(ngModel)]="settingsForm.expirationDate" (focus)="picker.open()"
+              [disabled]="!checkboxDataExpiracao" required />
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker touchUi="false" [startView]="'month'"></mat-datepicker>
+              <mat-hint>Defina até quando o formulário ficará disponível.</mat-hint>
+            </mat-form-field>
+
+            <ng-container *ngIf="this.settingsForm?.expirationDate">
+              <script>
+              expirationDate = this.settingsForm.expirationDate;
+              </script>
+            </ng-container>
+
+            <mat-slide-toggle color="primary" [checked]="checkboxDataExpiracao"
+              (change)="habilitaDataExpiracao($event)">
+                <span *ngIf="!isMobile">Habilitar expiração</span>
+            </mat-slide-toggle>
+
+
+          </div>
+        </mat-expansion-panel>
+
+        <!-- Panel 2: Logo -->
         <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>
@@ -60,7 +96,7 @@
           </div>
         </mat-expansion-panel>
 
-        <!-- Panel 2: Edição de Campos -->
+        <!-- Panel 3: Edição de Campos -->
         <mat-expansion-panel [expanded]="true">
           <mat-expansion-panel-header>
             <mat-panel-title>
@@ -125,7 +161,7 @@
           </div>
         </mat-expansion-panel>
 
-        <!-- Panel 3: Estilo Visual -->
+        <!-- Panel 4: Estilo Visual -->
         <mat-expansion-panel>
           <mat-expansion-panel-header>
             <mat-panel-title>
@@ -138,9 +174,6 @@
         </mat-expansion-panel>
       </mat-accordion>
     </div>
-
-
-
 
     <button mat-fab class="floating-button" *ngIf="isMobile" [matMenuTriggerFor]="menu"
       aria-label="Floating action button">
