@@ -6,6 +6,7 @@ import { FormDashboard } from '../models/FormDashboard';
 import { FieldTypes } from '../models/FieldTypes';
 import { FormsTemplates } from '../models/FormsTemplates';
 import { FormStructure } from '../models/FormStructure';
+import { FormSettings } from '../models/FormSettings';
 
 @Injectable({
   providedIn: 'root',
@@ -15,13 +16,13 @@ export class FormsService {
   private frontUrl = `${environment.frontUrl}`;
   formNames: string[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getFrontUrl(): string {
     return this.frontUrl;
   }
 
-  setFormNames(formNames: string[]){
+  setFormNames(formNames: string[]) {
     this.formNames = formNames;
   }
 
@@ -68,5 +69,9 @@ export class FormsService {
 
   getLogoBase64ByFormId(formId: number): Observable<{ logoBase64: string }> {
     return this.http.get<{ logoBase64: string }>(`${this.apiUrl}/forms/${formId}/logo`);
+  }
+
+  getSettingsByFormIdAsync(formId: number): Observable<FormSettings> {
+    return this.http.get<FormSettings>(`${this.apiUrl}/forms/${formId}/settings`);
   }
 }

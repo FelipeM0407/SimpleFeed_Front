@@ -32,6 +32,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
 import { DateAdapter } from '@angular/material/core';
+import { FormSettings } from '../../models/FormSettings';
 
 @Component({
   selector: 'app-form-edit',
@@ -70,13 +71,16 @@ export class FormEditComponent {
   fieldsDeleteds: number[] = [];
   isLoading = true;
   logoBase64: string = '';
-  expirationDate: string = '';
-
+  checkboxDataExpiracao: boolean = false;
+  settingsForm: FormSettings = {
+    expirationDate: undefined
+  };
+  
   constructor(private snackBar: MatSnackBar, private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
     private authService: AuthService, private dialog: MatDialog,
     private router: Router, private fb: FormBuilder,
     private dateAdapter: DateAdapter<Date>) {
-      
+
     this.dateAdapter.setLocale('pt-BR');
     this.checkIfMobile();
   }
@@ -103,6 +107,13 @@ export class FormEditComponent {
         });
         this.formsService.getLogoBase64ByFormId(numericFormId).subscribe(response => {
           this.logoBase64 = response.logoBase64 || '';
+        });
+
+        this.formsService.getSettingsByFormIdAsync(numericFormId).subscribe(response => {
+          this.settingsForm = response || { expirationDate: undefined };
+          if (this.settingsForm?.expirationDate) {
+            this.checkboxDataExpiracao = true;
+          }
         });
 
         this.isLoading = false;
@@ -169,8 +180,15 @@ export class FormEditComponent {
     }
   }
 
+  habilitaDataExpiracao(event: any): void {
+    this.checkboxDataExpiracao = event.checked;
 
-
+    if (!event.checked) {
+      if (this.settingsForm) {
+        this.settingsForm.expirationDate = undefined;
+      }
+    }
+  }
 
   checkIfMobile() {
     this.isMobile = window.innerWidth <= 768; // Define como mobile para telas menores que 768px
@@ -288,6 +306,17 @@ export class FormEditComponent {
     const form_Id = this.route.snapshot.paramMap.get('formId');
     if (form_Id) {
       const numericFormId = +form_Id;
+
+      if (this.checkboxDataExpiracao && !this.settingsForm?.expirationDate) {
+        this.snackBar.open('Por favor, selecione uma data de expiração.', 'Fechar', {
+          duration: 3000,
+          panelClass: ['snackbar-error'],
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        });
+        return;
+      }
+
       const editFormDto = {
         FormId: numericFormId,
         Fields: this.fields.map((field, index) => ({
@@ -304,7 +333,7 @@ export class FormEditComponent {
         fieldsDeletedsWithFeedbacks: this.fieldsDeletedsWithFeedbacks,
         fieldsDeleteds: this.fieldsDeleteds,
         logoBase64: this.logoBase64,
-        expirationDate: this.expirationDate
+        expirationDate: this.settingsForm?.expirationDate,
       };
 
       this.isLoading = true;

@@ -45,21 +45,28 @@
             <mat-panel-description>Configurações gerais</mat-panel-description>
           </mat-expansion-panel-header>
 
-          <div class="p-2 d-flex flex-row gap-3">
+          <div class="p-2 d-flex flex-row gap-3" style="align-items: baseline;">
             <mat-form-field appearance="outline" style="flex: 1;">
               <mat-label>Data de Expiração</mat-label>
-              <input
-                matInput
-                [matDatepicker]="picker"
-                [(ngModel)]="expirationDate"
-                (focus)="picker.open()"
-                readonly
-              />
+                <input matInput [matDatepicker]="picker" [(ngModel)]="settingsForm.expirationDate" (focus)="picker.open()"
+              [disabled]="!checkboxDataExpiracao" required />
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker touchUi="false" [startView]="'month'"></mat-datepicker>
               <mat-hint>Defina quando o formulário se tornará indisponível.</mat-hint>
             </mat-form-field>
-            
+
+            <ng-container *ngIf="this.settingsForm?.expirationDate">
+              <script>
+              expirationDate = this.settingsForm.expirationDate;
+              </script>
+            </ng-container>
+
+            <mat-slide-toggle color="primary" [checked]="checkboxDataExpiracao"
+              (change)="habilitaDataExpiracao($event)">
+                <span *ngIf="!isMobile">Habilitar expiração</span>
+            </mat-slide-toggle>
+
+
           </div>
         </mat-expansion-panel>
 
