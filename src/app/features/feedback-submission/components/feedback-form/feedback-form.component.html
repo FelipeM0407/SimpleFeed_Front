@@ -2,7 +2,7 @@
     <form *ngIf="exibirForm" [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
         <!-- Exibição do logo -->
         <div *ngIf="logoBase64" class="logo-container">
-            <img [src]="logoBase64" alt="Logo do formulário" class="logo-image" />
+            <img [src]="logoBase64" alt="Logo do formulário" style="width: 40%; border-radius: 10px" />
         </div>
         
         <div *ngFor="let field of fields" class="form-field">
