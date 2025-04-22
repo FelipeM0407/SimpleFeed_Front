@@ -57,7 +57,7 @@ export class FormPreviewComponent implements OnChanges {
           body {
             font-family: Roboto, Arial, sans-serif;
             padding: 20px;
-            background: #333;
+            background: #1f1f43;
             display: flex;
             justify-content: center;
             align-items: flex-start !important;
@@ -126,7 +126,7 @@ export class FormPreviewComponent implements OnChanges {
         <div class="form-container">
           ${this.logoBase64 ? `
             <div style="text-align: center; margin-bottom: 20px;">
-              <img src="${this.logoBase64}" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover;" />
+              <img src="${this.logoBase64}" style="width: 40%; border-radius: 10px" />
             </div>
           ` : ''}
           <form>

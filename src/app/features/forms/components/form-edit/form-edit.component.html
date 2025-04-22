@@ -52,7 +52,7 @@
               [disabled]="!checkboxDataExpiracao" required />
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker touchUi="false" [startView]="'month'"></mat-datepicker>
-              <mat-hint>Defina até quando o formulário ficará disponível.</mat-hint>
+              <mat-hint>Defina até quando o formulário receberá respostas.</mat-hint>
             </mat-form-field>
 
             <ng-container *ngIf="this.settingsForm?.expirationDate">
