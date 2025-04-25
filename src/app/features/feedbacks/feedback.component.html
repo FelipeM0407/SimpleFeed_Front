@@ -116,7 +116,7 @@
         <mat-date-range-picker #picker>
           <mat-datepicker-actions>
             <div style="display: flex; justify-content: space-around; width: 100%;">
-              <button mat-button matDatepickerCancel color="warn" (click)="clearDateFilter()">Limpar</button>
+              <button mat-button matDatepickerCancel color="warn" (click)="clearDateFilter(); closeDialog()">Limpar</button>
               <button mat-raised-button color="primary" matDatepickerApply
                 (click)="fetchFilteredFeedbacks(); closeDialog()">Buscar</button>
             </div>
