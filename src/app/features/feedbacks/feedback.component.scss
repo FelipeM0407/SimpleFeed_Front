@@ -1,257 +1,51 @@
-/* Contêiner principal */
 .container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 16px;
     max-width: 1500px;
 }
 
-/* Contêiner da tabela */
-.table-container {
-    width: 100%;
-    margin: 0 auto;
-    max-height: calc(64vh - 100px);
-    /* Define limite máximo da altura */
+.example-container {
+    height: auto;
+    width: auto;
+    max-width: 100%;
     overflow: auto;
-    /* Adiciona rolagem quando necessário */
-    box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2),
-        0px 8px 10px 1px rgba(0, 0, 0, 0.14),
-        0px 3px 14px 2px rgba(0, 0, 0, 0.12);
-    /* Sombra da tabela */
-    position: relative;
-    /* Add this line */
 }
 
-th[sticky],
-td[sticky] {
-    position: sticky;
-    left: 0;
-    background: white;
-    z-index: 1;
-    box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.2);
-}
-
-/* Colunas da tabela */
-th,
-td {
-    // padding: 8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    /* Trunca o texto excedente */
-    text-align: center;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    /* Borda das células */
-}
-
-/* Texto alinhado à esquerda */
-.align-right {
-    text-align: left;
-}
-
-/* Customização da barra de rolagem da tabela */
-.table-container::-webkit-scrollbar-thumb {
-    background-color: #888;
-    /* Cor do indicador de rolagem */
-    border-radius: 10px;
-    /* Bordas arredondadas */
-}
-
-.table-container::-webkit-scrollbar-track {
-    background-color: #f1f1f1;
-    /* Fundo da barra de rolagem */
-}
-
-/* Filtros */
-.filters {
-    display: none;
-    /* Oculta os filtros em dispositivos móveis */
-}
-
-.date-range-field {
+table {
+    width: 800px;
     width: 100%;
-    max-width: 400px;
-    /* Limita a largura do campo em telas maiores */
+    border-collapse: collapse;
 }
 
-/* Botão flutuante de filtros para mobile */
-.mobile-filters {
-    position: fixed;
-    bottom: 100px;
-    right: 6px;
-    z-index: 1000;
-    /* Fica acima de outros elementos */
-    display: flex;
-    justify-content: center;
-    align-items: center;
+td.mat-column-star {
+    width: 20px;
+    padding-right: 8px;
 }
 
-button.mat-mini-fab {
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    /* Destaque com sombra */
+th.mat-column-position,
+td.mat-column-position {
+    padding-left: 8px;
 }
 
-/* Barra de ações fixa */
-.action-bar-container {
-    position: fixed;
-    bottom: 20px;
-    /* Distância do rodapé */
-    left: 50%;
-    transform: translateX(-50%);
-    /* Centraliza horizontalmente */
-    z-index: 1000;
+.mat-mdc-table-sticky-border-elem-right {
+    border-left: 1px solid #e0e0e0;
 }
 
-.action-bar {
-    display: flex;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #fff;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    /* Sombra */
-    border-radius: 25px;
-    /* Bordas arredondadas */
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    /* Borda leve */
+.mat-mdc-table-sticky-border-elem-left {
+    border-right: 1px solid #e0e0e0;
 }
 
-.action-bar mat-icon {
-    font-size: 24px;
-    margin-right: 8px;
+td.mat-column-select,
+th.mat-column-select {
+    width: 50px;
 }
 
-.action-bar button.mat-icon-button {
-    width: 40px;
-    height: 40px;
-    margin: 0 4px;
+
+
+.mat-mdc-header-cell,
+.mat-mdc-cell {
+    border: 1px solid #e0e0e0;
 }
 
-.action-bar span {
-    font-size: 14px;
-    font-weight: 500;
-    color: #333;
-    /* Cor do texto */
-    white-space: nowrap;
-    /* Garante que o texto não quebre */
-}
-
-/* Estilo para botões */
-button.mat-icon-button {
-    color: #666;
-    /* Cor padrão dos ícones */
-    transition: color 0.2s ease-in-out;
-}
-
-button.mat-icon-button:hover {
-    color: #000;
-    /* Cor ao passar o mouse */
-}
-
-/* Contêiner do paginator */
-.paginator-container {
-    width: 100%;
-    margin: 2px auto;
-    box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.2),
-        0px 8px 10px 1px rgba(0, 0, 0, 0.14),
-        0px 3px 14px 2px rgba(0, 0, 0, 0.12);
-    /* Sombra */
-}
-
-/* Modal de filtros */
-mat-dialog-content {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    /* Espaçamento entre elementos */
-}
-
-.mat-mdc-tab-group {
-    width: 100%;
-}
-
-.dashboard-component {
-    overflow-y: auto;
-    max-height: 70vh;
-}
-
-.new-badge {
-    margin-left: 8px;
-    font-size: 12px;
-  }
-  
-
-
-/* Responsividade */
-@media (min-width: 768px) {
-    .filters {
-        display: flex;
-        flex-wrap: wrap;
-        /* Permite quebrar linha caso necessário */
-        gap: 16px;
-        /* Espaçamento entre os itens */
-        justify-content: center;
-        /* Alinha os filtros à esquerda */
-        align-items: center;
-
-        margin-bottom: 10px;
-        /* Espaçamento inferior */
-        padding: 5px;
-        /* Espaçamento interno */
-        background-color: #f9f9f9;
-        /* Fundo leve */
-        border-radius: 8px;
-        /* Bordas arredondadas */
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        /* Sombra leve */
-    }
-
-    .filter-actions {
-        display: flex;
-        gap: 8px;
-        /* Espaçamento entre os botões */
-        justify-content: center;
-        /* Alinha os botões à direita */
-    }
-
-    .mobile-filters {
-        display: none;
-        /* Oculta botão flutuante em telas maiores */
-    }
-
-
-}
-
-@media (max-width: 768px) {
-    .table-container {
-        width: 100%;
-        overflow-x: auto;
-        max-height: calc(70vh - 100px);
-    }
-
-    .dashboard-component {
-        max-height: 86vh;
-    }
-
-
-    .paginator-container {
-        width: 100%;
-        /* Ajusta largura do paginator */
-        margin: 4px auto;
-        padding-bottom: 5px;
-        /* Espaçamento inferior */
-    }
-}
-
-.spinner-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: rgba(255, 255, 255, 0.8);
-    z-index: 1000;
+.mdc-fab--mini {
+    width: 35px;
+    height: 35px;
 }
