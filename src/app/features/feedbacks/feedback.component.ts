@@ -105,12 +105,16 @@ export class FeedbacksComponent implements OnInit {
   errorMessage!: string;
   selection = new SelectionModel<any>(true, []);
   dateRangeForm!: FormGroup;
+  selectedCount = 0;
+  selectedFeedback: any;
 
   @ViewChild('picker') picker: any;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild('filterDialog') filterDialogRef!: TemplateRef<any>;
-
+  @ViewChild('confirmDialogRef') confirmDialogRef!: TemplateRef<any>;
+  @ViewChild('viewDialogRef') viewDialogRef!: TemplateRef<any>;
+  
   constructor(
     private route: ActivatedRoute,
     private feedbacksService: FeedbacksService,
@@ -119,6 +123,7 @@ export class FeedbacksComponent implements OnInit {
     private _adapter: DateAdapter<any>,
     private fb: FormBuilder,
     public dialog: MatDialog,
+    private snackBar: MatSnackBar,
     @Inject(MAT_DATE_LOCALE) private _locale: string,
   ) {
 
@@ -195,8 +200,10 @@ export class FeedbacksComponent implements OnInit {
           return {
             ...answerMap,
             submitted_At: feedback.submitted_At,
-            id: feedback.id
+            id: feedback.id,
+            isNew: feedback.isNew ?? false
           };
+          
         });
 
         this.dataSource = new MatTableDataSource<any>(parsedFeedbacks);
@@ -221,10 +228,10 @@ export class FeedbacksComponent implements OnInit {
   toggleAllRows() {
     if (this.isAllSelected()) {
       this.selection.clear();
-      return;
+    } else {
+      this.selection.select(...this.dataSource.data);
     }
-
-    this.selection.select(...this.dataSource.data);
+    this.updateSelectedCount(); // <- adicione esta linha!
   }
 
   checkboxLabel(row?: any): string {
@@ -262,8 +269,10 @@ export class FeedbacksComponent implements OnInit {
           return {
             ...answerMap,
             submitted_At: feedback.submitted_At,
-            id: feedback.id
+            id: feedback.id,
+            isNew: feedback.isNew ?? false
           };
+          
         });
 
         this.dataSource = new MatTableDataSource<any>(parsedFeedbacks);
@@ -282,12 +291,41 @@ export class FeedbacksComponent implements OnInit {
   openFilterDialog(): void {
     this.dialog.open(this.filterDialogRef);
   }
-  
+
   closeDialog(): void {
     this.dialog.closeAll();
   }
-  
 
+  updateSelectedCount(): void {
+    this.selectedCount = this.selection.selected.length;
+    this.selectedFeedback = this.selectedCount === 1 ? this.selection.selected[0] : null;
+  }
+
+  clearSelection(): void {
+    this.selection.clear();
+    this.updateSelectedCount();
+  }
+
+  deleteSelected(): void {
+    const dialogRef = this.dialog.open(this.confirmDialogRef);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const ids = this.selection.selected.map(fb => fb.id);
+        this.feedbacksService.deleteFeedbacks(ids).subscribe(() => {
+          this.selection.clear();             
+          this.updateSelectedCount();           
+          this.snackBar.open('Feedbacks excluídos!', 'Fechar', { duration: 3000 });
+          this.fetchFilteredFeedbacks();        
+        });
+      }
+    });
+  }  
+
+  viewSelected(): void {
+    if (this.selectedFeedback) {
+      this.dialog.open(this.viewDialogRef);
+    }
+  }
 }
 
 
