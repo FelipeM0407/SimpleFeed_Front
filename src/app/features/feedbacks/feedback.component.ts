@@ -17,12 +17,10 @@ import { MatNativeDateModule, NativeDateAdapter } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
-import { FilterDialogComponent } from './components/filter-dialog/filter-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select'; // Importação necessária
 import { FeedbacksService } from './services/feedbacks.service';
-import { ViewFeedbackDialogComponent } from './components/view-feedback-dialog/view-feedback-dialog.component';
 import { MatBadgeModule } from '@angular/material/badge'; // Importação necessária
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -107,6 +105,8 @@ export class FeedbacksComponent implements OnInit {
   dateRangeForm!: FormGroup;
   selectedCount = 0;
   selectedFeedback: any;
+  today = new Date();
+
 
   @ViewChild('picker') picker: any;
   @ViewChild(MatSort) sort!: MatSort;

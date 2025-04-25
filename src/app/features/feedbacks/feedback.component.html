@@ -1,7 +1,16 @@
 <div class="container">
   <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0px;">
-    <h2 *ngIf="!isMobile" style="margin: 0;">📝 {{formName}}</h2>
-    <h3 *ngIf="isMobile" style="margin: 0;">📝 {{formName}}</h3>
+    <nav aria-label="breadcrumb" style="display: flex; align-items: center;">
+      <ol class="breadcrumb" style="margin: 0; padding: 0; list-style: none; display: flex;" [ngStyle]="{'font-size': isMobile ? 'small' : 'larger'}">
+        <li class="breadcrumb-item">
+          <a href="/dashboard" class="breadcrumb-link">Início</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          Visualização de Respostas - {{formName}}
+        </li>
+      </ol>
+    </nav>
+    
 
     <button *ngIf="isMobile" mat-mini-fab color="primary" style="margin-left: 10px;" (click)="openFilterDialog()">
       <mat-icon>filter_list</mat-icon>
@@ -23,7 +32,7 @@
           </mat-date-range-input>
           <mat-hint>DD/MM/YYYY - DD/MM/YYYY</mat-hint>
           <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-date-range-picker #picker>
+          <mat-date-range-picker #picker [startAt]="dateRangeForm.get('dateRange.end')?.value || today">
             <mat-datepicker-actions>
               <div style="display: flex; justify-content: space-around; width: 100%;">
                 <button mat-button matDatepickerCancel color="warn" (click)="clearDateFilter()">Limpar</button>
@@ -52,24 +61,28 @@
         <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
 
           <!-- Checkbox -->
-          <ng-container matColumnDef="select">
-            <th mat-header-cell *matHeaderCellDef>
-              <mat-checkbox (change)="toggleAllRows()" [checked]="selection.hasValue() && isAllSelected()"
-                [indeterminate]="selection.hasValue() && !isAllSelected()" [aria-label]="checkboxLabel()">
-              </mat-checkbox>
+          <ng-container matColumnDef="select" sticky>
+            <th mat-header-cell *matHeaderCellDef class="select-column">
+              <div class="checkbox-wrapper">
+                <mat-checkbox
+                  (change)="toggleAllRows()"
+                  [checked]="selection.hasValue() && isAllSelected()"
+                  [indeterminate]="selection.hasValue() && !isAllSelected()"
+                  [aria-label]="checkboxLabel()">
+                </mat-checkbox>
+              </div>
             </th>
-            <td mat-cell *matCellDef="let row">
+            
+            <td mat-cell *matCellDef="let row" class="select-column">
               <div class="checkbox-wrapper">
                 <mat-checkbox (change)="selection.toggle(row); updateSelectedCount()"
                   [checked]="selection.isSelected(row)">
                 </mat-checkbox>
                 <span *ngIf="row.isNew" class="pulse-alert">!</span>
               </div>
-
             </td>
           </ng-container>
-
-
+          
           <!-- Colunas Dinâmicas -->
           <ng-container *ngFor="let column of dynamicColumns" [matColumnDef]="column.name">
             <th mat-header-cell *matHeaderCellDef mat-sort-header>
@@ -89,7 +102,7 @@
 
       </section>
 
-      <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons></mat-paginator>
+      <mat-paginator [pageSize]="10" [pageSizeOptions]="[10, 25, 100]" showFirstLastButtons></mat-paginator>
 
       <!-- Barra de ações para seleção -->
       <div class="action-bar" *ngIf="selectedCount > 0">
@@ -135,7 +148,7 @@
         <mat-hint>DD/MM/YYYY - DD/MM/YYYY</mat-hint>
 
         <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-date-range-picker #picker>
+        <mat-date-range-picker #picker [startAt]="dateRangeForm.get('dateRange.end')?.value || today">
           <mat-datepicker-actions>
             <div style="display: flex; justify-content: space-around; width: 100%;">
               <button mat-button matDatepickerCancel color="warn"
@@ -163,7 +176,7 @@
   <h2 mat-dialog-title>Visualizar Feedback</h2>
   <mat-dialog-content>
     <div *ngIf="selectedFeedback">
-      <p><strong>Data de envio:</strong> {{ selectedFeedback.submitted_At | date:'short' }}</p>
+      <!-- <p><strong>Data de envio:</strong> {{ selectedFeedback.submitted_At | date:'short' }}</p> -->
       <div *ngFor="let col of dynamicColumns">
         <p><strong>{{ col.label }}:</strong> {{ selectedFeedback[col.name] }}</p>
       </div>

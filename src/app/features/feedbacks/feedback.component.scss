@@ -73,17 +73,43 @@ th.mat-column-select {
 }
 
 .pulse-alert {
-    background-color: #ff4081; // cor de alerta (rosa vibrante, pode mudar)
-    color: white;
+    color: #ff4081;
     font-weight: bold;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    font-size: 14px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-size: 16px;
     animation: pulse 1.2s infinite;
+    line-height: 1;
+}
+
+
+
+.select-column {
+    position: sticky;
+    left: 0;
+    background: white;
+    padding: 5px;
+    /* ou a cor do header/table que você usa */
+    z-index: 3;
+    /* para ficar acima das células que scrollam */
+}
+
+.breadcrumb-link {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.3s;
+}
+
+.breadcrumb-link:hover {
+    color: #007bff;
+    /* azul claro no hover */
+    text-decoration: underline;
+    /* opcional, se quiser sublinhar ao passar o mouse */
+}
+
+
+.cell-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 @keyframes pulse {

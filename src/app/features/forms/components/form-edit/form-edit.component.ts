@@ -75,7 +75,8 @@ export class FormEditComponent {
   settingsForm: FormSettings = {
     expirationDate: undefined
   };
-  
+  formName!: string;
+
   constructor(private snackBar: MatSnackBar, private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
     private authService: AuthService, private dialog: MatDialog,
     private router: Router, private fb: FormBuilder,
@@ -104,6 +105,7 @@ export class FormEditComponent {
               isNew: false
             })) // Converte options para um array usando JSON.parse
             .sort((a: { ordenation: number; }, b: { ordenation: number; }) => a.ordenation - b.ordenation); // Ordena os campos pela ordenation
+          this.formName = form[0].formName;
         });
         this.formsService.getLogoBase64ByFormId(numericFormId).subscribe(response => {
           this.logoBase64 = response.logoBase64 || '';

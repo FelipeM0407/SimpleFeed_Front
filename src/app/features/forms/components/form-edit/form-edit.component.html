@@ -1,3 +1,15 @@
+<nav aria-label="breadcrumb" class="container" style="margin-top: 10px; display: flex; align-items: center;">
+  <ol class="breadcrumb" style="margin: 0; padding: 0; list-style: none; display: flex;"
+    [ngStyle]="{'font-size': isMobile ? 'small' : 'larger'}">
+    <li class="breadcrumb-item">
+      <a href="/dashboard" class="breadcrumb-link">Início</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+      Edição de formulário - {{formName}}
+    </li>
+  </ol>
+</nav>
+
 <!-- Footer fixo com ações -->
 <div class="action-footer" *ngIf="!isMobile">
   <div class="action-buttons">
@@ -48,8 +60,8 @@
           <div class="p-2 d-flex flex-row gap-3" style="align-items: baseline;">
             <mat-form-field appearance="outline" style="flex: 1;">
               <mat-label>Data de Expiração</mat-label>
-                <input matInput [matDatepicker]="picker" [(ngModel)]="settingsForm.expirationDate" (focus)="picker.open()"
-              [disabled]="!checkboxDataExpiracao" required />
+              <input matInput [matDatepicker]="picker" [(ngModel)]="settingsForm.expirationDate" (focus)="picker.open()"
+                [disabled]="!checkboxDataExpiracao" required />
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker touchUi="false" [startView]="'month'"></mat-datepicker>
               <mat-hint>Defina até quando o formulário receberá respostas.</mat-hint>
@@ -57,13 +69,13 @@
 
             <ng-container *ngIf="this.settingsForm?.expirationDate">
               <script>
-              expirationDate = this.settingsForm.expirationDate;
+                expirationDate = this.settingsForm.expirationDate;
               </script>
             </ng-container>
 
             <mat-slide-toggle color="primary" [checked]="checkboxDataExpiracao"
               (change)="habilitaDataExpiracao($event)">
-                <span *ngIf="!isMobile">Habilitar expiração</span>
+              <span *ngIf="!isMobile">Habilitar expiração</span>
             </mat-slide-toggle>
 
 
