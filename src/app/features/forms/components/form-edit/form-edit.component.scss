@@ -9,10 +9,25 @@
   margin-top: 8px;
 }
 
+
 .container-lg.mobile-view {
   height: 92vh;
   /* Limita a altura total à altura da tela */
 }
+
+.breadcrumb-link {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.3s;
+}
+
+.breadcrumb-link:hover {
+  color: #007bff;
+  /* azul claro no hover */
+  text-decoration: underline;
+  /* opcional, se quiser sublinhar ao passar o mouse */
+}
+
 
 .fixed-tabs {
   position: sticky;
