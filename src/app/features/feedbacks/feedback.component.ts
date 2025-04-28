@@ -31,12 +31,15 @@ import { DashboardFeedbackComponent } from './components/dashboard-feedback/dash
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSortModule } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
-
+import { NgChartsModule } from 'ng2-charts';
+import { MatMenuModule } from '@angular/material/menu';
 import {
   MAT_MOMENT_DATE_FORMATS,
   MomentDateAdapter,
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
 } from '@angular/material-moment-adapter';
+import { MatCardModule } from '@angular/material/card';
+
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -60,6 +63,7 @@ export const MY_DATE_FORMATS = {
     FormsModule,
     MatCheckboxModule,
     MatButtonModule,
+    MatMenuModule,
     MatToolbarModule,
     MatIconModule,
     MatTableModule,
@@ -77,7 +81,9 @@ export const MY_DATE_FORMATS = {
     MatSnackBarModule,
     MatTabsModule,
     DashboardFeedbackComponent,
-    MatSortModule
+    MatSortModule,
+    NgChartsModule,
+    MatCardModule
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
@@ -96,7 +102,7 @@ export class FeedbacksComponent implements OnInit {
   dynamicColumns: {
     id: number; name: string, field_Id: string; label: string; type: string; options: string[]
   }[] = [];
-  displayedColumns: string[] = ['select']; // checkbox primeiro
+  displayedColumns: string[] = ['checkbox']; // checkbox primeiro
   dataSource = new MatTableDataSource<any>([]);
   isMobile = false;
   isLoading = true;
@@ -106,7 +112,21 @@ export class FeedbacksComponent implements OnInit {
   selectedCount = 0;
   selectedFeedback: any;
   today = new Date();
+  chartFields: {
+    label: string;
+    name: string;
+    type: string;
+    chartLabels: string[];
+    chartData: number[];
+    chartDatasets: { label: string; data: number[]; backgroundColor: string[] }[];
+  }[] = [];
 
+
+  chartColors: string[] = [
+    '#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF',
+    '#FF9F40', '#E7E9ED', '#76D7C4', '#F7DC6F', '#F1948A',
+    '#85C1E9', '#BB8FCE', '#F8C471', '#82E0AA', '#F5B7B1'
+  ];
 
   @ViewChild('picker') picker: any;
   @ViewChild(MatSort) sort!: MatSort;
@@ -114,7 +134,10 @@ export class FeedbacksComponent implements OnInit {
   @ViewChild('filterDialog') filterDialogRef!: TemplateRef<any>;
   @ViewChild('confirmDialogRef') confirmDialogRef!: TemplateRef<any>;
   @ViewChild('viewDialogRef') viewDialogRef!: TemplateRef<any>;
-  
+  @ViewChild('mobileMenu') mobileMenu: any;
+
+  showDashboard: boolean = false;
+
   constructor(
     private route: ActivatedRoute,
     private feedbacksService: FeedbacksService,
@@ -132,6 +155,8 @@ export class FeedbacksComponent implements OnInit {
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+    this.generateChartData();
+
   }
 
   @HostListener('window:resize', ['$event'])
@@ -142,7 +167,6 @@ export class FeedbacksComponent implements OnInit {
 
   ngOnInit(): void {
     this.onResize();
-
     this.formId = Number(this.route.snapshot.paramMap.get('formId'));
 
     const today = new Date();
@@ -156,14 +180,25 @@ export class FeedbacksComponent implements OnInit {
       })
     });
 
-
     this.formService.getFormStructure(this.formId).subscribe({
       next: (structure) => {
         this.formName = structure[0].formName;
         this.dynamicColumns = structure;
-        this.displayedColumns = ['select', ...this.dynamicColumns.map(f => f.name)];
+        this.displayedColumns = ['checkbox', ...this.dynamicColumns.map(f => f.name)];
 
-        // Aplica o filtro logo que carregar a tela
+        this.chartFields = this.dynamicColumns
+          .filter(c => c.type === 'dropdown' || c.type === 'rating')
+          .map(c => ({
+            label: c.label,
+            name: c.name,
+            type: c.type,
+            chartLabels: [],
+            chartData: [],
+            chartDatasets: [] // <-- aqui!
+          }));
+
+
+
         this.fetchFilteredFeedbacks();
       },
       error: (error) => {
@@ -173,6 +208,34 @@ export class FeedbacksComponent implements OnInit {
       },
     });
   }
+
+  generateChartData() {
+    this.chartFields.forEach((field, fieldIndex) => {
+      const counts: { [key: string]: number } = {};
+
+      this.dataSource.data.forEach((row: any) => {
+        const value = row[field.name];
+        if (value) {
+          counts[value] = (counts[value] || 0) + 1;
+        }
+      });
+
+      field.chartLabels = Object.keys(counts);
+      field.chartData = Object.values(counts);
+
+      field.chartDatasets = [{
+        label: field.label,
+        data: field.chartLabels.map(label => counts[label] || 0),
+        backgroundColor: field.chartLabels.map((_, index) => this.chartColors[index % this.chartColors.length])
+      }];
+
+
+
+
+    });
+  }
+
+
 
   fetchFilteredFeedbacks() {
     const range = this.dateRangeForm.value.dateRange;
@@ -203,12 +266,24 @@ export class FeedbacksComponent implements OnInit {
             id: feedback.id,
             isNew: feedback.isNew ?? false
           };
-          
+
         });
 
-        this.dataSource = new MatTableDataSource<any>(parsedFeedbacks);
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
+        if (parsedFeedbacks.length > 0) {
+          this.dataSource = new MatTableDataSource<any>(parsedFeedbacks);
+          this.dataSource.sort = this.sort;
+          this.dataSource.paginator = this.paginator;
+          this.showDashboard = true; // <- adicione esta linha!
+
+          this.generateChartData();
+        } else {
+          this.showDashboard = false; // <- adicione esta linha!
+          this.dataSource = new MatTableDataSource<any>([]);
+          this.chartFields.forEach(field => {
+            field.chartLabels = [];
+            field.chartData = [];
+          });
+        }
         this.isLoading = false;
       },
       error: (error) => {
@@ -272,12 +347,25 @@ export class FeedbacksComponent implements OnInit {
             id: feedback.id,
             isNew: feedback.isNew ?? false
           };
-          
+
         });
 
-        this.dataSource = new MatTableDataSource<any>(parsedFeedbacks);
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
+        if (parsedFeedbacks.length > 0) {
+          this.dataSource = new MatTableDataSource<any>(parsedFeedbacks);
+          this.dataSource.sort = this.sort;
+          this.dataSource.paginator = this.paginator;
+          this.showDashboard = true;
+
+          this.generateChartData();
+        } else {
+          this.showDashboard = false;
+          this.dataSource = new MatTableDataSource<any>([]);
+          this.chartFields.forEach(field => {
+            field.chartLabels = [];
+            field.chartData = [];
+          });
+        }
+
         this.isLoading = false;
       },
       error: (error) => {
@@ -312,20 +400,39 @@ export class FeedbacksComponent implements OnInit {
       if (result) {
         const ids = this.selection.selected.map(fb => fb.id);
         this.feedbacksService.deleteFeedbacks(ids).subscribe(() => {
-          this.selection.clear();             
-          this.updateSelectedCount();           
+          this.selection.clear();
+          this.updateSelectedCount();
           this.snackBar.open('Feedbacks excluídos!', 'Fechar', { duration: 3000 });
-          this.fetchFilteredFeedbacks();        
+          this.fetchFilteredFeedbacks();
         });
       }
     });
-  }  
+  }
 
   viewSelected(): void {
     if (this.selectedFeedback) {
       this.dialog.open(this.viewDialogRef);
     }
   }
+
+  exportToExcel(): void {
+    const dataToExport = this.dataSource.data.map((row: any) => {
+      const exportRow: any = {};
+      this.dynamicColumns.forEach(col => {
+        exportRow[col.label] = row[col.name];
+      });
+      return exportRow;
+    });
+
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Feedbacks');
+
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob: Blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(blob, `Formulário_${this.formName.replace(/\s/g, '_')}.xlsx`);
+  }
+
 }
 
 
