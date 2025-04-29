@@ -21,7 +21,6 @@ import { TemplateRef } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarRef, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { forkJoin } from 'rxjs';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormPreviewComponent } from './form-preview/form-preview.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -33,6 +32,8 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
 import { DateAdapter } from '@angular/material/core';
 import { FormSettings } from '../../models/FormSettings';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-form-edit',
@@ -76,6 +77,9 @@ export class FormEditComponent {
     expirationDate: undefined
   };
   formName!: string;
+  form_Id!: number;
+  saveTrigger$ = new Subject<void>();
+  reloadKey = Date.now();
 
   constructor(private snackBar: MatSnackBar, private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
     private authService: AuthService, private dialog: MatDialog,
@@ -88,9 +92,16 @@ export class FormEditComponent {
 
   ngOnInit() {
 
-    const form_Id = this.route.snapshot.paramMap.get('formId');
-    if (form_Id) {
-      const numericFormId = +form_Id;
+    this.saveTrigger$
+      .pipe(debounceTime(500)) // espera 500ms depois da última alteração
+      .subscribe(() => {
+        this.saveForm();
+      });
+
+
+    this.form_Id = Number(this.route.snapshot.paramMap.get('formId'));
+    if (this.form_Id) {
+      const numericFormId = +this.form_Id;
 
       // Valida se existem feedbacks associados a esse formulário
       this.formsService.validateExistenceFeedbacks(numericFormId).subscribe(res => {
@@ -131,6 +142,11 @@ export class FormEditComponent {
     });
   }
 
+  triggerSave() {
+    this.saveTrigger$.next();
+  }
+
+
   addField(field: FieldTypes) {
     let count = 2;
     let editedLabel = field.label;
@@ -155,6 +171,7 @@ export class FormEditComponent {
       isEmpty: false,
       hasFeedbacks: false
     });
+    this.triggerSave();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -170,6 +187,7 @@ export class FormEditComponent {
     const reader = new FileReader();
     reader.onload = () => {
       this.logoBase64 = reader.result as string;
+      this.triggerSave()
     };
     reader.readAsDataURL(file);
   }
@@ -179,18 +197,24 @@ export class FormEditComponent {
     if (confirm('Deseja realmente remover o logo?')) {
       this.logoBase64 = '';
       this.logoInput.nativeElement.value = '';
+      this.triggerSave()
     }
   }
 
   habilitaDataExpiracao(event: any): void {
     this.checkboxDataExpiracao = event.checked;
-
+  
     if (!event.checked) {
       if (this.settingsForm) {
         this.settingsForm.expirationDate = undefined;
       }
+      this.triggerSave();
     }
   }
+  
+  onDateChange() {
+    this.triggerSave();
+  }  
 
   checkIfMobile() {
     this.isMobile = window.innerWidth <= 768; // Define como mobile para telas menores que 768px
@@ -216,6 +240,7 @@ export class FormEditComponent {
       this.fields[realIndex - 1].ordenation--;
       this.fields[realIndex].ordenation++;
     }
+    this.triggerSave();
   }
 
   moveDown(index: number) {
@@ -230,6 +255,7 @@ export class FormEditComponent {
       this.fields[realIndex + 1].ordenation++;
       this.fields[realIndex].ordenation--;
     }
+    this.triggerSave();
   }
 
   editField(index: number) {
@@ -246,10 +272,10 @@ export class FormEditComponent {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.fields[realIndex] = result;
+        this.triggerSave();
         this.visibleFields.forEach(field => field.isEmpty = false);
       }
     });
-
   }
 
   // Ajustar a exclusão para não permitir excluir `data_do_envio`
@@ -266,11 +292,13 @@ export class FormEditComponent {
             if (String(confirmed) === 'true') {
               this.fieldsDeletedsWithFeedbacks.push(this.fields[realIndex].id);
               this.fields.splice(realIndex, 1);
+              this.triggerSave();
             }
           });
       } else {
         this.fieldsDeleteds.push(this.fields[realIndex].id);
         this.fields.splice(realIndex, 1);
+        this.triggerSave();
       }
     }
   }
@@ -289,6 +317,7 @@ export class FormEditComponent {
     if (field) {
       field.required = event.checked;
     }
+    this.triggerSave();
   }
 
   saveForm() {
@@ -348,8 +377,7 @@ export class FormEditComponent {
             horizontalPosition: 'center',
             verticalPosition: 'top'
           });
-
-          this.router.navigate(['/dashboard/forms']);
+          this.reloadKey = Date.now();
         } else {
           this.snackBar.open('Erro ao salvar formulário!', 'Fechar', {
             duration: 3000,

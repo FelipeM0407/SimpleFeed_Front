@@ -1,4 +1,4 @@
-import { Component, Inject, Renderer2  } from '@angular/core';
+import { Component, Inject, Renderer2 } from '@angular/core';
 import { FeedbackFormService } from '../../services/feedback-form.service';
 import { ActivatedRoute } from '@angular/router';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -66,6 +66,7 @@ export class FeedbackFormComponent {
   client_id!: number;
   exibirForm: boolean = true;
   logoBase64: string = '';
+  isPreview: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -78,61 +79,67 @@ export class FeedbackFormComponent {
 
   ngOnInit(): void {
     this.renderer.setStyle(document.body, 'overflow', 'auto');
-  
+
     this.route.params.subscribe((params) => {
       this.formId = params['formId'];
-  
-      // Nova chamada para buscar dados de configuração (incluindo expiration_date)
-      this.formsService.getSettingsByFormIdAsync(parseInt(this.formId, 10)).subscribe(settings => {
-        const expiration = settings?.expirationDate;
-  
-        if (expiration) {
-          const expirationDate = new Date(expiration);
-          const today = new Date();
-          today.setHours(0, 0, 0, 0); // Zera as horas para comparar apenas a data
+      this.isPreview = this.route.snapshot.queryParamMap.get('isPreview') === 'true';
 
-          if (expirationDate < today) {
-            this.exibirForm = false;
-            this.dialog.open(ExpiredFormDialogComponent, {
-              width: '300px',
-              panelClass: 'thank-you-dialog',
-              disableClose: true
-            });
-            this.isLoading = false;
-            return;
+      if (!this.isPreview) {
+        // Nova chamada para buscar dados de configuração (incluindo expiration_date)
+        this.formsService.getSettingsByFormIdAsync(parseInt(this.formId, 10)).subscribe(settings => {
+          const expiration = settings?.expirationDate;
+
+          if (expiration) {
+            const expirationDate = new Date(expiration);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Zera as horas para comparar apenas a data
+
+            if (expirationDate < today) {
+              this.exibirForm = false;
+              this.dialog.open(ExpiredFormDialogComponent, {
+                width: '300px',
+                panelClass: 'expired-form-dialog',
+                disableClose: true
+              });
+              this.isLoading = false;
+              return;
+            }
+
+          }
+
+        });
+      }
+
+      this.formsService.getFormStructure(parseInt(this.formId, 10)).subscribe({
+        next: (data) => {
+          this.client_id = data[0].client_Id;
+          this.fields = data.map((field: FormField) => {
+            if ((field.type === 'dropdown' || field.type === 'multiple_selection') && typeof field.options === 'string') {
+              if (field.options) {
+                field.options = JSON.parse(field.options);
+              }
+            }
+            return field;
+          }).sort((a: { ordenation: number; }, b: { ordenation: number; }) => a.ordenation - b.ordenation);
+
+          this.formsService.getLogoBase64ByFormId(parseInt(this.formId, 10)).subscribe((res: any) => {
+            this.logoBase64 = res.logoBase64 || '';
+          });
+
+          this.createForm();
+          this.isLoading = false;
+        },
+        error: (error) => {
+          //Se ja respondeu e não é preview, exibe mensagem de erro
+          if (error.status === 403 && !this.isPreview) {
+            alert("Você já respondeu a este formulário hoje.");
           }
         }
-  
-        // Se não expirou, continua carregando estrutura do formulário
-        this.formsService.getFormStructure(parseInt(this.formId, 10)).subscribe({
-          next: (data) => {
-            this.client_id = data[0].client_Id;
-            this.fields = data.map((field: FormField) => {
-              if ((field.type === 'dropdown' || field.type === 'multiple_selection') && typeof field.options === 'string') {
-                if (field.options) {
-                  field.options = JSON.parse(field.options);
-                }
-              }
-              return field;
-            }).sort((a: { ordenation: number; }, b: { ordenation: number; }) => a.ordenation - b.ordenation);
-  
-            this.formsService.getLogoBase64ByFormId(parseInt(this.formId, 10)).subscribe((res: any) => {
-              this.logoBase64 = res.logoBase64 || '';
-            });
-  
-            this.createForm();
-            this.isLoading = false;
-          },
-          error: (error) => {
-            if (error.status === 403) {
-              alert("Você já respondeu a este formulário hoje.");
-            }
-          }
-        });
       });
+
     });
   }
-  
+
 
   createForm(): void {
     this.fields.forEach((field) => {
@@ -183,6 +190,9 @@ export class FeedbackFormComponent {
     if (!this.validateForm()) {
       this.form.markAllAsTouched();
     } else {
+      if (this.isPreview) {
+        return;
+      }
       const formData = this.fields.map(field => ({
         value: this.processField(field),
         id_form_field: field.id
