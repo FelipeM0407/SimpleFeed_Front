@@ -85,6 +85,18 @@ export class FeedbackFormComponent {
       this.isPreview = this.route.snapshot.queryParamMap.get('isPreview') === 'true';
 
       if (!this.isPreview) {
+
+        if (!this.checkIfCanRespond()) {
+          this.exibirForm = false;
+          this.dialog.open(ThankYouDialogComponent, {
+            width: '300px',
+            panelClass: 'thank-you-dialog',
+            disableClose: true
+          });
+          this.isLoading = false;
+          return;
+        }
+        
         // Nova chamada para buscar dados de configuração (incluindo expiration_date)
         this.formsService.getSettingsByFormIdAsync(parseInt(this.formId, 10)).subscribe(settings => {
           const expiration = settings?.expirationDate;
@@ -291,4 +303,22 @@ export class FeedbackFormComponent {
 
     localStorage.setItem(this.formId, JSON.stringify(feedback));
   }
+
+  checkIfCanRespond(): boolean {
+    const item = localStorage.getItem(this.formId);
+
+    if (!item) return true;
+
+    try {
+      const data = JSON.parse(item);
+      const expirationDate = new Date(data.expiration);
+      const now = new Date();
+
+      return now > expirationDate; // true se já passou 24h, ou seja, PODE responder
+    } catch {
+      return true; // permite responder se algo der errado
+    }
+  }
+
+
 }
