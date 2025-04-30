@@ -378,21 +378,23 @@ export class FormEditComponent {
             verticalPosition: 'top'
           });
 
-            window.location.reload();
+          this.formsService.getFormStructure(numericFormId).subscribe((form) => {
+            this.fields = form
+              .map((field: any) => ({
+                ...field,
+                options: field.options ? JSON.parse(field.options) : [],
+                hasFeedbacks: this.hasFeedbacks, // Define hasFeedbacks para cada campo
+                isNew: false
+              })) // Converte options para um array usando JSON.parse
+              .sort((a: { ordenation: number; }, b: { ordenation: number; }) => a.ordenation - b.ordenation); // Ordena os campos pela ordenation
+            this.formName = form[0].formName;
+          });
 
-          // this.formsService.getFormStructure(numericFormId).subscribe((form) => {
-          //   this.fields = form
-          //     .map((field: any) => ({
-          //       ...field,
-          //       options: field.options ? JSON.parse(field.options) : [],
-          //       hasFeedbacks: this.hasFeedbacks, // Define hasFeedbacks para cada campo
-          //       isNew: false
-          //     })) // Converte options para um array usando JSON.parse
-          //     .sort((a: { ordenation: number; }, b: { ordenation: number; }) => a.ordenation - b.ordenation); // Ordena os campos pela ordenation
-          //   this.formName = form[0].formName;
-          // });
+          this.fieldsDeleteds = [];
+          this.fieldsDeletedsWithFeedbacks = [];
+
           
-          // this.reloadKey = Date.now();
+          this.reloadKey = Date.now();
         } else {
           this.snackBar.open('Erro ao salvar formulário!', 'Fechar', {
             duration: 3000,
