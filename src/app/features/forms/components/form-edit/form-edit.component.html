@@ -13,9 +13,8 @@
 <!-- Footer fixo com ações -->
 <div class="action-footer" *ngIf="!isMobile">
   <div class="action-buttons">
-    <button mat-flat-button color="warn" (click)="cancel()">Cancelar</button>
-    <button mat-flat-button color="primary" (click)="saveForm()" [disabled]="visibleFields.length == 0">
-      Salvar
+    <button mat-flat-button color="warn" (click)="cancel()">
+      <mat-icon>arrow_back</mat-icon> Voltar
     </button>
   </div>
 </div>
@@ -45,6 +44,9 @@
 
     <!-- Painel lateral com mat-accordion -->
     <div class="editor-sidebar" style="width: auto;">
+      <p><mat-icon color="primary" style="vertical-align: middle;">info</mat-icon>
+        Qualquer alteração é automaticamente refletida no formulário.
+      </p>
       <mat-accordion multi>
 
         <!-- Panel 1: Configurações gerais do formulário -->
@@ -60,8 +62,14 @@
           <div class="p-2 d-flex flex-row gap-3" style="align-items: baseline;">
             <mat-form-field appearance="outline" style="flex: 1;">
               <mat-label>Data de Expiração</mat-label>
-              <input matInput [matDatepicker]="picker" [(ngModel)]="settingsForm.expirationDate" (focus)="picker.open()"
-                [disabled]="!checkboxDataExpiracao" required />
+              <input matInput
+                [matDatepicker]="picker"
+                [(ngModel)]="settingsForm.expirationDate"
+                (focus)="picker.open()"
+                (dateChange)="onDateChange()"
+                [disabled]="!checkboxDataExpiracao"
+                required />
+
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker touchUi="false" [startView]="'month'"></mat-datepicker>
               <mat-hint>Defina até quando o formulário receberá respostas.</mat-hint>
@@ -208,10 +216,12 @@
   <!-- Preview -->
   <!-- Container de pré-visualização lado direito -->
   <div class="editor-main" style="flex: 1;">
-    <h3 *ngIf="!isMobile">Pré Visualização</h3>
     <div class="iframe-container" style="height: 100%;">
-      <app-form-preview [fields]="visibleFields" [logoBase64]="logoBase64" [isMobile]="isMobile">
+      <app-form-preview [fields]="visibleFields" [logoBase64]="logoBase64" [isMobile]="isMobile" [formId]="form_Id"
+        [reloadKey]="reloadKey">
       </app-form-preview>
+
+
 
     </div>
   </div>

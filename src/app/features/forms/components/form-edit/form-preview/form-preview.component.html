@@ -2,6 +2,8 @@
   id="formPreview"
   frameborder="0"
   class="iframe-preview"
-  [srcdoc]="iframeContent || '<p>No content available</p>'"
-  title="Form Preview">
+  [src]="urlForm + '/feedback-submission/' + formId + '?r=' + reloadKey + '&isPreview=true' | safeUrl"
+  title="Pré-visualização do Formulário"
+  width="100%"
+  height="600px">
 </iframe>
