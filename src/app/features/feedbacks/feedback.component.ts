@@ -184,7 +184,7 @@ export class FeedbacksComponent implements OnInit {
       next: (structure) => {
         this.formName = structure[0].formName;
         this.dynamicColumns = structure;
-        this.displayedColumns = ['checkbox', ...this.dynamicColumns.map(f => f.name)];
+        this.displayedColumns = ['checkbox', ...this.dynamicColumns.map(f => `col_${f.id}`)];
 
         this.chartFields = this.dynamicColumns
           .filter(c => c.type === 'dropdown' || c.type === 'rating')
@@ -257,7 +257,7 @@ export class FeedbacksComponent implements OnInit {
 
           this.dynamicColumns.forEach(col => {
             const answer = answers.find((a: any) => a.id_form_field === col.field_Id || a.id_form_field === col.id);
-            answerMap[col.name] = answer ? answer.value : '';
+            answerMap[`col_${col.id}`] = answer ? answer.value : '';
           });
 
           return {
@@ -338,7 +338,7 @@ export class FeedbacksComponent implements OnInit {
 
           this.dynamicColumns.forEach(col => {
             const answer = answers.find((a: any) => a.id_form_field === col.field_Id || a.id_form_field === col.id);
-            answerMap[col.name] = answer ? answer.value : '';
+            answerMap[`col_${col.id}`] = answer ? answer.value : '';
           });
 
           return {
@@ -419,7 +419,7 @@ export class FeedbacksComponent implements OnInit {
     const dataToExport = this.dataSource.data.map((row: any) => {
       const exportRow: any = {};
       this.dynamicColumns.forEach(col => {
-        exportRow[col.label] = row[col.name];
+        exportRow[col.label] = row[`col_${col.id}`];
       });
       return exportRow;
     });
