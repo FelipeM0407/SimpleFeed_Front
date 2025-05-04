@@ -34,11 +34,13 @@ import { DateAdapter } from '@angular/material/core';
 import { FormSettings } from '../../models/FormSettings';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { FormStyleDto } from '../../models/FormStyleDto';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-form-edit',
   standalone: true,
-  imports: [MatDatepickerModule, MatNativeDateModule, FormsModule, MatInputModule, MatFormFieldModule, FormPreviewComponent, MatTooltipModule, MatExpansionModule, MatSnackBarModule, MatProgressSpinnerModule, MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
+  imports: [MatSelectModule, MatDatepickerModule, MatNativeDateModule, FormsModule, MatInputModule, MatFormFieldModule, FormPreviewComponent, MatTooltipModule, MatExpansionModule, MatSnackBarModule, MatProgressSpinnerModule, MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
   templateUrl: './form-edit.component.html',
   styleUrls: ['./form-edit.component.scss'],
   providers: [
@@ -80,6 +82,29 @@ export class FormEditComponent {
   form_Id!: number;
   saveTrigger$ = new Subject<void>();
   reloadKey = Date.now();
+  formStyle: FormStyleDto = {
+    formId: 0,
+    color: '',
+    colorButton: '',
+    backgroundColor: '',
+    fontColor: '',
+    fontFamily: '',
+    fontSize: ''
+  };
+
+
+  availableFonts: string[] = [
+    'Segoe UI', 'Arial', 'Helvetica', 'Georgia', 'Tahoma', 'Verdana', 'Courier New', 'Times New Roman'
+  ];
+
+  resetFormStyle() {
+    this.formStyle.backgroundColor = '#1f1f43';
+    this.formStyle.fontColor = '#000000';
+    this.formStyle.fontFamily = 'Segoe UI';
+    this.formStyle.fontSize = '16';
+    this.formStyle.color = '#ffffff';
+    this.formStyle.colorButton = '#3f51b5';
+  }
 
   constructor(private snackBar: MatSnackBar, private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
     private authService: AuthService, private dialog: MatDialog,
@@ -140,6 +165,8 @@ export class FormEditComponent {
         ...field
       }));
     });
+
+    this.loadFormStyle();
   }
 
   triggerSave() {
@@ -393,7 +420,7 @@ export class FormEditComponent {
           this.fieldsDeleteds = [];
           this.fieldsDeletedsWithFeedbacks = [];
 
-          
+
           this.reloadKey = Date.now();
         } else {
           this.snackBar.open('Erro ao salvar formulário!', 'Fechar', {
@@ -419,6 +446,20 @@ export class FormEditComponent {
     });
 
     return dialogRef.afterClosed(); // Retorna o resultado do diálogo
+  }
+
+  loadFormStyle() {
+    this.formsService.getFormStyle(this.form_Id).subscribe((style) => {
+      if (style) this.formStyle = style
+      else
+        this.resetFormStyle();
+    });
+  }
+
+  saveFormStyle() {
+    this.formsService.saveFormStyle(this.form_Id, this.formStyle).subscribe(() => {
+      alert('Estilo salvo com sucesso!');
+    });
   }
 
 

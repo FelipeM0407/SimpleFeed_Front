@@ -431,3 +431,17 @@ input[type="file"] {
     display: none; // não exibe no mobile
   }
 }
+
+.style-panel {
+  margin-top: 16px;
+
+  mat-form-field {
+    min-width: 120px;
+  }
+
+  button {
+    margin-top: 8px;
+  }
+}
+
+

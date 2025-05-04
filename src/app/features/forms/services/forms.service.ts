@@ -7,6 +7,7 @@ import { FieldTypes } from '../models/FieldTypes';
 import { FormsTemplates } from '../models/FormsTemplates';
 import { FormStructure } from '../models/FormStructure';
 import { FormSettings } from '../models/FormSettings';
+import { FormStyleDto } from '../models/FormStyleDto';
 
 @Injectable({
   providedIn: 'root',
@@ -74,4 +75,13 @@ export class FormsService {
   getSettingsByFormIdAsync(formId: number): Observable<FormSettings> {
     return this.http.get<FormSettings>(`${this.apiUrl}/forms/${formId}/settings`);
   }
+
+  getFormStyle(formId: number) {
+    return this.http.get<FormStyleDto>(`${this.apiUrl}/forms/${formId}/style`);
+  }
+
+  saveFormStyle(formId: number, style: FormStyleDto) {
+    return this.http.post(`${this.apiUrl}/forms/${formId}/style`, style);
+  }
+
 }
