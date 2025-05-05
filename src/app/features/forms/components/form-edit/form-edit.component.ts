@@ -24,7 +24,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormPreviewComponent } from './form-preview/form-preview.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -36,11 +36,13 @@ import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { FormStyleDto } from '../../models/FormStyleDto';
 import { MatSelectModule } from '@angular/material/select';
+import { ReactiveFormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-form-edit',
   standalone: true,
-  imports: [MatSelectModule, MatDatepickerModule, MatNativeDateModule, FormsModule, MatInputModule, MatFormFieldModule, FormPreviewComponent, MatTooltipModule, MatExpansionModule, MatSnackBarModule, MatProgressSpinnerModule, MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
+  imports: [ReactiveFormsModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, FormsModule, MatInputModule, MatFormFieldModule, FormPreviewComponent, MatTooltipModule, MatExpansionModule, MatSnackBarModule, MatProgressSpinnerModule, MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
   templateUrl: './form-edit.component.html',
   styleUrls: ['./form-edit.component.scss'],
   providers: [
@@ -94,16 +96,18 @@ export class FormEditComponent {
 
 
   availableFonts: string[] = [
-    'Segoe UI', 'Arial', 'Helvetica', 'Georgia', 'Tahoma', 'Verdana', 'Courier New', 'Times New Roman'
+    'Roboto', 'Segoe UI', 'Arial', 'Helvetica', 'Georgia', 'Tahoma', 'Verdana', 'Courier New', 'Times New Roman'
   ];
+  styleForm!: FormGroup;
+  hasEmptyFields: boolean = false;
 
   resetFormStyle() {
     this.formStyle.backgroundColor = '#1f1f43';
     this.formStyle.fontColor = '#000000';
-    this.formStyle.fontFamily = 'Segoe UI';
+    this.formStyle.fontFamily = 'Roboto';
     this.formStyle.fontSize = '16';
     this.formStyle.color = '#ffffff';
-    this.formStyle.colorButton = '#3f51b5';
+    this.formStyle.colorButton = '#20b2aa';
   }
 
   constructor(private snackBar: MatSnackBar, private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
@@ -171,6 +175,14 @@ export class FormEditComponent {
 
   triggerSave() {
     this.saveTrigger$.next();
+  }
+
+  checkEmptyFields() {
+    this.hasEmptyFields = this.visibleFields.some(field => field.isEmpty);
+  }
+
+  ngDoCheck() {
+    this.checkEmptyFields();
   }
 
 
@@ -449,16 +461,35 @@ export class FormEditComponent {
   }
 
   loadFormStyle() {
+
     this.formsService.getFormStyle(this.form_Id).subscribe((style) => {
-      if (style) this.formStyle = style
-      else
+      if (style) {
+        this.formStyle = style;
+        this.styleForm.patchValue({ fontSize: style.fontSize });
+      } else {
         this.resetFormStyle();
+      }
+    });
+
+    this.styleForm = this.fb.group({
+      fontSize: [this.formStyle.fontSize || 16, [Validators.required, Validators.min(10), Validators.max(25)]],
+      // outros campos podem ser adicionados aqui também
     });
   }
 
   saveFormStyle() {
+
+    this.formStyle.fontSize = this.styleForm.get('fontSize')?.value;
     this.formsService.saveFormStyle(this.form_Id, this.formStyle).subscribe(() => {
-      alert('Estilo salvo com sucesso!');
+      this.snackBar.open('Estilo Salvo com sucesso!🎨', 'Fechar', {
+        duration: 3000,
+        panelClass: ['snackbar-success'],
+        horizontalPosition: 'center',
+        verticalPosition: 'top'
+      });
+
+      //Atualiza o iframe
+      this.reloadKey = Date.now();
     });
   }
 

@@ -46,7 +46,7 @@
   /* Scroll apenas se o conteúdo exceder */
   padding: 20px;
   box-sizing: border-box;
-  height: calc(85vh - 20px);
+  height: calc(85vh - 50px);
   /* Compensa o padding */
 }
 
@@ -230,7 +230,7 @@ h3 {
   position: fixed;
   bottom: 16px;
   /* Distância do rodapé */
-  right: 16px;
+  right: 3px;
   /* Distância do lado direito */
   z-index: 1000;
   /* Garantir que fique acima de outros elementos */
@@ -239,6 +239,8 @@ h3 {
   background-color: #2C3E50;
   /* Cor do botão */
   color: white;
+  width: 42px;
+  height: 42px;
 }
 
 .floating-button:hover {
@@ -310,7 +312,7 @@ h3 {
 }
 
 .logo-upload-button {
-  background-color: #3f51b5;
+  background-color: #20b2aa;
   color: #fff;
   padding: 8px 16px;
   border-radius: 8px;

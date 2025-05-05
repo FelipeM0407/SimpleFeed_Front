@@ -42,7 +42,7 @@ export class FormCreateDialogComponent {
   formStyle: FormStyleDto = {
     formId: 0,
     color: '#ffffff',
-    colorButton: '#3f51b5',
+    colorButton: '#20b2aa',
     backgroundColor: '#1f1f43',
     fontColor: '#000000',
     fontFamily: 'Segoe UI',

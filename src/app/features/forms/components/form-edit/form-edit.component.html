@@ -123,7 +123,7 @@
 
           <div>
             <div class="d-flex justify-content-center mb-2">
-              <button mat-raised-button color="primary" [matMenuTriggerFor]="belowMenu">
+              <button mat-raised-button color="primary" [disabled]="hasEmptyFields" [matMenuTriggerFor]="belowMenu">
                 <mat-icon>add</mat-icon>Adicionar campo
               </button>
               <mat-menu #belowMenu="matMenu" yPosition="below">
@@ -222,9 +222,16 @@
           </div>
 
           <div fxLayout="row" style="display: flex; justify-content: space-around;" fxFlex="100%">
-            <mat-form-field appearance="outline" fxFlex="45%">
+            <mat-form-field [formGroup]="styleForm" appearance="outline" fxFlex="45%">
               <mat-label>Tamanho da Fonte</mat-label>
-              <input matInput type="number" [(ngModel)]="formStyle.fontSize">
+              <input matInput type="number" formControlName="fontSize" min="10" max="25">
+              <mat-hint align="start">Mínimo 8, Máximo 30</mat-hint>
+              <mat-error *ngIf="styleForm.get('fontSize')?.hasError('min')">
+                O valor mínimo permitido é 8.
+              </mat-error>
+              <mat-error *ngIf="styleForm.get('fontSize')?.hasError('max')">
+                O valor máximo permitido é 30.
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="outline" fxFlex="45%">
@@ -234,7 +241,9 @@
           </div>
 
           <div fxLayout="row" style="display: flex; justify-content: space-around;" fxFlex="100%">
-            <button mat-raised-button color="primary" (click)="saveFormStyle()">Salvar Estilo</button>
+            <button mat-raised-button color="primary" (click)="saveFormStyle()" [disabled]="!styleForm.valid">
+              Salvar Estilo
+            </button>
             <button mat-button color="basic" (click)="resetFormStyle()">Restaurar Padrão</button>
           </div>
         </mat-expansion-panel>

@@ -139,6 +139,10 @@ export class FeedbackFormComponent {
           });
 
           this.createForm();
+          this.formsService.getFormStyle(parseInt(this.formId, 10)).subscribe(style => {
+            this.applyFormStyles(style);
+          });
+          
           this.isLoading = false;
         },
         error: (error) => {
@@ -151,6 +155,37 @@ export class FeedbackFormComponent {
 
     });
   }
+
+  applyFormStyles(style: any): void {
+    const formContainer = document.querySelector('.form-container') as HTMLElement;
+    const formElement = document.querySelector('form.form') as HTMLElement;
+    const submitButton = document.querySelector('button[type="submit"]') as HTMLElement;
+    
+    if (formContainer) {
+      this.renderer.setStyle(formContainer, 'background-color', style.backgroundColor);
+      this.renderer.setStyle(formContainer, 'font-family', style.fontFamily); // Aplica o font-family ao container
+    }
+    
+    if (formElement) {
+      this.renderer.setStyle(formElement, 'background-color', style.color); // cor do formulário
+      this.renderer.setStyle(formElement, 'color', style.fontColor);
+      this.renderer.setStyle(formElement, 'font-family', style.fontFamily);
+      this.renderer.setStyle(formElement, 'font-size', `${style.fontSize}px`);
+    }
+    
+    if (submitButton) {
+      this.renderer.setStyle(submitButton, 'background-color', style.colorButton || '#20b2aa'); // fallback padrão
+      this.renderer.setStyle(submitButton, 'color', style.fontColor);
+      this.renderer.setStyle(submitButton, 'font-family', style.fontFamily);
+    }
+
+    // Aplica o font-family a todos os elementos de texto dentro do formulário
+    const allTextElements = document.querySelectorAll('.form-container *');
+    allTextElements.forEach((element) => {
+      this.renderer.setStyle(element, 'font-family', style.fontFamily);
+    });
+  }
+  
 
 
   createForm(): void {
