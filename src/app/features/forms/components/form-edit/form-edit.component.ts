@@ -137,16 +137,32 @@ export class FormEditComponent {
         this.hasFeedbacks = res;
 
         this.formsService.getFormStructure(numericFormId).subscribe((form) => {
-          this.fields = form
-            .map((field: any) => ({
+          const existingNames = new Set<string>();
+
+          this.fields = form.map((field: any, index: number) => {
+            let parsedOptions = field.options ? JSON.parse(field.options) : [];
+            let uniqueName = field.name;
+            let count = 2;
+
+            // Garante que o campo "name" seja único
+            while (existingNames.has(uniqueName)) {
+              uniqueName = `${field.name}_${count++}`;
+            }
+            existingNames.add(uniqueName);
+
+            return {
               ...field,
-              options: field.options ? JSON.parse(field.options) : [],
-              hasFeedbacks: this.hasFeedbacks, // Define hasFeedbacks para cada campo
+              name: uniqueName,
+              options: parsedOptions,
+              hasFeedbacks: this.hasFeedbacks,
               isNew: false
-            })) // Converte options para um array usando JSON.parse
-            .sort((a: { ordenation: number; }, b: { ordenation: number; }) => a.ordenation - b.ordenation); // Ordena os campos pela ordenation
+            };
+          }).sort((a: any, b: any) => a.ordenation - b.ordenation);
+
           this.formName = form[0].formName;
         });
+
+
         this.formsService.getLogoBase64ByFormId(numericFormId).subscribe(response => {
           this.logoBase64 = response.logoBase64 || '';
         });
@@ -187,20 +203,21 @@ export class FormEditComponent {
 
 
   addField(field: FieldTypes) {
-    let count = 2;
     let editedLabel = field.label;
-    let editedName = '';
+    let editedName = field.name;
+    let count = 2;
 
-    while (this.fields.some(f => f.label === editedLabel)) {
-      editedLabel = `${field.label} ${count}`;
+    // Garante que o name seja único
+    while (this.fields.some(f => f.name === editedName)) {
       editedName = `${field.name}_${count}`;
       count++;
     }
 
+
     this.fields.push({
       id: field.id,
       type: field.fieldType,
-      name: editedName || field.name,
+      name: editedName,
       label: editedLabel || field.label,
       required: false,
       ordenation: field.ordenation,
