@@ -1,10 +1,16 @@
-<div *ngIf="!isLoading" class="form-container">
-    <form *ngIf="exibirForm" [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
+<div *ngIf="!isLoading && estiloAplicado" class="form-container"
+    [ngStyle]="{'background-color': formStyle.backgroundColor,'font-family': formStyle.fontFamily}">
+    <form *ngIf="exibirForm" [formGroup]="form" (ngSubmit)="onSubmit()" class="form" [ngStyle]="{
+      'background-color': formStyle.color,
+      'color': formStyle.fontColor,
+      'font-family': formStyle.fontFamily,
+      'font-size.px': formStyle.fontSize
+    }">
         <!-- Exibição do logo -->
         <div *ngIf="logoBase64" class="logo-container">
             <img [src]="logoBase64" alt="Logo do formulário" style="width: 40%; border-radius: 10px" />
         </div>
-        
+
         <div *ngFor="let field of fields" class="form-field">
 
             <!-- Campo de texto genérico -->
@@ -119,7 +125,13 @@
 
         </div>
 
-        <button mat-raised-button color="primary" type="submit">Enviar</button>
+        <button mat-raised-button color="primary" type="submit" [ngStyle]="{
+          'background-color': formStyle.colorButton,
+          'color': formStyle.fontColor,
+          'font-family': formStyle.fontFamily
+        }">
+            Enviar
+        </button>
     </form>
 </div>
 
