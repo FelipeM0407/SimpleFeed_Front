@@ -19,6 +19,7 @@ import { FormsTemplates } from '../../models/FormsTemplates';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { FormStructure } from '../../models/FormStructure';
+import { FormStyleDto } from '../../models/FormStyleDto';
 
 @Component({
   selector: 'app-form-create-dialog',
@@ -36,6 +37,17 @@ export class FormCreateDialogComponent {
   clientId: number | null = null;
   formStructure: FormStructure | null = null;
   selectedFieldsOrder: FieldTypes[] = []; // Lista para rastrear a ordem de seleção
+
+  //Estilo padrão do formulário
+  formStyle: FormStyleDto = {
+    formId: 0,
+    color: '#ffffff',
+    colorButton: '#20b2aa',
+    backgroundColor: '#1f1f43',
+    fontColor: '#000000',
+    fontFamily: 'Segoe UI',
+    fontSize: '16'
+  };
 
   constructor(
     public dialogRef: MatDialogRef<FormCreateDialogComponent>,
@@ -170,7 +182,8 @@ export class FormCreateDialogComponent {
         Client_Id: this.clientId || 0,
         Is_Active: true,
         Template_Id: selectedTemplate[0]?.id || 0,
-        Fields: selectedFields.length > 1 ? selectedFields : templateFields
+        Fields: selectedFields.length > 1 ? selectedFields : templateFields,
+        FormStyle: this.formStyle
 
       }); // Retorna o nome do formulário e os templates selecionados
     }

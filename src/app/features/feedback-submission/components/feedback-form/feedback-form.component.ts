@@ -20,6 +20,7 @@ import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { cpfValidator, telefoneValidator } from '../../../../shared/Util/validators';
 import { ExpiredFormDialogComponent } from './expired-form-dialog/expired-form-dialog.component';
+import { FormStyleDto } from 'src/app/features/forms/models/FormStyleDto';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -68,6 +69,16 @@ export class FeedbackFormComponent {
   logoBase64: string = '';
   isPreview: boolean = false;
 
+  defaultFormStyle: FormStyleDto = {
+    formId: 0,
+    color: '#ffffff',
+    colorButton: '#20b2aa',
+    backgroundColor: '#1f1f43',
+    fontColor: '#000000',
+    fontFamily: 'Roboto',
+    fontSize: '16'
+  };
+
   constructor(
     private route: ActivatedRoute,
     private feedbackFormService: FeedbackFormService,
@@ -96,7 +107,7 @@ export class FeedbackFormComponent {
           this.isLoading = false;
           return;
         }
-        
+
         // Nova chamada para buscar dados de configuração (incluindo expiration_date)
         this.formsService.getSettingsByFormIdAsync(parseInt(this.formId, 10)).subscribe(settings => {
           const expiration = settings?.expirationDate;
@@ -139,6 +150,10 @@ export class FeedbackFormComponent {
           });
 
           this.createForm();
+          this.formsService.getFormStyle(parseInt(this.formId, 10)).subscribe(style => {
+            this.applyFormStyles(style);
+          });
+
           this.isLoading = false;
         },
         error: (error) => {
@@ -151,6 +166,39 @@ export class FeedbackFormComponent {
 
     });
   }
+
+  applyFormStyles(style: FormStyleDto | null): void {
+    const appliedStyle = style || this.defaultFormStyle;
+
+    const formContainer = document.querySelector('.form-container') as HTMLElement;
+    const formElement = document.querySelector('form.form') as HTMLElement;
+    const submitButton = document.querySelector('button[type="submit"]') as HTMLElement;
+
+    if (formContainer) {
+      this.renderer.setStyle(formContainer, 'background-color', appliedStyle.backgroundColor); // cor de fundo do container
+      this.renderer.setStyle(formContainer, 'font-family', appliedStyle.fontFamily); // Aplica o font-family ao container
+    }
+
+    if (formElement) {
+      this.renderer.setStyle(formElement, 'background-color', appliedStyle.color); // cor do formulário
+      this.renderer.setStyle(formElement, 'color', appliedStyle.fontColor); // cor do texto
+      this.renderer.setStyle(formElement, 'font-family', appliedStyle.fontFamily); // font-family do formulário
+      this.renderer.setStyle(formElement, 'font-size', `${appliedStyle.fontSize}px`);
+    }
+
+    if (submitButton) {
+      this.renderer.setStyle(submitButton, 'background-color', appliedStyle.colorButton); // fallback padrão
+      this.renderer.setStyle(submitButton, 'color', appliedStyle.fontColor); // cor do texto do botão
+      this.renderer.setStyle(submitButton, 'font-family', appliedStyle.fontFamily); // font-family do botão
+    }
+
+    // Aplica o font-family a todos os elementos de texto dentro do formulário
+    const allTextElements = document.querySelectorAll('.form-container *');
+    allTextElements.forEach((element) => {
+      this.renderer.setStyle(element, 'font-family', appliedStyle.fontFamily); // Aplica o font-family a todos os elementos de texto dentro do formulário
+    });
+  }
+
 
 
   createForm(): void {

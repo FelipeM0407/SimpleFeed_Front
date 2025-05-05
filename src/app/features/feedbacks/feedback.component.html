@@ -96,12 +96,12 @@
                   </ng-container>
 
                   <!-- Colunas Dinâmicas -->
-                  <ng-container *ngFor="let column of dynamicColumns" [matColumnDef]="column.name">
+                  <ng-container *ngFor="let column of dynamicColumns" [matColumnDef]="'col_' + column.id">
                     <th mat-header-cell *matHeaderCellDef mat-sort-header>
                       {{ column.label }}
                     </th>
                     <td mat-cell *matCellDef="let element">
-                      {{ element[column.name] }}
+                      {{ element['col_' + column.id] }}
                     </td>
                   </ng-container>
 

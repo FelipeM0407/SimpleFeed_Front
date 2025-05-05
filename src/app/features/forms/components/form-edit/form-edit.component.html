@@ -62,13 +62,8 @@
           <div class="p-2 d-flex flex-row gap-3" style="align-items: baseline;">
             <mat-form-field appearance="outline" style="flex: 1;">
               <mat-label>Data de Expiração</mat-label>
-              <input matInput
-                [matDatepicker]="picker"
-                [(ngModel)]="settingsForm.expirationDate"
-                (focus)="picker.open()"
-                (dateChange)="onDateChange()"
-                [disabled]="!checkboxDataExpiracao"
-                required />
+              <input matInput [matDatepicker]="picker" [(ngModel)]="settingsForm.expirationDate" (focus)="picker.open()"
+                (dateChange)="onDateChange()" [disabled]="!checkboxDataExpiracao" required />
 
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker touchUi="false" [startView]="'month'"></mat-datepicker>
@@ -128,7 +123,7 @@
 
           <div>
             <div class="d-flex justify-content-center mb-2">
-              <button mat-raised-button color="primary" [matMenuTriggerFor]="belowMenu">
+              <button mat-raised-button color="primary" [disabled]="hasEmptyFields" [matMenuTriggerFor]="belowMenu">
                 <mat-icon>add</mat-icon>Adicionar campo
               </button>
               <mat-menu #belowMenu="matMenu" yPosition="below">
@@ -190,7 +185,67 @@
             </mat-panel-title>
             <mat-panel-description>Configurações visuais</mat-panel-description>
           </mat-expansion-panel-header>
-          <p>Em breve você poderá customizar o estilo do formulário por aqui.</p>
+
+
+          <div fxLayout="row" style="display: flex; justify-content: space-around;" fxFlex="100%">
+            <mat-form-field appearance="outline" fxFlex="45%">
+              <mat-label>Cor do Formulário</mat-label>
+              <input matInput type="color" [(ngModel)]="formStyle.color">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="45%">
+              <mat-label>Cor de Fundo</mat-label>
+              <input matInput type="color" [(ngModel)]="formStyle.backgroundColor">
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" style="display: flex; justify-content: space-around;" fxFlex="100%">
+            <mat-form-field appearance="outline" fxFlex="45%">
+              <mat-label>Cor da Fonte</mat-label>
+              <input matInput type="color" [(ngModel)]="formStyle.fontColor">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="45%">
+              <mat-label>Fonte</mat-label>
+              <mat-select [(ngModel)]="formStyle.fontFamily">
+                <mat-select-trigger>
+                  <span [ngStyle]="{ 'font-family': formStyle.fontFamily }">
+                    {{ formStyle.fontFamily }}
+                  </span>
+                </mat-select-trigger>
+
+                <mat-option *ngFor="let font of availableFonts" [value]="font" [ngStyle]="{ 'font-family': font }">
+                  {{ font }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" style="display: flex; justify-content: space-around;" fxFlex="100%">
+            <mat-form-field [formGroup]="styleForm" appearance="outline" fxFlex="45%">
+              <mat-label>Tamanho da Fonte</mat-label>
+              <input matInput type="number" formControlName="fontSize" min="10" max="25">
+              <mat-hint align="start">Mínimo 8, Máximo 25</mat-hint>
+              <mat-error *ngIf="styleForm.get('fontSize')?.hasError('min')">
+                O valor mínimo permitido é 8.
+              </mat-error>
+              <mat-error *ngIf="styleForm.get('fontSize')?.hasError('max')">
+                O valor máximo permitido é 30.
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" fxFlex="45%">
+              <mat-label>Cor do Botão</mat-label>
+              <input matInput type="color" [(ngModel)]="formStyle.colorButton">
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" style="display: flex; justify-content: space-around;" fxFlex="100%">
+            <button mat-raised-button color="primary" (click)="saveFormStyle()" [disabled]="!styleForm.valid">
+              Salvar Estilo
+            </button>
+            <button mat-button color="basic" (click)="resetFormStyle()">Restaurar Padrão</button>
+          </div>
         </mat-expansion-panel>
       </mat-accordion>
     </div>

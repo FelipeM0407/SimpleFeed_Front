@@ -24,7 +24,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { FormPreviewComponent } from './form-preview/form-preview.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -34,11 +34,15 @@ import { DateAdapter } from '@angular/material/core';
 import { FormSettings } from '../../models/FormSettings';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { FormStyleDto } from '../../models/FormStyleDto';
+import { MatSelectModule } from '@angular/material/select';
+import { ReactiveFormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-form-edit',
   standalone: true,
-  imports: [MatDatepickerModule, MatNativeDateModule, FormsModule, MatInputModule, MatFormFieldModule, FormPreviewComponent, MatTooltipModule, MatExpansionModule, MatSnackBarModule, MatProgressSpinnerModule, MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
+  imports: [ReactiveFormsModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, FormsModule, MatInputModule, MatFormFieldModule, FormPreviewComponent, MatTooltipModule, MatExpansionModule, MatSnackBarModule, MatProgressSpinnerModule, MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
   templateUrl: './form-edit.component.html',
   styleUrls: ['./form-edit.component.scss'],
   providers: [
@@ -80,6 +84,31 @@ export class FormEditComponent {
   form_Id!: number;
   saveTrigger$ = new Subject<void>();
   reloadKey = Date.now();
+  formStyle: FormStyleDto = {
+    formId: 0,
+    color: '',
+    colorButton: '',
+    backgroundColor: '',
+    fontColor: '',
+    fontFamily: '',
+    fontSize: ''
+  };
+
+
+  availableFonts: string[] = [
+    'Roboto', 'Segoe UI', 'Arial', 'Helvetica', 'Georgia', 'Tahoma', 'Verdana', 'Courier New', 'Times New Roman'
+  ];
+  styleForm!: FormGroup;
+  hasEmptyFields: boolean = false;
+
+  resetFormStyle() {
+    this.formStyle.backgroundColor = '#1f1f43';
+    this.formStyle.fontColor = '#000000';
+    this.formStyle.fontFamily = 'Roboto';
+    this.formStyle.fontSize = '16';
+    this.formStyle.color = '#ffffff';
+    this.formStyle.colorButton = '#20b2aa';
+  }
 
   constructor(private snackBar: MatSnackBar, private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,
     private authService: AuthService, private dialog: MatDialog,
@@ -140,10 +169,20 @@ export class FormEditComponent {
         ...field
       }));
     });
+
+    this.loadFormStyle();
   }
 
   triggerSave() {
     this.saveTrigger$.next();
+  }
+
+  checkEmptyFields() {
+    this.hasEmptyFields = this.visibleFields.some(field => field.isEmpty);
+  }
+
+  ngDoCheck() {
+    this.checkEmptyFields();
   }
 
 
@@ -393,7 +432,7 @@ export class FormEditComponent {
           this.fieldsDeleteds = [];
           this.fieldsDeletedsWithFeedbacks = [];
 
-          
+
           this.reloadKey = Date.now();
         } else {
           this.snackBar.open('Erro ao salvar formulário!', 'Fechar', {
@@ -419,6 +458,39 @@ export class FormEditComponent {
     });
 
     return dialogRef.afterClosed(); // Retorna o resultado do diálogo
+  }
+
+  loadFormStyle() {
+
+    this.formsService.getFormStyle(this.form_Id).subscribe((style) => {
+      if (style) {
+        this.formStyle = style;
+        this.styleForm.patchValue({ fontSize: style.fontSize });
+      } else {
+        this.resetFormStyle();
+      }
+    });
+
+    this.styleForm = this.fb.group({
+      fontSize: [this.formStyle.fontSize || 16, [Validators.required, Validators.min(10), Validators.max(25)]],
+      // outros campos podem ser adicionados aqui também
+    });
+  }
+
+  saveFormStyle() {
+
+    this.formStyle.fontSize = this.styleForm.get('fontSize')?.value;
+    this.formsService.saveFormStyle(this.form_Id, this.formStyle).subscribe(() => {
+      this.snackBar.open('Estilo Salvo com sucesso!🎨', 'Fechar', {
+        duration: 3000,
+        panelClass: ['snackbar-success'],
+        horizontalPosition: 'center',
+        verticalPosition: 'top'
+      });
+
+      //Atualiza o iframe
+      this.reloadKey = Date.now();
+    });
   }
 
 
