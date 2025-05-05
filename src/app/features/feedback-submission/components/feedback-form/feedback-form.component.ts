@@ -68,6 +68,7 @@ export class FeedbackFormComponent {
   exibirForm: boolean = true;
   logoBase64: string = '';
   isPreview: boolean = false;
+  estiloAplicado: boolean = false;
 
   defaultFormStyle: FormStyleDto = {
     formId: 0,
@@ -78,6 +79,7 @@ export class FeedbackFormComponent {
     fontFamily: 'Roboto',
     fontSize: '16'
   };
+  formStyle!: FormStyleDto;
 
   constructor(
     private route: ActivatedRoute,
@@ -168,35 +170,8 @@ export class FeedbackFormComponent {
   }
 
   applyFormStyles(style: FormStyleDto | null): void {
-    const appliedStyle = style || this.defaultFormStyle;
-
-    const formContainer = document.querySelector('.form-container') as HTMLElement;
-    const formElement = document.querySelector('form.form') as HTMLElement;
-    const submitButton = document.querySelector('button[type="submit"]') as HTMLElement;
-
-    if (formContainer) {
-      this.renderer.setStyle(formContainer, 'background-color', appliedStyle.backgroundColor); // cor de fundo do container
-      this.renderer.setStyle(formContainer, 'font-family', appliedStyle.fontFamily); // Aplica o font-family ao container
-    }
-
-    if (formElement) {
-      this.renderer.setStyle(formElement, 'background-color', appliedStyle.color); // cor do formulário
-      this.renderer.setStyle(formElement, 'color', appliedStyle.fontColor); // cor do texto
-      this.renderer.setStyle(formElement, 'font-family', appliedStyle.fontFamily); // font-family do formulário
-      this.renderer.setStyle(formElement, 'font-size', `${appliedStyle.fontSize}px`);
-    }
-
-    if (submitButton) {
-      this.renderer.setStyle(submitButton, 'background-color', appliedStyle.colorButton); // fallback padrão
-      this.renderer.setStyle(submitButton, 'color', appliedStyle.fontColor); // cor do texto do botão
-      this.renderer.setStyle(submitButton, 'font-family', appliedStyle.fontFamily); // font-family do botão
-    }
-
-    // Aplica o font-family a todos os elementos de texto dentro do formulário
-    const allTextElements = document.querySelectorAll('.form-container *');
-    allTextElements.forEach((element) => {
-      this.renderer.setStyle(element, 'font-family', appliedStyle.fontFamily); // Aplica o font-family a todos os elementos de texto dentro do formulário
-    });
+    this.formStyle = style || this.defaultFormStyle;
+    this.estiloAplicado = true;
   }
 
 
