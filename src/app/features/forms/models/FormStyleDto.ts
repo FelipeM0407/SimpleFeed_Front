@@ -6,4 +6,5 @@ export interface FormStyleDto {
     fontColor: string;
     fontFamily: string;
     fontSize: string;
+    colorTextButton: string;
 }

@@ -91,7 +91,8 @@ export class FormEditComponent {
     backgroundColor: '',
     fontColor: '',
     fontFamily: '',
-    fontSize: ''
+    fontSize: '',
+    colorTextButton: ''
   };
 
 
@@ -108,6 +109,7 @@ export class FormEditComponent {
     this.formStyle.fontSize = '16';
     this.formStyle.color = '#ffffff';
     this.formStyle.colorButton = '#20b2aa';
+    this.formStyle.colorTextButton = '#000000';
   }
 
   constructor(private snackBar: MatSnackBar, private formsService: FormsService, private route: ActivatedRoute, private sanitizer: DomSanitizer,

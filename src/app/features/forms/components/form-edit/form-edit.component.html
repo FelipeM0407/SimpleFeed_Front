@@ -241,6 +241,13 @@
           </div>
 
           <div fxLayout="row" style="display: flex; justify-content: space-around;" fxFlex="100%">
+            <mat-form-field appearance="outline" fxFlex="45%">
+              <mat-label>Cor texto Botão</mat-label>
+              <input matInput type="color" [(ngModel)]="formStyle.colorTextButton">
+            </mat-form-field>
+          </div>
+
+          <div fxLayout="row" style="display: flex; justify-content: space-around;" fxFlex="100%">
             <button mat-raised-button color="primary" (click)="saveFormStyle()" [disabled]="!styleForm.valid">
               Salvar Estilo
             </button>

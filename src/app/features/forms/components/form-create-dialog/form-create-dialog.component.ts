@@ -46,7 +46,8 @@ export class FormCreateDialogComponent {
     backgroundColor: '#1f1f43',
     fontColor: '#000000',
     fontFamily: 'Segoe UI',
-    fontSize: '16'
+    fontSize: '16',
+    colorTextButton: '#ffffff'
   };
 
   constructor(
