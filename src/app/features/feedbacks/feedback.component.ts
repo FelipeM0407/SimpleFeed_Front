@@ -210,32 +210,30 @@ export class FeedbacksComponent implements OnInit {
   }
 
   generateChartData() {
-    this.chartFields.forEach((field, fieldIndex) => {
+    this.chartFields.forEach((field) => {
+      const column = this.dynamicColumns.find(c => c.name === field.name);
+      if (!column) return;
+  
+      const colKey = `col_${column.id}`;
       const counts: { [key: string]: number } = {};
-
+  
       this.dataSource.data.forEach((row: any) => {
-        const value = row[field.name];
-        if (value) {
+        const value = row[colKey];
+        if (value !== undefined && value !== null && value !== '') {
           counts[value] = (counts[value] || 0) + 1;
         }
       });
-
+  
       field.chartLabels = Object.keys(counts);
       field.chartData = Object.values(counts);
-
+  
       field.chartDatasets = [{
         label: field.label,
         data: field.chartLabels.map(label => counts[label] || 0),
         backgroundColor: field.chartLabels.map((_, index) => this.chartColors[index % this.chartColors.length])
       }];
-
-
-
-
     });
   }
-
-
 
   fetchFilteredFeedbacks() {
     const range = this.dateRangeForm.value.dateRange;
