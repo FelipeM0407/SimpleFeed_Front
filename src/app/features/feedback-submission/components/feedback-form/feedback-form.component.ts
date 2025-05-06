@@ -77,7 +77,8 @@ export class FeedbackFormComponent {
     backgroundColor: '#1f1f43',
     fontColor: '#000000',
     fontFamily: 'Roboto',
-    fontSize: '16'
+    fontSize: '16',
+    colorTextButton: '#000000'
   };
   formStyle!: FormStyleDto;
 
