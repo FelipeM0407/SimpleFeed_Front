@@ -301,6 +301,11 @@ export class FeedbackFormComponent {
           isValid = false;
         }
 
+        if (field.type === 'dropdown' && control.value === 0) {
+          control.setErrors({ invalidDropdown: true });
+          isValid = false;
+        }
+
         if (field.type === 'email' && control.value !== '' && !/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i.test(control.value)) {
           control.setErrors({ email: true });
           isValid = false;

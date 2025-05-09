@@ -108,6 +108,9 @@ mat-icon.selected {
   z-index: 1000;
 }
 
+
+
+
 /* Utiliza ::ng-deep para afetar os elementos internos do Angular Material */
 ::ng-deep .mat-mdc-option.custom-option {
   display: flex !important;
