@@ -82,3 +82,22 @@ mat-toolbar {
 .pulse-badge {
     animation: pulse 1.5s infinite;
 }
+
+.example-sidenav-container {
+    height: 100vh;
+}
+
+.custom-sidenav {
+    width: 280px !important; // ou o valor que quiser, ex: 300px
+    min-width: 280px;
+    max-width: 280px;
+    //menor quando mobile
+    @media (max-width: 768px) {
+        width: 80% !important; // ou o valor que quiser, ex: 300px
+        min-width: 80%;
+        max-width: 80%;
+    }
+
+    
+    
+}
