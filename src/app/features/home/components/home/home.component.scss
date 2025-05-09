@@ -1,0 +1,70 @@
+.home-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    box-sizing: border-box;
+    min-height: 100vh;
+    /* ocupa a altura da tela inteira */
+}
+
+
+.top-cards {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.summary-card {
+    flex: 1 1 calc(33.333% - 16px);
+    max-width: 100%;
+    min-width: 260px;
+    text-align: center;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.big-number {
+    font-size: 50px;
+    font-weight: bold;
+    margin: 8px 0;
+    word-break: break-word;
+}
+
+.dashboard-card {
+    flex-grow: 1;
+    /* Faz a div ocupar o espaço restante da tela */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 0;
+    /* importante para evitar overflow ao usar flex */
+}
+
+.dashboard-card mat-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 24px;
+    box-sizing: border-box;
+}
+
+.canvas-wrapper {
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+
+    .canvas-wrapper {
+        overflow-x: auto;
+    }
+
+    canvas {
+        min-width: 1000px;
+        height: 300px !important;
+    }
+}
