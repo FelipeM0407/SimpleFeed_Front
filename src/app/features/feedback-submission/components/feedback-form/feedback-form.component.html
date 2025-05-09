@@ -17,7 +17,7 @@
             <mat-form-field *ngIf="field.type === 'text'" appearance="outline" class="full-width">
                 <mat-label>{{ field.label }}</mat-label>
                 <input matInput [formControlName]="field.id.toString()" type="text" maxlength="100" />
-                <mat-error *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched">
+                <mat-error *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched" style="color: red !important;">
                     Este campo é obrigatório
                 </mat-error>
             </mat-form-field>
@@ -30,7 +30,7 @@
                     readonly />
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
-                <mat-error *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched">
+                <mat-error *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched" style="color: red !important;">
                     Este campo é obrigatório
                 </mat-error>
             </mat-form-field>
@@ -40,7 +40,7 @@
             <mat-form-field *ngIf="field.type === 'email'" appearance="outline" class="full-width">
                 <mat-label>{{ field.label }}</mat-label>
                 <input matInput [formControlName]="field.id.toString()" type="email" maxlength="100" />
-                <mat-error *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched">
+                <mat-error *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched" style="color: red !important;">
                     Insira um e-mail válido.
                 </mat-error>
             </mat-form-field>
@@ -54,10 +54,10 @@
                         {{ option }}
                     </mat-option>
                 </mat-select>
-                <mat-error *ngIf="form.get(field.id.toString())?.hasError('invalidDropdown')">
+                <mat-error *ngIf="form.get(field.id.toString())?.hasError('invalidDropdown')" style="color: red !important;">
                     Por favor, selecione uma opção válida.
                 </mat-error>
-                <mat-error *ngIf="form.get(field.id.toString())?.hasError('required')">
+                <mat-error *ngIf="form.get(field.id.toString())?.hasError('required')" style="color: red !important;">
                     Este campo é obrigatório.
                 </mat-error>
             </mat-form-field>
@@ -71,7 +71,7 @@
                         {{ option }}
                     </mat-option>
                 </mat-select>
-                <mat-error *ngIf="form.get(field.id.toString())?.hasError('required')">
+                <mat-error *ngIf="form.get(field.id.toString())?.hasError('required')" style="color: red !important;">
                     Este campo é obrigatório.
                 </mat-error>
             </mat-form-field>
@@ -92,7 +92,7 @@
                 <!-- Mensagem de erro -->
                 <div *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched"
                     class="rating-error">
-                    <small>Por favor, selecione uma avaliação.</small>
+                    <small style="color: red !important;">Por favor, selecione uma avaliação.</small>
                 </div>
             </div>
 
@@ -100,7 +100,7 @@
             <mat-form-field *ngIf="field.type === 'textarea'" appearance="outline" class="full-width">
                 <label class="rating-label">{{ field.label }}</label>
                 <textarea matInput [formControlName]="field.id.toString()" maxlength="255"></textarea>
-                <mat-error *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched">
+                <mat-error *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched" style="color: red !important;">
                     Este campo é obrigatório
                 </mat-error>
             </mat-form-field>
@@ -109,7 +109,7 @@
             <mat-form-field *ngIf="field.type === 'cpf'" appearance="outline" class="full-width">
                 <mat-label>{{ field.label }}</mat-label>
                 <input matInput [formControlName]="field.id.toString()" type="text" [mask]="'000.000.000-00'" />
-                <mat-error *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched">
+                <mat-error *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched" style="color: red !important;">
                     Insira um CPF válido.
                 </mat-error>
             </mat-form-field>
@@ -118,7 +118,7 @@
             <mat-form-field *ngIf="field.type === 'telephone'" appearance="outline" class="full-width">
                 <mat-label>{{ field.label }}</mat-label>
                 <input matInput [formControlName]="field.id.toString()" type="text" [mask]="'(00) 00000-0000'" />
-                <mat-error *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched">
+                <mat-error *ngIf="form.get(field.id.toString())?.invalid && form.get(field.id.toString())?.touched" style="color: red !important;">
                     Insira um telefone válido.
                 </mat-error>
             </mat-form-field>
