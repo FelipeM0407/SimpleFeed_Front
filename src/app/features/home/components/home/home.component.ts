@@ -35,7 +35,7 @@ export class HomeComponent implements AfterViewInit {
       date.setDate(date.getDate() - (29 - i));
       return `${date.getDate()}/${meses[date.getMonth()]}`;
     });
-    
+
 
     const isMobile = window.innerWidth <= 768;
 
@@ -49,7 +49,10 @@ export class HomeComponent implements AfterViewInit {
           borderColor: 'rgba(75,192,192,1)',
           backgroundColor: 'rgba(75,192,192,0.2)',
           tension: 0.3,
-          fill: true
+          fill: true,
+          pointBackgroundColor: 'blue', 
+          pointRadius: 6,                  
+          pointHoverRadius: 8             
         }]
       },
       options: {
@@ -63,7 +66,7 @@ export class HomeComponent implements AfterViewInit {
               font: {
                 size: isMobile ? 10 : 12
               },
-              callback: function(value, index) {
+              callback: function (value, index) {
                 return index % 3 === 0 ? dias[index] : '';
               }
             }
