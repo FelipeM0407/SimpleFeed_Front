@@ -1,19 +1,26 @@
 <div class="home-container">
     <div class="top-cards">
         <mat-card class="summary-card">
-            <h3>Novos Feedbacks</h3>
+            <h3>Feedbacks não lido</h3>
             <p class="big-number">{{ novosFeedbacks }}</p>
         </mat-card>
-
+        
+        <mat-card class="summary-card">
+            <h3>Feedbacks de hoje</h3>
+            <p class="big-number">{{ respostasHojeFormatado }}</p>
+        </mat-card>
+        
         <mat-card class="summary-card">
             <h3>Total de Feedbacks</h3>
             <p class="big-number">{{ totalFeedbacksFormatado }}</p>
         </mat-card>
 
         <mat-card class="summary-card">
-            <h3>Respostas Hoje</h3>
-            <p class="big-number">{{ respostasHojeFormatado }}</p>
+            <h3>Formulários ativos</h3>
+            <p class="big-number">{{ totalFormularioAtivos }}</p>
         </mat-card>
+
+
     </div>
 
     <div class="dashboard-card">

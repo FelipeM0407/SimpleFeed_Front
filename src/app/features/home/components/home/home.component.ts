@@ -2,6 +2,9 @@ import { AfterViewInit, Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { Chart } from 'chart.js';
+import { HomeService } from '../../services/home.service';
+import { AuthService } from 'src/app/core/auth.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -11,9 +14,41 @@ import { Chart } from 'chart.js';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements AfterViewInit {
-  novosFeedbacks = 278;
-  totalFeedbacks = 1532;
-  respostasHoje = 98;
+  novosFeedbacks = 0;
+  totalFeedbacks = 0;
+  respostasHoje = 0;
+  formularioAtivos = 0;
+  feedbacksUltimos30Dias: { label: string, value: number }[] = [];
+  private clientDataSubscription: Subscription | null = null;
+  clientId!: number;
+  isMobile : boolean = false;
+
+
+  constructor(private homeService: HomeService, private authService: AuthService) { 
+    this.isMobile = window.innerWidth <= 768;
+  }
+
+  ngOnInit(): void {
+
+    this.clientDataSubscription = this.authService.getClientData().subscribe({
+      next: (clientData) => {
+        if (clientData) {
+
+          this.clientId = clientData.id;
+          this.homeService.getMetrics(this.clientId).subscribe((metrics) => {
+            this.novosFeedbacks = metrics.newFeedbacksCount;
+            this.totalFeedbacks = metrics.allFeedbacksCount;
+            this.respostasHoje = metrics.todayFeedbacksCount;
+            this.formularioAtivos = metrics.allActiveFormsCount;
+            this.feedbacksUltimos30Dias = metrics.feedbacksCountLast30Days;
+
+            this.atualizarGrafico();
+
+          });
+        }
+      },
+    });
+  }
 
   get totalFeedbacksFormatado(): string {
     return this.formatarNumero(this.totalFeedbacks);
@@ -21,6 +56,10 @@ export class HomeComponent implements AfterViewInit {
 
   get respostasHojeFormatado(): string {
     return this.formatarNumero(this.respostasHoje);
+  }
+
+  get totalFormularioAtivos(): string {
+    return this.formatarNumero(this.formularioAtivos);
   }
 
   formatarNumero(valor: number): string {
@@ -35,9 +74,11 @@ export class HomeComponent implements AfterViewInit {
       date.setDate(date.getDate() - (29 - i));
       return `${date.getDate()}/${meses[date.getMonth()]}`;
     });
+  }
 
-
-    const isMobile = window.innerWidth <= 768;
+  atualizarGrafico(): void {
+    const dias = this.feedbacksUltimos30Dias.map(x => x.label);
+    const valores = this.feedbacksUltimos30Dias.map(x => x.value);
 
     new Chart('feedbackChart', {
       type: 'line',
@@ -45,18 +86,18 @@ export class HomeComponent implements AfterViewInit {
         labels: dias,
         datasets: [{
           label: 'Feedbacks por dia',
-          data: feedbacksPorDia,
+          data: valores,
           borderColor: 'rgba(75,192,192,1)',
           backgroundColor: 'rgba(75,192,192,0.2)',
           tension: 0.3,
           fill: true,
-          pointBackgroundColor: 'blue', 
-          pointRadius: 6,                  
-          pointHoverRadius: 8             
+          pointBackgroundColor: 'blue',
+          pointRadius: 6,
+          pointHoverRadius: 8
         }]
       },
       options: {
-        responsive: !isMobile,
+        responsive: !this.isMobile,
         scales: {
           x: {
             ticks: {
@@ -64,10 +105,7 @@ export class HomeComponent implements AfterViewInit {
               maxRotation: 0,
               minRotation: 0,
               font: {
-                size: isMobile ? 10 : 12
-              },
-              callback: function (value, index) {
-                return index % 3 === 0 ? dias[index] : '';
+                size: this.isMobile ? 10 : 12
               }
             }
           },
@@ -75,7 +113,7 @@ export class HomeComponent implements AfterViewInit {
             beginAtZero: true,
             ticks: {
               font: {
-                size: isMobile ? 10 : 12
+                size: this.isMobile ? 10 : 12
               }
             }
           }
@@ -84,7 +122,7 @@ export class HomeComponent implements AfterViewInit {
           legend: {
             labels: {
               font: {
-                size: isMobile ? 12 : 14
+                size: this.isMobile ? 12 : 14
               }
             }
           }

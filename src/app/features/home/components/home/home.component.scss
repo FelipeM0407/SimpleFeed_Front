@@ -19,13 +19,14 @@
 }
 
 .summary-card {
-    flex: 1 1 calc(33.333% - 16px);
-    max-width: 100%;
-    min-width: 260px;
+    flex: 1 1 calc(25% - 12px); /* 4 cards por linha com gap de 16px */
+    max-width: calc(25% - 12px);
+    min-width: 0;
     text-align: center;
     padding: 16px;
     box-sizing: border-box;
 }
+
 
 .big-number {
     font-size: 50px;
