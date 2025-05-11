@@ -1,5 +1,4 @@
 <mat-toolbar color="primary">
-  <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
   <a href="/dashboard/forms" style="text-decoration: none; color: inherit;">SimpleFeed</a>
   <span class="example-spacer"></span>
   <p class="welcome-message">Bem vindo, {{ userName }}</p>
@@ -33,20 +32,9 @@
   <img src="../../../assets/whatsapp_icon.png" alt="WhatsApp" style="width: 43px; height: 43px;">
 </button> -->
 
-<mat-sidenav-container class="example-sidenav-container" [hasBackdrop]="true">
-  <mat-sidenav #snav mode="over" class="custom-sidenav" [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
-
-    <mat-nav-list>
-      <a mat-list-item routerLink="." *ngFor="let nav of fillerNav">{{nav}}</a>
-    </mat-nav-list>
-  </mat-sidenav>
-
-  <mat-sidenav-content>
-    <div class="dashboard-container">
-      <router-outlet></router-outlet>
-    </div>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+<div class="dashboard-container">
+  <router-outlet></router-outlet>
+</div>
 
 <button mat-fab class="feedback-button" (click)="openWhatsApp()"
   matTooltip="Enviar feedback, sugestões ou reportar bugs" matTooltipPosition="left">
