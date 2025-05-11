@@ -4,7 +4,6 @@ import { MatCardModule } from '@angular/material/card';
 import { Chart } from 'chart.js';
 import { HomeService } from '../../services/home.service';
 import { AuthService } from 'src/app/core/auth.service';
-import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -19,35 +18,28 @@ export class HomeComponent implements AfterViewInit {
   respostasHoje = 0;
   formularioAtivos = 0;
   feedbacksUltimos30Dias: { label: string, value: number }[] = [];
-  private clientDataSubscription: Subscription | null = null;
   clientId!: number;
-  isMobile : boolean = false;
+  isMobile: boolean = false;
 
 
-  constructor(private homeService: HomeService, private authService: AuthService) { 
+  constructor(private homeService: HomeService, private authService: AuthService) {
     this.isMobile = window.innerWidth <= 768;
+    this.clientId = this.authService.getClientId();
   }
 
   ngOnInit(): void {
 
-    this.clientDataSubscription = this.authService.getClientData().subscribe({
-      next: (clientData) => {
-        if (clientData) {
+    this.homeService.getMetrics(this.clientId).subscribe((metrics) => {
+      this.novosFeedbacks = metrics.newFeedbacksCount;
+      this.totalFeedbacks = metrics.allFeedbacksCount;
+      this.respostasHoje = metrics.todayFeedbacksCount;
+      this.formularioAtivos = metrics.allActiveFormsCount;
+      this.feedbacksUltimos30Dias = metrics.feedbacksCountLast30Days;
 
-          this.clientId = clientData.id;
-          this.homeService.getMetrics(this.clientId).subscribe((metrics) => {
-            this.novosFeedbacks = metrics.newFeedbacksCount;
-            this.totalFeedbacks = metrics.allFeedbacksCount;
-            this.respostasHoje = metrics.todayFeedbacksCount;
-            this.formularioAtivos = metrics.allActiveFormsCount;
-            this.feedbacksUltimos30Dias = metrics.feedbacksCountLast30Days;
+      this.atualizarGrafico();
 
-            this.atualizarGrafico();
-
-          });
-        }
-      },
     });
+
   }
 
   get totalFeedbacksFormatado(): string {
