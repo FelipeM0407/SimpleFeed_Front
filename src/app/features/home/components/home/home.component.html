@@ -2,27 +2,54 @@
     <div class="top-cards">
         <mat-card class="summary-card">
             <h3>Feedbacks não lido</h3>
-            <p class="big-number" [ngClass]="{'pulse-number': novosFeedbacks > 0}">
-                {{ novosFeedbacks }}
-            </p>
+            <ng-container *ngIf="!isLoading; else spinner1">
+                <p class="big-number" [ngClass]="{'pulse-number': novosFeedbacks > 0}">
+                    {{ novosFeedbacks }}
+                </p>
+            </ng-container>
+            <ng-template #spinner1>
+                <div class="spinner-wrapper">
+                    <mat-spinner diameter="30" strokeWidth="4"></mat-spinner>
+                </div>
+            </ng-template>
         </mat-card>
-
-
 
         <mat-card class="summary-card">
             <h3>Feedbacks de hoje</h3>
-            <p class="big-number">{{ respostasHojeFormatado }}</p>
+            <ng-container *ngIf="!isLoading; else spinner2">
+                <p class="big-number">{{ respostasHojeFormatado }}</p>
+            </ng-container>
+            <ng-template #spinner2>
+                <div class="spinner-wrapper">
+                    <mat-spinner diameter="30" strokeWidth="4"></mat-spinner>
+                </div>
+            </ng-template>
         </mat-card>
 
         <mat-card class="summary-card">
             <h3>Total de Feedbacks</h3>
-            <p class="big-number">{{ totalFeedbacksFormatado }}</p>
+            <ng-container *ngIf="!isLoading; else spinner3">
+                <p class="big-number">{{ totalFeedbacksFormatado }}</p>
+            </ng-container>
+            <ng-template #spinner3>
+                <div class="spinner-wrapper">
+                    <mat-spinner diameter="30" strokeWidth="4"></mat-spinner>
+                </div>
+            </ng-template>
         </mat-card>
 
         <mat-card class="summary-card">
             <h3>Formulários ativos</h3>
-            <p class="big-number">{{ totalFormularioAtivos }}</p>
+            <ng-container *ngIf="!isLoading; else spinner4">
+                <p class="big-number">{{ totalFormularioAtivos }}</p>
+            </ng-container>
+            <ng-template #spinner4>
+                <div class="spinner-wrapper">
+                    <mat-spinner diameter="30" strokeWidth="4"></mat-spinner>
+                </div>
+            </ng-template>
         </mat-card>
+
 
 
     </div>

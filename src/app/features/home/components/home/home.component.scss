@@ -93,3 +93,15 @@
   width: 100%;
   height: auto;
 }
+
+.spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px; // para os cards pequenos
+}
+
+.dashboard-card .spinner-wrapper {
+  height: 400px; // altura do gráfico
+}
+

@@ -4,11 +4,12 @@ import { MatCardModule } from '@angular/material/card';
 import { Chart } from 'chart.js';
 import { HomeService } from '../../services/home.service';
 import { AuthService } from 'src/app/core/auth.service';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [MatCardModule, CommonModule],
+  imports: [MatProgressSpinnerModule, MatCardModule, CommonModule],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
@@ -20,6 +21,7 @@ export class HomeComponent implements AfterViewInit {
   feedbacksUltimos30Dias: { label: string, value: number }[] = [];
   clientId!: number;
   isMobile: boolean = false;
+  isLoading: boolean = true;
 
 
   constructor(private homeService: HomeService, private authService: AuthService) {
@@ -28,18 +30,24 @@ export class HomeComponent implements AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.isLoading = true;
 
-    this.homeService.getMetrics(this.clientId).subscribe((metrics) => {
-      this.novosFeedbacks = metrics.newFeedbacksCount;
-      this.totalFeedbacks = metrics.allFeedbacksCount;
-      this.respostasHoje = metrics.todayFeedbacksCount;
-      this.formularioAtivos = metrics.allActiveFormsCount;
-      this.feedbacksUltimos30Dias = metrics.feedbacksCountLast30Days;
+    this.homeService.getMetrics(this.clientId).subscribe({
+      next: (metrics) => {
+        this.novosFeedbacks = metrics.newFeedbacksCount;
+        this.totalFeedbacks = metrics.allFeedbacksCount;
+        this.respostasHoje = metrics.todayFeedbacksCount;
+        this.formularioAtivos = metrics.allActiveFormsCount;
+        this.feedbacksUltimos30Dias = metrics.feedbacksCountLast30Days;
 
-      this.atualizarGrafico();
-
+        this.atualizarGrafico();
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Erro ao buscar métricas:', err);
+        this.isLoading = false;
+      }
     });
-
   }
 
   get totalFeedbacksFormatado(): string {
