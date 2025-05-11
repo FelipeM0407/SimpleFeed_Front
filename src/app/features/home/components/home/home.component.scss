@@ -23,6 +23,10 @@
   padding: 20px;
   min-height: 120px;
   transition: transform 0.3s ease;
+
+  @media (max-width: 600px) {
+    min-height: 100px;
+  }
 }
 
 .summary-card h3 {
