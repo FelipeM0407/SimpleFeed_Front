@@ -7,7 +7,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 24px;
-    margin-bottom: 32px;
+    margin-bottom: 20px;
 }
 
 .summary-card {
@@ -21,12 +21,8 @@
   border-radius: 16px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   padding: 20px;
-  min-height: 120px;
+  min-height: 100px;
   transition: transform 0.3s ease;
-
-  @media (max-width: 600px) {
-    min-height: 100px;
-  }
 }
 
 .summary-card h3 {
