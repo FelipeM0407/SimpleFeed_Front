@@ -58,6 +58,9 @@
         <mat-card>
             <h2>Feedbacks Diários (últimos 30 dias)</h2>
             <div class="canvas-wrapper">
+                <div *ngIf="isLoading" class="spinner-wrapper">
+                    <mat-spinner ></mat-spinner>
+                </div>
                 <canvas id="feedbackChart" style="height: 400px; width: 100%;"></canvas>
             </div>
 
