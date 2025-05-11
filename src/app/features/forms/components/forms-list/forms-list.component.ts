@@ -97,17 +97,12 @@ export class FormsListComponent implements OnInit, OnDestroy {
 
   constructor(private snackBar: MatSnackBar, private formsService: FormsService, private authService: AuthService, private router: Router,
     public dialog: MatDialog, private sanitizer: DomSanitizer
-  ) { }
+  ) {
+    this.clientId = this.authService.getClientId();
+  }
 
   ngOnInit(): void {
-    this.clientDataSubscription = this.authService.getClientData().subscribe({
-      next: (clientData) => {
-        if (clientData) {
-          this.clientId = clientData.id;
-          this.loadForms(this.clientId);
-        }
-      },
-    });
+    this.loadForms(this.clientId);
   }
 
   onCreateForm(): void {

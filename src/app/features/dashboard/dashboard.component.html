@@ -1,42 +1,58 @@
-<mat-toolbar color="primary">
-  <a href="/dashboard/forms" style="text-decoration: none; color: inherit;">SimpleFeed</a>
-  <span class="example-spacer"></span>
-  <p class="welcome-message">Bem vindo, {{ userName }}</p>
+<mat-toolbar color="primary" class="main-toolbar">
+  <div class="toolbar-left">
+    <a routerLink="/dashboard/home" class="app-logo">SimpleFeed</a>
 
-  <button mat-icon-button [matMenuTriggerFor]="menu">
-    <mat-icon>menu</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu">
-    <div mat-menu-item>
-      <mat-icon>email</mat-icon>
-      <small>{{ userEmail }}</small>
-    </div>
-    <mat-divider></mat-divider>
-    <button mat-menu-item (click)="goToAccount()">
-      <mat-icon>account_circle</mat-icon>
-      <span>Minha Conta</span>
-    </button>
-    <button mat-menu-item (click)="logout()">
-      <mat-icon>logout</mat-icon>
-      <span>Sair</span>
-    </button>
-  </mat-menu>
+    <!-- Links visíveis apenas no desktop -->
+    <nav class="nav-links desktop-only">
+      <a routerLink="/dashboard/home" routerLinkActive="active-link">Início</a>
+      <a routerLink="/dashboard/forms" routerLinkActive="active-link">Formulários</a>
+    </nav>
+  </div>
 
+  <div class="toolbar-right">
+    <p class="welcome-message">Bem vindo, {{ userName }}</p>
+
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <div mat-menu-item>
+        <mat-icon>email</mat-icon>
+        <small>{{ userEmail }}</small>
+      </div>
+      <mat-divider></mat-divider>
+
+      <!-- Links visíveis apenas no mobile -->
+      <button mat-menu-item class="mobile-only" [routerLink]="'/dashboard/home'">
+        <mat-icon>home</mat-icon>
+        <span>Início</span>
+      </button>
+      <button mat-menu-item class="mobile-only" [routerLink]="'/dashboard/forms'">
+        <mat-icon>description</mat-icon>
+        <span>Formulários</span>
+      </button>
+
+      <mat-divider class="mobile-only"></mat-divider>
+
+      <button mat-menu-item (click)="goToAccount()">
+        <mat-icon>account_circle</mat-icon>
+        <span>Minha Conta</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Sair</span>
+      </button>
+    </mat-menu>
+  </div>
 </mat-toolbar>
+
 
 
 <div class="dashboard-container">
   <router-outlet></router-outlet>
 </div>
 
-<!-- Botão lateral fixo para abrir o WhatsApp -->
-<!-- <button class="feedback-button" (click)="openWhatsApp()">
-  <img src="../../../assets/whatsapp_icon.png" alt="WhatsApp" style="width: 43px; height: 43px;">
-</button> -->
-
-<button mat-fab class="feedback-button" (click)="openWhatsApp()" 
+<button mat-fab class="feedback-button" (click)="openWhatsApp()"
   matTooltip="Enviar feedback, sugestões ou reportar bugs" matTooltipPosition="left">
   <img class="pulse-badge" src="../../../assets/whatsapp_icon.png" alt="WhatsApp" style="width: 43px; height: 43px;">
 </button>
-
-
