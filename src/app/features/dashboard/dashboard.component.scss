@@ -82,3 +82,98 @@ mat-toolbar {
 .pulse-badge {
     animation: pulse 1.5s infinite;
 }
+
+.nav-links {
+    display: flex;
+    gap: 24px;
+
+    a {
+        color: white;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 16px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+
+    a:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .active-link {
+        border-bottom: 2px solid #fff;
+    }
+}
+
+.main-toolbar {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    padding: 0 16px;
+
+    .toolbar-left {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+
+        .app-logo {
+            font-size: 20px;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 16px;
+
+            a {
+                color: white;
+                text-decoration: none;
+                font-weight: 500;
+                padding: 4px 8px;
+                border-radius: 4px;
+
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.2);
+                }
+
+                &.active-link {
+                    border-bottom: 2px solid #fff;
+                }
+            }
+        }
+    }
+
+    .toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+
+        .welcome-message {
+            color: white;
+            margin: 0;
+            font-weight: 500;
+        }
+    }
+}
+
+/* Mostra no desktop, esconde no mobile */
+.desktop-only {
+  display: flex;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: flex !important;
+  }
+}
