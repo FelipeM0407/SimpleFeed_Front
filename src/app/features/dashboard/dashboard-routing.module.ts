@@ -6,13 +6,15 @@ import { FeedbacksComponent } from '../feedbacks/feedback.component';
 import { FormsListComponent } from '../forms/components/forms-list/forms-list.component';
 import { FormEditComponent } from '../forms/components/form-edit/form-edit.component';
 import { AccountComponent } from '../account/account.component';
+import { HomeComponent } from '../home/components/home/home.component';
 
 const routes: Routes = [
   {
     path: '', component: DashboardComponent, // Rota padrão para o Dashboard
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'forms', pathMatch: 'full' }, 
+      { path: '', redirectTo: 'home', pathMatch: 'full' }, 
+      { path: 'home', component: HomeComponent },
       { path: 'forms', component: FormsListComponent },
       { path: 'account', component: AccountComponent },
       { path: 'feedbacks/:formId', component: FeedbacksComponent },

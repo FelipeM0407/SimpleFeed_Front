@@ -1,0 +1,39 @@
+<div class="home-container">
+    <div class="top-cards">
+        <mat-card class="summary-card">
+            <h3>Feedbacks não lido</h3>
+            <p class="big-number" [ngClass]="{'pulse-number': novosFeedbacks > 0}">
+                {{ novosFeedbacks }}
+            </p>
+        </mat-card>
+
+
+
+        <mat-card class="summary-card">
+            <h3>Feedbacks de hoje</h3>
+            <p class="big-number">{{ respostasHojeFormatado }}</p>
+        </mat-card>
+
+        <mat-card class="summary-card">
+            <h3>Total de Feedbacks</h3>
+            <p class="big-number">{{ totalFeedbacksFormatado }}</p>
+        </mat-card>
+
+        <mat-card class="summary-card">
+            <h3>Formulários ativos</h3>
+            <p class="big-number">{{ totalFormularioAtivos }}</p>
+        </mat-card>
+
+
+    </div>
+
+    <div class="dashboard-card">
+        <mat-card>
+            <h2>Feedbacks Diários (últimos 30 dias)</h2>
+            <div class="canvas-wrapper">
+                <canvas id="feedbackChart" style="height: 400px; width: 100%;"></canvas>
+            </div>
+
+        </mat-card>
+    </div>
+</div>
