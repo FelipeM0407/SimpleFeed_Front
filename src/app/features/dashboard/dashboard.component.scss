@@ -161,15 +161,16 @@ mat-toolbar {
 
 .mobile-only {
     display: none;
-} 
+}
 
-.logo { 
+.logo {
     width: 110px;
-
+    cursor: pointer;
+    
     @media (max-width: 768px) {
         width: 95px;
     }
-} 
+}
 
 @media (max-width: 768px) {
     .desktop-only {
