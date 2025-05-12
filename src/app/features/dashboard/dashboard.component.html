@@ -1,6 +1,6 @@
 <mat-toolbar color="primary" class="main-toolbar">
   <div class="toolbar-left">
-    <a routerLink="/dashboard/home" class="app-logo">SimpleFeed</a>
+    <img routerLink="/dashboard/home" class="logo" src="../../../assets/logo-simplefeed.png" alt="Logo"> 
 
     <!-- Links visíveis apenas no desktop -->
     <nav class="nav-links desktop-only">
@@ -10,7 +10,7 @@
   </div>
 
   <div class="toolbar-right">
-    <p class="welcome-message">Bem vindo, {{ userName }}</p>
+    <p class="welcome-message">Bem vindo, {{ userName }}</p> 
 
     <button mat-icon-button [matMenuTriggerFor]="menu">
       <mat-icon>menu</mat-icon>

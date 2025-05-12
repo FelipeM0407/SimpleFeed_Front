@@ -117,12 +117,7 @@ mat-toolbar {
         align-items: center;
         gap: 24px;
 
-        .app-logo {
-            font-size: 20px;
-            font-weight: bold;
-            text-decoration: none;
-            color: white;
-        }
+
 
         .nav-links {
             display: flex;
@@ -161,19 +156,27 @@ mat-toolbar {
 
 /* Mostra no desktop, esconde no mobile */
 .desktop-only {
-  display: flex;
+    display: flex;
 }
 
 .mobile-only {
-  display: none;
-}
+    display: none;
+} 
+
+.logo { 
+    width: 110px;
+
+    @media (max-width: 768px) {
+        width: 95px;
+    }
+} 
 
 @media (max-width: 768px) {
-  .desktop-only {
-    display: none !important;
-  }
+    .desktop-only {
+        display: none !important;
+    }
 
-  .mobile-only {
-    display: flex !important;
-  }
+    .mobile-only {
+        display: flex !important;
+    }
 }
