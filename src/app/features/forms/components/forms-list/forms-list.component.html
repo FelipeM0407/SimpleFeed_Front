@@ -72,7 +72,7 @@
         [ngClass]="{ 'form-card-a': i % 2 === 0, 'form-card-b': i % 2 !== 0 }" class="form-table-row mat-elevation-z2">
         <div class="form-title-column">
           <div class="form-title-text" matTooltip="{{ form.name }}" [matTooltipPosition]="'above'">
-            {{ form.name.length > 40 ? (form.name | slice:0:50) + '...' : form.name }}
+            {{ form.name.length > 50 ? (form.name | slice:0:45) + '...' : form.name }}
           </div>
 
 
