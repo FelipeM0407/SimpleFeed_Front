@@ -89,7 +89,15 @@ export class FormsListComponent implements OnInit, OnDestroy {
         { value: 'atualizacaoDecrescente', viewValue: 'Decrescente' },
         { value: 'atualizacaoCrescente', viewValue: 'Crescente' },
       ],
-    }
+    },
+    {
+      name: 'Data de Expiração',
+      ordenation: [
+        { value: 'expiracaoDecrescente', viewValue: 'Decrescente' },
+        { value: 'expiracaoCrescente', viewValue: 'Crescente' },
+      ],
+    },
+
   ];
 
   ordenationControl = new FormControl(
@@ -340,6 +348,25 @@ export class FormsListComponent implements OnInit, OnDestroy {
       case 'atualizacaoCrescente':
         this.forms.sort((a, b) => new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime());
         break;
+      case 'expiracaoDecrescente':
+        this.forms.sort((a, b) => {
+          const dateA = a.expirationDate ? new Date(a.expirationDate).getTime() : -Infinity;
+          const dateB = b.expirationDate ? new Date(b.expirationDate).getTime() : -Infinity;
+          return dateB - dateA;
+        });
+        break;
+
+      case 'expiracaoCrescente':
+        this.forms.sort((a, b) => {
+          if (!a.expirationDate && !b.expirationDate) return 0;
+          if (!a.expirationDate) return -1;
+          if (!b.expirationDate) return 1;
+          return new Date(a.expirationDate).getTime() - new Date(b.expirationDate).getTime();
+        });
+        break;
+
+
+
       default:
         break;
     }

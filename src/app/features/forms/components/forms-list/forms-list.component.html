@@ -71,12 +71,12 @@
         </div>
         <div>
           <ng-container *ngIf="form.newFeedbackCount === 0; else feedbackCount">
-            <mat-chip class="response-chip" (click)="onViewResponses(form.id)">
+            <mat-chip class="response-chip" style="border: 1px solid black;" (click)="onViewResponses(form.id)">
               {{ form.responseCount }}
             </mat-chip>
           </ng-container>
           <ng-template #feedbackCount >
-            <mat-chip class="response-chip pulse-badge" matBadge="{{form.newFeedbackCount}}" (click)="onViewResponses(form.id)">
+            <mat-chip class="response-chip pulse-badge" style="border: 1px solid black;" matBadge="{{form.newFeedbackCount}}" (click)="onViewResponses(form.id)">
               {{ form.newFeedbackCount }}
             </mat-chip>
           </ng-template>
@@ -88,7 +88,7 @@
         </div>
         <div>{{ form.createdAt | date: 'dd/MM/yyyy HH:mm' }}</div>
         <div>{{ form.lastUpdated | date: 'dd/MM/yyyy HH:mm' }}</div>
-        <div>31/12/2025</div>
+        <div>{{ form.expirationDate ? (form.expirationDate | date: 'dd/MM/yyyy 23:59') : '—' }}</div>
         <div class="form-actions">
           <button mat-icon-button [matMenuTriggerFor]="menu" (click)="selectedForm = form">
             <mat-icon>more_vert</mat-icon>

@@ -5,5 +5,6 @@ export interface FormDashboard {
     newFeedbackCount: number;
     lastUpdated: Date;
     createdAt: Date;
+    expirationDate: Date | null;
   }
   
