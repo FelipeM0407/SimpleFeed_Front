@@ -28,8 +28,8 @@ export class FormsService {
   }
 
   // Buscar os formulários ativos
-  getForms(clientId: number): Observable<FormDashboard[]> {
-    return this.http.get<FormDashboard[]>(`${this.apiUrl}/forms/${clientId}`);
+  getForms(clientId: number, statusForm: any): Observable<FormDashboard[]> {
+    return this.http.post<FormDashboard[]>(`${this.apiUrl}/forms/${clientId}`, statusForm);
   }
 
   getFormStructure(formId: number): Observable<any> {

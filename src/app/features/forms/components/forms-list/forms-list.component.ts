@@ -28,6 +28,8 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatChipsModule } from '@angular/material/chips';
 import { CdkDrag } from '@angular/cdk/drag-drop';
 import { MAT_RADIO_DEFAULT_OPTIONS, MatRadioModule } from '@angular/material/radio';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 interface Ordenation {
@@ -47,7 +49,7 @@ interface OrdenationGroup {
   templateUrl: './forms-list.component.html',
   styleUrls: ['./forms-list.component.scss',],
   standalone: true,
-  imports: [MatRadioModule, CdkDrag, MatChipsModule, MatBadgeModule, ReactiveFormsModule, FormsModule, MatSelectModule, MatFormFieldModule, QRCodeModule, MatSnackBarModule, MatDialogModule, MatProgressBarModule, MatDividerModule, CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
+  imports: [MatTooltipModule, MatCheckboxModule, MatRadioModule, CdkDrag, MatChipsModule, MatBadgeModule, ReactiveFormsModule, FormsModule, MatSelectModule, MatFormFieldModule, QRCodeModule, MatSnackBarModule, MatDialogModule, MatProgressBarModule, MatDividerModule, CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
   providers: [{
     provide: MAT_RADIO_DEFAULT_OPTIONS,
     useValue: { color: 'primary' },
@@ -64,9 +66,13 @@ export class FormsListComponent implements OnInit, OnDestroy {
   @ViewChild('qrCodeDialog', { static: true }) qrCodeDialog!: TemplateRef<any>;
   nameForm: string = '';
   formNames: string[] = [];
-  selectedStatus: string = '';
   clientId!: number;
   selectedForm!: FormDashboard;
+  selectedStatus: string = 'ativo';
+  isActive = false;
+  isInativo = false;
+  isExpirado = false;
+  isNaoLido = false;
 
   ordenationGroups: OrdenationGroup[] = [
     {
@@ -118,6 +124,14 @@ export class FormsListComponent implements OnInit, OnDestroy {
     this.loadForms(this.clientId);
   }
 
+  onStatusChange(): void {
+    // Lógica de atualização do status baseado na escolha do radio button
+    this.isActive = this.selectedStatus === 'ativo';
+    this.isInativo = this.selectedStatus === 'inativo';
+
+    // Carregar os formulários com base no status
+    this.loadForms(this.clientId);
+  }
   onCreateForm(): void {
     const dialogRef = this.dialog.open(FormCreateDialogComponent, {
       data: { name: 'form_creation_dialog' }
@@ -138,10 +152,17 @@ export class FormsListComponent implements OnInit, OnDestroy {
   }
 
   loadForms(clientId: number): void {
-    this.formsService.getForms(clientId).subscribe({
+    const statusForm = {
+      isActive: this.isActive,
+      isInativo: this.isInativo,
+      isExpirado: this.isExpirado,
+      isNaoLido: this.isNaoLido
+    };
+    this.isLoading = true;
+
+    this.formsService.getForms(clientId, statusForm).subscribe({
       next: (data) => {
         this.forms = data;
-        this.formsService.setFormNames(this.forms.map(form => form.name));
         this.isLoading = false;
       },
       error: () => {
@@ -151,13 +172,6 @@ export class FormsListComponent implements OnInit, OnDestroy {
     });
   }
 
-  getTotalResponses(): number {
-    return this.forms.reduce((total, form) => total + form.responseCount, 0);
-  }
-
-  getTotalResponsesPercentage(): number {
-    return Math.min((this.getTotalResponses() / this.maxResponses) * 100, 100);
-  }
 
   ngOnDestroy(): void {
     this.clientDataSubscription?.unsubscribe();

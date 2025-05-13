@@ -16,25 +16,30 @@
           </mat-select>
         </mat-form-field>
 
+        <!-- Alteração para Radio Buttons -->
         <div class="status-filter">
-          <mat-radio-group [(ngModel)]="selectedStatus">
+          <mat-radio-group [(ngModel)]="selectedStatus" (change)="onStatusChange()">
             <mat-radio-button value="ativo">Ativo</mat-radio-button>
             <mat-radio-button value="inativo">Inativo</mat-radio-button>
-            <mat-radio-button value="expirado">Expirado</mat-radio-button>
-            <mat-radio-button value="novasRepostas">Não lido</mat-radio-button>
           </mat-radio-group>
         </div>
+        <div>
+          <mat-checkbox [(ngModel)]="isExpirado" (change)="onStatusChange()">
+            Expirado
+          </mat-checkbox>
+
+          <mat-checkbox [(ngModel)]="isNaoLido" (change)="onStatusChange()">
+            Não Lido
+          </mat-checkbox>
+        </div>
       </div>
+
 
       <button mat-raised-button color="primary" class="create-form-button" (click)="onCreateForm()">
         <mat-icon class="button-icon">add</mat-icon>
         Criar Formulário
       </button>
     </div>
-
-    <p><strong>Total de Respostas:</strong> {{ getTotalResponses() }}/{{ maxResponses }}</p>
-    <mat-progress-bar mode="determinate" [bufferValue]="maxResponses"
-      [value]="getTotalResponsesPercentage()"></mat-progress-bar>
 
     <mat-divider></mat-divider>
 
@@ -53,12 +58,12 @@
       <p>Não há formulários disponíveis no momento.</p>
     </mat-card>
 
-    <div class="forms-wrapper" *ngIf="!isLoading && !errorMessage">
+    <div class="forms-wrapper" *ngIf="!isLoading && !errorMessage && forms.length > 0">
       <div class="form-table-header">
         <span style="visibility: hidden;"></span>
         <span>Respostas</span>
         <span>Criado em</span>
-        <span>Últ. Atualização</span>
+        <span>Status</span>
         <span>Expira em</span>
         <span>Ações</span>
       </div>
@@ -66,7 +71,10 @@
       <div *ngFor="let form of forms; let i = index"
         [ngClass]="{ 'form-card-a': i % 2 === 0, 'form-card-b': i % 2 !== 0 }" class="form-table-row mat-elevation-z2">
         <div class="form-title-column">
-          <div class="form-title-text">{{ form.name }}</div>
+          <div class="form-title-text" matTooltip="{{ form.name }}" [matTooltipPosition]="'above'">
+            {{ form.name.length > 40 ? (form.name | slice:0:50) + '...' : form.name }}
+          </div>
+
 
         </div>
         <div>
@@ -75,8 +83,9 @@
               {{ form.responseCount }}
             </mat-chip>
           </ng-container>
-          <ng-template #feedbackCount >
-            <mat-chip class="response-chip pulse-badge" style="border: 1px solid black;" matBadge="{{form.newFeedbackCount}}" (click)="onViewResponses(form.id)">
+          <ng-template #feedbackCount>
+            <mat-chip class="response-chip pulse-badge" style="border: 1px solid black;"
+              matBadge="{{form.newFeedbackCount}}" (click)="onViewResponses(form.id)">
               {{ form.newFeedbackCount }}
             </mat-chip>
           </ng-template>
@@ -87,7 +96,9 @@
           </mat-chip> -->
         </div>
         <div>{{ form.createdAt | date: 'dd/MM/yyyy HH:mm' }}</div>
-        <div>{{ form.lastUpdated | date: 'dd/MM/yyyy HH:mm' }}</div>
+        <div [ngClass]="{'ativo': form.status, 'inativo': !form.status}">
+          {{ form.status ? 'Ativo' : 'Inativo' }}
+        </div>
         <div>{{ form.expirationDate ? (form.expirationDate | date: 'dd/MM/yyyy 23:59') : '—' }}</div>
         <div class="form-actions">
           <button mat-icon-button [matMenuTriggerFor]="menu" (click)="selectedForm = form">
