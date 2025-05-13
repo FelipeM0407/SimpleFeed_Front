@@ -1,24 +1,6 @@
-.forms-container {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  /* Maior espaçamento entre a lateral e a lista */
-  justify-content: space-between;
-  margin: 1rem auto;
-  max-width: 85%;
-  /* Aproveita toda a largura */
-  padding: 0 2rem;
-  /* Margens laterais */
-}
-
 .forms-list-container {
   flex-grow: 1;
   /* Faz a lista de formulários ocupar o espaço restante */
-  max-width: 73%;
-  /* Define um limite para evitar que fique muito largo */
-  overflow-y: auto;
-  /* Habilita o scroll vertical */
-  max-height: 89vh;
   /* Limita a altura máxima à altura da tela */
   padding: 0 10px 0 10px;
 }
@@ -47,12 +29,16 @@ mat-card {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: pointer; /* Muda o ponteiro para indicar que é clicável */
-  transition: transform 0.2s ease, box-shadow 0.2s ease; /* Adiciona transição suave */
+  cursor: pointer;
+  /* Muda o ponteiro para indicar que é clicável */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /* Adiciona transição suave */
 
   &:hover {
-    transform: scale(1.02); /* Aumenta ligeiramente o tamanho */
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3); /* Destaca a sombra */
+    transform: scale(1.02);
+    /* Aumenta ligeiramente o tamanho */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+    /* Destaca a sombra */
   }
 }
 
@@ -88,19 +74,6 @@ p {
   align-items: center;
 }
 
-/* Seção lateral */
-.side-section {
-  flex-basis: 25%;
-  /* Define a largura fixa da seção lateral */
-  max-width: 300px;
-  /* Limite máximo para a lateral */
-}
-
-.button-center {
-  display: flex;
-  justify-content: center;
-}
-
 .create-form-button {
   display: flex;
   align-items: center;
@@ -117,22 +90,6 @@ p {
   cursor: pointer;
   transition: all 0.3s ease;
   background-color: #2C3E50 !important;
-}
-
-.progress-section {
-  padding: 1rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  background-color: #fafafa;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  /* Sombra discreta */
-}
-
-.progress-section p {
-  margin: 0 0 0.5rem;
-  font-weight: bold;
-  color: #424242;
-  text-align: center;
 }
 
 mat-progress-bar {
@@ -167,95 +124,32 @@ mat-divider {
   z-index: 1000;
 }
 
-.mat-mdc-dialog-actions {
-  justify-content: center;
-}
 
-.form-field-center {
-  display: flex;
-  justify-content: center;
-  position: sticky;
-  top: 0;
-  background-color: #ECF0F1;
-  /* Garante que não fique transparente */
-  z-index: 10;
-  /* Para manter acima do conteúdo */
-}
-
-mat-chip, mat-chip * {
+::ng-deep mat-chip {
   cursor: pointer !important;
 }
 
-
-
-/* Responsividade */
-@media (max-width: 768px) {
-
-  .create-form-button {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    padding: 0.75rem 1.5rem;
-    font-size: 0.9rem;
-    border-radius: 0;
-    /* Sem bordas arredondadas */
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
-    background-color: #1976d2;
-    /* Cor fixa para o botão */
-    color: #fff;
-    text-align: center;
-    z-index: 100;
-  }
-
-  .forms-wrapper {
-    padding-bottom: 4rem;
-    /* Espaço suficiente para o botão */
-    margin: 0;
-  }
-
-  .progress-section {
-    order: -1;
-    /* Move o progresso para o topo */
-  }
-
-  mat-divider {
-    order: 1;
-    margin-bottom: -15px;
-    /* Coloca o divider abaixo da barra de progresso */
-  }
-
-  .side-section {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .forms-container {
-    flex-direction: column;
-    padding: 0 1rem;
-    max-width: 100%;
-
-  }
-
-  .forms-list-container,
-  .side-section {
-    max-width: 100%;
-    /* Ambos ocupam toda a largura no mobile */
-    max-height: 65vh;
-  }
-
+::ng-deep mat-chip .mdc-evolution-chip__action {
+  cursor: pointer !important;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+
 
 @keyframes pulse {
   0% {
     transform: scale(1);
     opacity: 1;
   }
+
   30% {
     transform: scale(1.06);
     opacity: 0.9;
   }
+
   100% {
     transform: scale(1);
     opacity: 1;
@@ -266,3 +160,114 @@ mat-chip, mat-chip * {
   animation: pulse 1.5s infinite;
 }
 
+.form-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.form-controls-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.status-filter mat-radio-group {
+  display: flex;
+  gap: 8px;
+}
+
+.form-page-container {
+  background-color: #ffffff;
+  padding: 32px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  max-width: 90%;
+  margin: 24px auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-table-header {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1.5fr 1.5fr 1.5fr 0.5fr;
+  font-weight: bold;
+  padding: 8px 24px;
+  margin-bottom: 10px;
+  color: #666;
+}
+
+.form-table-row {
+  display: grid;
+  grid-template-columns: 3fr 1fr 1.5fr 1.5fr 1.5fr 0.5fr;
+  align-items: center;
+  padding: 12px 24px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  transition: background-color 0.2s ease;
+}
+
+.form-card-a {
+  background-color: #E5ECF6; // azul claro
+}
+
+.form-card-b {
+  background-color: #F1F3F6; // cinza claro
+}
+
+.form-title-column {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-title-text {
+  font-weight: 600;
+  font-size: 16px;
+  color: #333;
+}
+
+::ng-deep #mat-badge-content-0 {
+  animation: pulse 1.5s infinite;
+  background-color: green !important;
+}
+
+
+
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.response-chip {
+  background-color: #e5e5e5 !important; // vermelho
+  color: white;
+  font-weight: bold;
+  font-size: 13px;
+  padding: 0 10px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+}

@@ -27,6 +27,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatChipsModule } from '@angular/material/chips';
 import { CdkDrag } from '@angular/cdk/drag-drop';
+import { MAT_RADIO_DEFAULT_OPTIONS, MatRadioModule } from '@angular/material/radio';
 
 
 interface Ordenation {
@@ -46,7 +47,11 @@ interface OrdenationGroup {
   templateUrl: './forms-list.component.html',
   styleUrls: ['./forms-list.component.scss',],
   standalone: true,
-  imports: [CdkDrag, MatChipsModule, MatBadgeModule, ReactiveFormsModule, FormsModule, MatSelectModule, MatFormFieldModule, QRCodeModule, MatSnackBarModule, MatDialogModule, MatProgressBarModule, MatDividerModule, CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
+  imports: [MatRadioModule, CdkDrag, MatChipsModule, MatBadgeModule, ReactiveFormsModule, FormsModule, MatSelectModule, MatFormFieldModule, QRCodeModule, MatSnackBarModule, MatDialogModule, MatProgressBarModule, MatDividerModule, CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
+  providers: [{
+    provide: MAT_RADIO_DEFAULT_OPTIONS,
+    useValue: { color: 'primary' },
+  }]
 })
 export class FormsListComponent implements OnInit, OnDestroy {
   forms: FormDashboard[] = [];
@@ -59,9 +64,9 @@ export class FormsListComponent implements OnInit, OnDestroy {
   @ViewChild('qrCodeDialog', { static: true }) qrCodeDialog!: TemplateRef<any>;
   nameForm: string = '';
   formNames: string[] = [];
-
+  selectedStatus: string = '';
   clientId!: number;
-
+  selectedForm!: FormDashboard;
 
   ordenationGroups: OrdenationGroup[] = [
     {
