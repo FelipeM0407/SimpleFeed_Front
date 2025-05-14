@@ -217,6 +217,66 @@ export class FormsListComponent implements OnInit, OnDestroy {
       });
   }
 
+  //metodo para inativar o formulário
+  inactivateForm(id: number): void {
+    this.openConfirmDialog(this.confirmDialog, 'Tem certeza de que deseja inativar esse formulário?')
+      .subscribe((confirmed: any) => {
+        if (confirmed == 'true') {
+          this.isLoading = true; // Exibe o loading
+
+          this.formsService.inactivateForm(id).subscribe({
+            next: () => {
+              this.snackBar.open('Formulário inativado com sucesso!', 'Fechar', {
+                duration: 3000,
+                panelClass: ['snackbar-success'],
+                horizontalPosition: 'center',
+                verticalPosition: 'top'
+              });
+              this.loadForms(this.clientId);
+            },
+            error: () => {
+              this.snackBar.open('Erro ao inativar formulário!', 'Fechar', {
+                duration: 3000,
+                panelClass: ['snackbar-error'],
+                horizontalPosition: 'center',
+                verticalPosition: 'top'
+              });
+            }
+          });
+        }
+      }
+      );
+  }
+  //metodo para ativar o formulário
+  activateForm(id: number): void {
+    this.openConfirmDialog(this.confirmDialog, 'Tem certeza de que deseja ativar esse formulário?')
+      .subscribe((confirmed: any) => {
+        if (confirmed == 'true') {
+          this.isLoading = true; // Exibe o loading
+
+          this.formsService.activateForm(id).subscribe({
+            next: () => {
+              this.snackBar.open('Formulário ativado com sucesso!', 'Fechar', {
+                duration: 3000,
+                panelClass: ['snackbar-success'],
+                horizontalPosition: 'center',
+                verticalPosition: 'top'
+              });
+              this.loadForms(this.clientId);
+            },
+            error: () => {
+              this.snackBar.open('Erro ao ativar formulário!', 'Fechar', {
+                duration: 3000,
+                panelClass: ['snackbar-error'],
+                horizontalPosition: 'center',
+                verticalPosition: 'top'
+              });
+            }
+          });
+        }
+      });
+  }
+
   duplicateForm(id: number) {
     const dialogRef = this.dialog.open(DialogRenameFormComponent, {
       data: { formName: '', title: 'Duplicar Formulário' },

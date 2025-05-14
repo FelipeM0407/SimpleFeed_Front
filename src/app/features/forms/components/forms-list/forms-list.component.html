@@ -1,47 +1,52 @@
-<div class="form-page-container">
+<div class="form-page-container-top">
+  <div class="form-header-row">
+    <div class="form-controls-left">
+      <mat-form-field style="width: 300px;">
+        <mat-label>🔃Ordenação:</mat-label>
+        <mat-select [formControl]="ordenationControl" (selectionChange)="onOrdenationChange($event.value)">
+          <mat-optgroup *ngFor="let group of ordenationGroups" [label]="group.name" [disabled]="group.disabled">
+            <mat-option *ngFor="let order of group.ordenation" [value]="order.value">
+              {{group.name + "/" + order.viewValue}}
+            </mat-option>
+          </mat-optgroup>
+        </mat-select>
+      </mat-form-field>
+    </div>
 
-
-  <!-- Lista de formulários -->
-  <div class="forms-list-container">
-    <div class="form-header-row">
-      <div class="form-controls-left">
-        <mat-form-field style="width: 300px;">
-          <mat-label>🔃Ordenação:</mat-label>
-          <mat-select [formControl]="ordenationControl" (selectionChange)="onOrdenationChange($event.value)">
-            <mat-optgroup *ngFor="let group of ordenationGroups" [label]="group.name" [disabled]="group.disabled">
-              <mat-option *ngFor="let order of group.ordenation" [value]="order.value">
-                {{group.name + "/" + order.viewValue}}
-              </mat-option>
-            </mat-optgroup>
-          </mat-select>
-        </mat-form-field>
-
-        <!-- Alteração para Radio Buttons -->
-        <div class="status-filter">
-          <mat-radio-group [(ngModel)]="selectedStatus" (change)="onStatusChange()">
-            <mat-radio-button value="ativo">Ativo</mat-radio-button>
-            <mat-radio-button value="inativo">Inativo</mat-radio-button>
-          </mat-radio-group>
-        </div>
-        <div>
-          <mat-checkbox [(ngModel)]="isExpirado" (change)="onStatusChange()">
-            Expirado
-          </mat-checkbox>
-
-          <mat-checkbox [(ngModel)]="isNaoLido" (change)="onStatusChange()">
-            Não Lido
-          </mat-checkbox>
-        </div>
+    <div class="form-controls-center">
+      <div class="status-filter">
+        <mat-radio-group [(ngModel)]="selectedStatus" (change)="onStatusChange()">
+          <mat-radio-button value="ativo">Ativo</mat-radio-button>
+          <mat-radio-button value="inativo">Inativo</mat-radio-button>
+        </mat-radio-group>
       </div>
+      <div class="status-filter">
+        <mat-checkbox [(ngModel)]="isExpirado" (change)="onStatusChange()">
+          Expirado
+        </mat-checkbox>
+
+        <mat-checkbox [(ngModel)]="isNaoLido" (change)="onStatusChange()">
+          Não Lido
+        </mat-checkbox>
+      </div>
+    </div>
 
 
+    <div class="form-controls-right">
       <button mat-raised-button color="primary" class="create-form-button" (click)="onCreateForm()">
         <mat-icon class="button-icon">add</mat-icon>
         Criar Formulário
       </button>
     </div>
+  </div>
+</div>
 
-    <mat-divider></mat-divider>
+
+<div class="form-page-container">
+
+
+  <!-- Lista de formulários -->
+  <div class="forms-list-container">
 
 
     <div *ngIf="isLoading" class="spinner-container">
@@ -67,6 +72,7 @@
         <span>Expira em</span>
         <span>Ações</span>
       </div>
+      <mat-divider></mat-divider>
 
       <div *ngFor="let form of forms; let i = index"
         [ngClass]="{ 'form-card-a': i % 2 === 0, 'form-card-b': i % 2 !== 0 }" class="form-table-row mat-elevation-z2">
@@ -109,35 +115,58 @@
     </div>
 
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="onViewResponses(selectedForm.id)">
-        <mat-icon>visibility</mat-icon>
-        <span>Visualizar Respostas</span>
-      </button>
-      <button mat-menu-item (click)="editForm(selectedForm.id)">
-        <mat-icon>edit</mat-icon>
-        <span>Editar</span>
-      </button>
-      <button mat-menu-item (click)="deleteForm(selectedForm.id)">
-        <mat-icon>delete</mat-icon>
-        <span>Excluir</span>
-      </button>
-      <button mat-menu-item (click)="duplicateForm(selectedForm.id)">
-        <mat-icon>content_copy</mat-icon>
-        <span>Duplicar</span>
-      </button>
-      <button mat-menu-item (click)="renameForm(selectedForm.id, selectedForm.name)">
-        <mat-icon>drive_file_rename_outline</mat-icon>
-        <span>Renomear</span>
-      </button>
-      <button mat-menu-item (click)="viewQRCode(selectedForm.id, selectedForm.name)">
-        <mat-icon>qr_code</mat-icon>
-        <span>QR Code</span>
-      </button>
-      <button mat-menu-item (click)="copyLink(selectedForm.id)">
-        <mat-icon>link</mat-icon>
-        <span>Copiar Link</span>
-      </button>
+      <ng-container *ngIf="selectedForm">
+        <button mat-menu-item (click)="onViewResponses(selectedForm.id)">
+          <mat-icon>visibility</mat-icon>
+          <span>Visualizar Respostas</span>
+        </button>
+
+        <button mat-menu-item (click)="editForm(selectedForm.id)">
+          <mat-icon>edit</mat-icon>
+          <span>Editar</span>
+        </button>
+
+        <!-- ATIVAR -->
+        <button *ngIf="!selectedForm.status" mat-menu-item (click)="activateForm(selectedForm.id)">
+          <mat-icon>toggle_on</mat-icon>
+          <span>Ativar</span>
+        </button>
+
+        <!-- INATIVAR -->
+        <button *ngIf="selectedForm.status" mat-menu-item (click)="inactivateForm(selectedForm.id)">
+          <mat-icon>toggle_off</mat-icon>
+          <span>Inativar</span>
+        </button>
+
+        <!-- EXCLUIR (somente se inativo) -->
+        <button *ngIf="!selectedForm.status" mat-menu-item (click)="deleteForm(selectedForm.id)">
+          <mat-icon>delete</mat-icon>
+          <span>Excluir</span>
+        </button>
+
+        <button mat-menu-item (click)="duplicateForm(selectedForm.id)">
+          <mat-icon>content_copy</mat-icon>
+          <span>Duplicar</span>
+        </button>
+
+        <button mat-menu-item (click)="renameForm(selectedForm.id, selectedForm.name)">
+          <mat-icon>drive_file_rename_outline</mat-icon>
+          <span>Renomear</span>
+        </button>
+
+        <button mat-menu-item (click)="viewQRCode(selectedForm.id, selectedForm.name)">
+          <mat-icon>qr_code</mat-icon>
+          <span>QR Code</span>
+        </button>
+
+        <button mat-menu-item (click)="copyLink(selectedForm.id)">
+          <mat-icon>link</mat-icon>
+          <span>Copiar Link</span>
+        </button>
+      </ng-container>
     </mat-menu>
+
+
 
   </div>
 </div>

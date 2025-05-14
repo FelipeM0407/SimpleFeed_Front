@@ -84,4 +84,12 @@ export class FormsService {
     return this.http.post(`${this.apiUrl}/forms/${formId}/style`, style);
   }
 
+  inactivateForm(formId: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/forms/${formId}/inactivate`, {});
+  }
+
+  activateForm(formId: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/forms/${formId}/activate`, {});
+  }
+
 }
