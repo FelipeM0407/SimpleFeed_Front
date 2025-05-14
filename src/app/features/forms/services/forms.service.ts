@@ -28,8 +28,8 @@ export class FormsService {
   }
 
   // Buscar os formulários ativos
-  getForms(clientId: number): Observable<FormDashboard[]> {
-    return this.http.get<FormDashboard[]>(`${this.apiUrl}/forms/${clientId}`);
+  getForms(clientId: number, statusForm: any): Observable<FormDashboard[]> {
+    return this.http.post<FormDashboard[]>(`${this.apiUrl}/forms/${clientId}`, statusForm);
   }
 
   getFormStructure(formId: number): Observable<any> {
@@ -82,6 +82,14 @@ export class FormsService {
 
   saveFormStyle(formId: number, style: FormStyleDto) {
     return this.http.post(`${this.apiUrl}/forms/${formId}/style`, style);
+  }
+
+  inactivateForm(formId: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/forms/${formId}/inactivate`, {});
+  }
+
+  activateForm(formId: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/forms/${formId}/activate`, {});
   }
 
 }

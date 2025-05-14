@@ -1,7 +1,7 @@
 <div class="home-container">
     <div class="top-cards">
         <mat-card class="summary-card">
-            <h3>Feedbacks não lido</h3>
+            <h3>Respostas não lida</h3>
             <ng-container *ngIf="!isLoading; else spinner1">
                 <p class="big-number" [ngClass]="{'pulse-number': novosFeedbacks > 0}">
                     {{ novosFeedbacks }}
@@ -15,7 +15,7 @@
         </mat-card>
 
         <mat-card class="summary-card">
-            <h3>Feedbacks de hoje</h3>
+            <h3>Respostas de hoje</h3>
             <ng-container *ngIf="!isLoading; else spinner2">
                 <p class="big-number">{{ respostasHojeFormatado }}</p>
             </ng-container>
@@ -27,7 +27,7 @@
         </mat-card>
 
         <mat-card class="summary-card">
-            <h3>Total de Feedbacks</h3>
+            <h3>Total de Respostas</h3>
             <ng-container *ngIf="!isLoading; else spinner3">
                 <p class="big-number">{{ totalFeedbacksFormatado }}</p>
             </ng-container>
@@ -56,7 +56,7 @@
 
     <div class="dashboard-card">
         <mat-card>
-            <h2>Feedbacks Diários (últimos 30 dias)</h2>
+            <h2>Respostas Diárias (últimos 30 dias)</h2>
             <div class="canvas-wrapper">
                 <div *ngIf="isLoading" class="spinner-wrapper">
                     <mat-spinner ></mat-spinner>

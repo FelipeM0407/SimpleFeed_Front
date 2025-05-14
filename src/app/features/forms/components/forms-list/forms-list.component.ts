@@ -27,6 +27,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatChipsModule } from '@angular/material/chips';
 import { CdkDrag } from '@angular/cdk/drag-drop';
+import { MAT_RADIO_DEFAULT_OPTIONS, MatRadioModule } from '@angular/material/radio';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 interface Ordenation {
@@ -46,7 +49,11 @@ interface OrdenationGroup {
   templateUrl: './forms-list.component.html',
   styleUrls: ['./forms-list.component.scss',],
   standalone: true,
-  imports: [CdkDrag, MatChipsModule, MatBadgeModule, ReactiveFormsModule, FormsModule, MatSelectModule, MatFormFieldModule, QRCodeModule, MatSnackBarModule, MatDialogModule, MatProgressBarModule, MatDividerModule, CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
+  imports: [MatTooltipModule, MatCheckboxModule, MatRadioModule, CdkDrag, MatChipsModule, MatBadgeModule, ReactiveFormsModule, FormsModule, MatSelectModule, MatFormFieldModule, QRCodeModule, MatSnackBarModule, MatDialogModule, MatProgressBarModule, MatDividerModule, CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
+  providers: [{
+    provide: MAT_RADIO_DEFAULT_OPTIONS,
+    useValue: { color: 'primary' },
+  }]
 })
 export class FormsListComponent implements OnInit, OnDestroy {
   forms: FormDashboard[] = [];
@@ -59,9 +66,13 @@ export class FormsListComponent implements OnInit, OnDestroy {
   @ViewChild('qrCodeDialog', { static: true }) qrCodeDialog!: TemplateRef<any>;
   nameForm: string = '';
   formNames: string[] = [];
-
   clientId!: number;
-
+  selectedForm!: FormDashboard;
+  selectedStatus: string = 'ativo';
+  isActive = true;
+  isInativo = false;
+  isExpirado = false;
+  isNaoLido = false;
 
   ordenationGroups: OrdenationGroup[] = [
     {
@@ -84,7 +95,15 @@ export class FormsListComponent implements OnInit, OnDestroy {
         { value: 'atualizacaoDecrescente', viewValue: 'Decrescente' },
         { value: 'atualizacaoCrescente', viewValue: 'Crescente' },
       ],
-    }
+    },
+    {
+      name: 'Data de Expiração',
+      ordenation: [
+        { value: 'expiracaoDecrescente', viewValue: 'Decrescente' },
+        { value: 'expiracaoCrescente', viewValue: 'Crescente' },
+      ],
+    },
+
   ];
 
   ordenationControl = new FormControl(
@@ -105,6 +124,14 @@ export class FormsListComponent implements OnInit, OnDestroy {
     this.loadForms(this.clientId);
   }
 
+  onStatusChange(): void {
+    // Lógica de atualização do status baseado na escolha do radio button
+    this.isActive = this.selectedStatus === 'ativo';
+    this.isInativo = this.selectedStatus === 'inativo';
+
+    // Carregar os formulários com base no status
+    this.loadForms(this.clientId);
+  }
   onCreateForm(): void {
     const dialogRef = this.dialog.open(FormCreateDialogComponent, {
       data: { name: 'form_creation_dialog' }
@@ -125,10 +152,17 @@ export class FormsListComponent implements OnInit, OnDestroy {
   }
 
   loadForms(clientId: number): void {
-    this.formsService.getForms(clientId).subscribe({
+    const statusForm = {
+      isActive: this.isActive,
+      isInativo: this.isInativo,
+      isExpirado: this.isExpirado,
+      isNaoLido: this.isNaoLido
+    };
+    this.isLoading = true;
+
+    this.formsService.getForms(clientId, statusForm).subscribe({
       next: (data) => {
         this.forms = data;
-        this.formsService.setFormNames(this.forms.map(form => form.name));
         this.isLoading = false;
       },
       error: () => {
@@ -138,13 +172,6 @@ export class FormsListComponent implements OnInit, OnDestroy {
     });
   }
 
-  getTotalResponses(): number {
-    return this.forms.reduce((total, form) => total + form.responseCount, 0);
-  }
-
-  getTotalResponsesPercentage(): number {
-    return Math.min((this.getTotalResponses() / this.maxResponses) * 100, 100);
-  }
 
   ngOnDestroy(): void {
     this.clientDataSubscription?.unsubscribe();
@@ -184,6 +211,66 @@ export class FormsListComponent implements OnInit, OnDestroy {
             },
             complete: () => {
               this.isLoading = false; // Esconde o loading
+            }
+          });
+        }
+      });
+  }
+
+  //metodo para inativar o formulário
+  inactivateForm(id: number): void {
+    this.openConfirmDialog(this.confirmDialog, 'Tem certeza de que deseja inativar esse formulário?')
+      .subscribe((confirmed: any) => {
+        if (confirmed == 'true') {
+          this.isLoading = true; // Exibe o loading
+
+          this.formsService.inactivateForm(id).subscribe({
+            next: () => {
+              this.snackBar.open('Formulário inativado com sucesso!', 'Fechar', {
+                duration: 3000,
+                panelClass: ['snackbar-success'],
+                horizontalPosition: 'center',
+                verticalPosition: 'top'
+              });
+              this.loadForms(this.clientId);
+            },
+            error: () => {
+              this.snackBar.open('Erro ao inativar formulário!', 'Fechar', {
+                duration: 3000,
+                panelClass: ['snackbar-error'],
+                horizontalPosition: 'center',
+                verticalPosition: 'top'
+              });
+            }
+          });
+        }
+      }
+      );
+  }
+  //metodo para ativar o formulário
+  activateForm(id: number): void {
+    this.openConfirmDialog(this.confirmDialog, 'Tem certeza de que deseja ativar esse formulário?')
+      .subscribe((confirmed: any) => {
+        if (confirmed == 'true') {
+          this.isLoading = true; // Exibe o loading
+
+          this.formsService.activateForm(id).subscribe({
+            next: () => {
+              this.snackBar.open('Formulário ativado com sucesso!', 'Fechar', {
+                duration: 3000,
+                panelClass: ['snackbar-success'],
+                horizontalPosition: 'center',
+                verticalPosition: 'top'
+              });
+              this.loadForms(this.clientId);
+            },
+            error: () => {
+              this.snackBar.open('Erro ao ativar formulário!', 'Fechar', {
+                duration: 3000,
+                panelClass: ['snackbar-error'],
+                horizontalPosition: 'center',
+                verticalPosition: 'top'
+              });
             }
           });
         }
@@ -335,6 +422,25 @@ export class FormsListComponent implements OnInit, OnDestroy {
       case 'atualizacaoCrescente':
         this.forms.sort((a, b) => new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime());
         break;
+      case 'expiracaoDecrescente':
+        this.forms.sort((a, b) => {
+          const dateA = a.expirationDate ? new Date(a.expirationDate).getTime() : -Infinity;
+          const dateB = b.expirationDate ? new Date(b.expirationDate).getTime() : -Infinity;
+          return dateB - dateA;
+        });
+        break;
+
+      case 'expiracaoCrescente':
+        this.forms.sort((a, b) => {
+          if (!a.expirationDate && !b.expirationDate) return 0;
+          if (!a.expirationDate) return -1;
+          if (!b.expirationDate) return 1;
+          return new Date(a.expirationDate).getTime() - new Date(b.expirationDate).getTime();
+        });
+        break;
+
+
+
       default:
         break;
     }
