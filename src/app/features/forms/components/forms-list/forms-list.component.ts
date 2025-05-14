@@ -69,7 +69,7 @@ export class FormsListComponent implements OnInit, OnDestroy {
   clientId!: number;
   selectedForm!: FormDashboard;
   selectedStatus: string = 'ativo';
-  isActive = false;
+  isActive = true;
   isInativo = false;
   isExpirado = false;
   isNaoLido = false;
