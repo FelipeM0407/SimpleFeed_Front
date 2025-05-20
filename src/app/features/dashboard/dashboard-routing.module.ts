@@ -7,6 +7,7 @@ import { FormsListComponent } from '../forms/components/forms-list/forms-list.co
 import { FormEditComponent } from '../forms/components/form-edit/form-edit.component';
 import { AccountComponent } from '../account/account.component';
 import { HomeComponent } from '../home/components/home/home.component';
+import { ActionLogsComponent } from '../action-logs/components/action-logs/action-logs.component';
 
 const routes: Routes = [
   {
@@ -19,6 +20,7 @@ const routes: Routes = [
       { path: 'account', component: AccountComponent },
       { path: 'feedbacks/:formId', component: FeedbacksComponent },
       { path: 'form-edit/:formId', component: FormEditComponent }, 
+      { path: 'history', component: ActionLogsComponent }
 
     ], // Aplica o guard na rota
   }

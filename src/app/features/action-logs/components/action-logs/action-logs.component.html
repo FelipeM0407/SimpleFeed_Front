@@ -1,0 +1,101 @@
+<div class="page-container">
+  <mat-card class="card-container">
+    <div class="filters-container">
+      <form [formGroup]="dateRangeForm" class="filters-form">
+        <mat-form-field appearance="outline">
+          <mat-label>🔎 Buscar texto</mat-label>
+          <input matInput (keyup)="applyTextFilter($event)" placeholder="Ex: formulário criado" #input>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>🎯 Tipo de Ação</mat-label>
+          <mat-select [formControl]="typeFilter" multiple>
+            <mat-option *ngFor="let type of actionTypes" [value]="type.value">
+              {{ type.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>📅 Data Inicial</mat-label>
+          <input matInput [matDatepicker]="startPicker" formControlName="start" readonly (focus)="startPicker.open()">
+          <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>📅 Data Final</mat-label>
+          <input matInput [matDatepicker]="endPicker" formControlName="end" readonly (focus)="endPicker.open()">
+          <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+        </mat-form-field>
+
+      </form>
+
+      <div class="buttons-row">
+        <div>
+          <button mat-stroked-button color="primary" (click)="exportToExcel()" class="btn-responsive">
+            <mat-icon>download</mat-icon>
+            <span class="btn-label">Exportar Excel</span>
+          </button>
+        </div>
+
+        <div>
+          <button mat-flat-button color="primary" (click)="applyFilters()" class="btn-responsive">
+            <mat-icon>search</mat-icon>
+            <span class="btn-label">Buscar</span>
+          </button>
+
+          <button mat-stroked-button color="warn" (click)="clearAllFilters()" class="btn-responsive"
+            style="margin-left: 8px;">
+            <mat-icon>clear</mat-icon>
+            <span class="btn-label">Limpar Filtros</span>
+          </button>
+        </div>
+      </div>
+
+
+
+    </div>
+
+
+    <div class="table-container mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource" matSort>
+
+        <!-- Timestamp Column -->
+        <ng-container matColumnDef="timestamp" sticky>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Data </th>
+          <td mat-cell *matCellDef="let row"> {{ formatDate(row.timestamp) }} </td>
+        </ng-container>
+
+        <!-- Action Column -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Tipo de Ação </th>
+          <td mat-cell *matCellDef="let row" matTooltip="{{row.description}}"> {{ row.action }} </td>
+        </ng-container>
+
+        <!-- Description Column -->
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef> Descrição </th>
+          <td mat-cell *matCellDef="let row"> {{ row.description }} </td>
+        </ng-container>
+
+        <!-- Observations Column -->
+        <ng-container matColumnDef="observations">
+          <th mat-header-cell *matHeaderCellDef> Observações </th>
+          <td mat-cell *matCellDef="let row"> {{ row.observations }} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="4">Nenhum registro encontrado.</td>
+        </tr>
+      </table>
+      <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 25, 50]" showFirstLastButtons>
+      </mat-paginator>
+
+    </div>
+  </mat-card>
+</div>

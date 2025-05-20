@@ -8,6 +8,7 @@
     <nav class="nav-links desktop-only">
       <a routerLink="/dashboard/home" routerLinkActive="active-link">Início</a>
       <a routerLink="/dashboard/forms" routerLinkActive="active-link">Formulários</a>
+      <a routerLink="/dashboard/history" routerLinkActive="active-link">Histórico</a>
     </nav>
   </div>
 
@@ -32,6 +33,10 @@
       <button mat-menu-item class="mobile-only" [routerLink]="'/dashboard/forms'">
         <mat-icon>description</mat-icon>
         <span>Formulários</span>
+      </button>
+      <button mat-menu-item class="mobile-only" [routerLink]="'/dashboard/history'">
+        <mat-icon>view_timeline</mat-icon>
+        <span>Histórico</span>
       </button>
 
       <mat-divider class="mobile-only"></mat-divider>
