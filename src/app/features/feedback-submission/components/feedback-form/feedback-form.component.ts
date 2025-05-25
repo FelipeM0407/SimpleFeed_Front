@@ -19,7 +19,7 @@ import { ThankYouDialogComponent } from './thank-you-dialog/thank-you-dialog/tha
 import { MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { cpfValidator, telefoneValidator } from '../../../../shared/Util/validators';
-import { ExpiredFormDialogComponent } from './expired-form-dialog/expired-form-dialog.component';
+import { UnavailableFormDialogComponent } from './unavailable-form-dialog/unavailable-form-dialog.component';
 import { FormStyleDto } from 'src/app/features/forms/models/FormStyleDto';
 
 export const MY_DATE_FORMATS = {
@@ -114,6 +114,18 @@ export class FeedbackFormComponent {
         // Nova chamada para buscar dados de configuração (incluindo expiration_date)
         this.formsService.getSettingsByFormIdAsync(parseInt(this.formId, 10)).subscribe(settings => {
           const expiration = settings?.expirationDate;
+          const is_Active = settings?.is_Active;
+
+          if (is_Active === false) {
+            this.exibirForm = false;
+            this.dialog.open(UnavailableFormDialogComponent, {
+                width: '300px',
+                panelClass: 'unavailable-form-dialog',
+                disableClose: true
+              });
+              this.isLoading = false;
+              return;
+          }
 
           if (expiration) {
             const expirationDate = new Date(expiration);
@@ -122,9 +134,9 @@ export class FeedbackFormComponent {
 
             if (expirationDate < today) {
               this.exibirForm = false;
-              this.dialog.open(ExpiredFormDialogComponent, {
+              this.dialog.open(UnavailableFormDialogComponent, {
                 width: '300px',
-                panelClass: 'expired-form-dialog',
+                panelClass: 'unavailable-form-dialog',
                 disableClose: true
               });
               this.isLoading = false;
