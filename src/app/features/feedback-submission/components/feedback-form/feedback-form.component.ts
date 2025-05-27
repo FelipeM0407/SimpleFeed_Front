@@ -113,7 +113,6 @@ export class FeedbackFormComponent {
 
         // Nova chamada para buscar dados de configuração (incluindo expiration_date)
         this.formsService.getSettingsByFormIdAsync(parseInt(this.formId, 10)).subscribe(settings => {
-          const expiration = settings?.expirationDate;
           const is_Active = settings?.is_Active;
 
           if (is_Active === false) {
@@ -126,25 +125,6 @@ export class FeedbackFormComponent {
               this.isLoading = false;
               return;
           }
-
-          if (expiration) {
-            const expirationDate = new Date(expiration);
-            const today = new Date();
-            today.setHours(0, 0, 0, 0); // Zera as horas para comparar apenas a data
-
-            if (expirationDate < today) {
-              this.exibirForm = false;
-              this.dialog.open(UnavailableFormDialogComponent, {
-                width: '300px',
-                panelClass: 'unavailable-form-dialog',
-                disableClose: true
-              });
-              this.isLoading = false;
-              return;
-            }
-
-          }
-
         });
       }
 

@@ -21,10 +21,6 @@
         </mat-radio-group>
       </div>
       <div class="status-filter">
-        <mat-checkbox [(ngModel)]="isExpirado" (change)="onStatusChange()">
-          Expirado
-        </mat-checkbox>
-
         <mat-checkbox [(ngModel)]="isNaoLido" (change)="onStatusChange()">
           Não Lido
         </mat-checkbox>
@@ -69,7 +65,7 @@
         <span>Respostas</span>
         <span>Criado em</span>
         <span>Status</span>
-        <span>Expira em</span>
+        <span>Inativa em</span>
         <span>Ações</span>
       </div>
       <mat-divider></mat-divider>
@@ -105,7 +101,7 @@
         <div [ngClass]="{'ativo': form.status, 'inativo': !form.status}">
           {{ form.status ? 'Ativo' : 'Inativo' }}
         </div>
-        <div>{{ form.expirationDate ? (form.expirationDate | date: 'dd/MM/yyyy 23:59') : '—' }}</div>
+        <div>{{ form.inativationDate ? (form.inativationDate | date: 'dd/MM/yyyy') : '—' }}</div>
         <div class="form-actions">
           <button mat-icon-button [matMenuTriggerFor]="menu" (click)="selectedForm = form">
             <mat-icon>more_vert</mat-icon>

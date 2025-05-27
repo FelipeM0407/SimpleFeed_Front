@@ -1,4 +1,4 @@
 export interface FormSettings {
-    expirationDate?: Date;
+    inativationDate?: Date;
     is_Active?: boolean;
 }

@@ -64,24 +64,24 @@
 
           <div class="p-2 d-flex flex-row gap-3" style="align-items: baseline;">
             <mat-form-field appearance="outline" style="flex: 1;">
-              <mat-label>Data de Expiração</mat-label>
-              <input matInput [matDatepicker]="picker" [(ngModel)]="settingsForm.expirationDate" (focus)="picker.open()"
-                (dateChange)="onDateChange()" [disabled]="!checkboxDataExpiracao" required />
+              <mat-label>Data de Inativação</mat-label>
+              <input matInput [matDatepicker]="picker" [(ngModel)]="settingsForm.inativationDate" (focus)="picker.open()"
+                (dateChange)="onDateChange()" [disabled]="!checkboxDataInativacao" required />
 
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker touchUi="false" [startView]="'month'"></mat-datepicker>
-              <mat-hint>Defina até quando o formulário receberá respostas.</mat-hint>
+              <mat-hint>Defina quando o formulário ficará inativo.</mat-hint>
             </mat-form-field>
 
-            <ng-container *ngIf="this.settingsForm?.expirationDate">
+            <ng-container *ngIf="this.settingsForm?.inativationDate">
               <script>
-                expirationDate = this.settingsForm.expirationDate;
+                inativationDate = this.settingsForm.inativationDate;
               </script>
             </ng-container>
 
-            <mat-slide-toggle color="primary" [checked]="checkboxDataExpiracao"
-              (change)="habilitaDataExpiracao($event)">
-              <span *ngIf="!isMobile">Habilitar expiração</span>
+            <mat-slide-toggle color="primary" [checked]="checkboxDataInativacao"
+              (change)="habilitaDataInativacao($event)">
+              <span *ngIf="!isMobile">Habilitar inativação automática</span>
             </mat-slide-toggle>
 
 
