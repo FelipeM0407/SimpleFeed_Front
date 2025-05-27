@@ -71,7 +71,6 @@ export class FormsListComponent implements OnInit, OnDestroy {
   selectedStatus: string = 'ativo';
   isActive = true;
   isInativo = false;
-  isExpirado = false;
   isNaoLido = false;
 
   ordenationGroups: OrdenationGroup[] = [
@@ -97,10 +96,10 @@ export class FormsListComponent implements OnInit, OnDestroy {
       ],
     },
     {
-      name: 'Data de Expiração',
+      name: 'Data de Inativação',
       ordenation: [
-        { value: 'expiracaoDecrescente', viewValue: 'Decrescente' },
-        { value: 'expiracaoCrescente', viewValue: 'Crescente' },
+        { value: 'inativacaoDecrescente', viewValue: 'Decrescente' },
+        { value: 'inativacaoCrescente', viewValue: 'Crescente' },
       ],
     },
 
@@ -155,7 +154,6 @@ export class FormsListComponent implements OnInit, OnDestroy {
     const statusForm = {
       isActive: this.isActive,
       isInativo: this.isInativo,
-      isExpirado: this.isExpirado,
       isNaoLido: this.isNaoLido
     };
     this.isLoading = true;
@@ -422,20 +420,20 @@ export class FormsListComponent implements OnInit, OnDestroy {
       case 'atualizacaoCrescente':
         this.forms.sort((a, b) => new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime());
         break;
-      case 'expiracaoDecrescente':
+      case 'inativacaoDecrescente':
         this.forms.sort((a, b) => {
-          const dateA = a.expirationDate ? new Date(a.expirationDate).getTime() : -Infinity;
-          const dateB = b.expirationDate ? new Date(b.expirationDate).getTime() : -Infinity;
+          const dateA = a.inativationDate ? new Date(a.inativationDate).getTime() : -Infinity;
+          const dateB = b.inativationDate ? new Date(b.inativationDate).getTime() : -Infinity;
           return dateB - dateA;
         });
         break;
 
-      case 'expiracaoCrescente':
+      case 'inativacaoCrescente':
         this.forms.sort((a, b) => {
-          if (!a.expirationDate && !b.expirationDate) return 0;
-          if (!a.expirationDate) return -1;
-          if (!b.expirationDate) return 1;
-          return new Date(a.expirationDate).getTime() - new Date(b.expirationDate).getTime();
+          if (!a.inativationDate && !b.inativationDate) return 0;
+          if (!a.inativationDate) return -1;
+          if (!b.inativationDate) return 1;
+          return new Date(a.inativationDate).getTime() - new Date(b.inativationDate).getTime();
         });
         break;
 

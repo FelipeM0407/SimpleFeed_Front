@@ -76,9 +76,9 @@ export class FormEditComponent {
   fieldsDeleteds: number[] = [];
   isLoading = true;
   logoBase64: string = '';
-  checkboxDataExpiracao: boolean = false;
+  checkboxDataInativacao: boolean = false;
   settingsForm: FormSettings = {
-    expirationDate: undefined
+    inativationDate: undefined
   };
   formName!: string;
   form_Id!: number;
@@ -170,9 +170,9 @@ export class FormEditComponent {
         });
 
         this.formsService.getSettingsByFormIdAsync(numericFormId).subscribe(response => {
-          this.settingsForm = response || { expirationDate: undefined };
-          if (this.settingsForm?.expirationDate) {
-            this.checkboxDataExpiracao = true;
+          this.settingsForm = response || { inativationDate: undefined };
+          if (this.settingsForm?.inativationDate) {
+            this.checkboxDataInativacao = true;
           }
         });
 
@@ -259,12 +259,12 @@ export class FormEditComponent {
     }
   }
 
-  habilitaDataExpiracao(event: any): void {
-    this.checkboxDataExpiracao = event.checked;
+  habilitaDataInativacao(event: any): void {
+    this.checkboxDataInativacao = event.checked;
 
     if (!event.checked) {
       if (this.settingsForm) {
-        this.settingsForm.expirationDate = undefined;
+        this.settingsForm.inativationDate = undefined;
       }
       this.triggerSave();
     }
@@ -396,8 +396,8 @@ export class FormEditComponent {
     if (form_Id) {
       const numericFormId = +form_Id;
 
-      if (this.checkboxDataExpiracao && !this.settingsForm?.expirationDate) {
-        this.snackBar.open('Por favor, selecione uma data de expiração.', 'Fechar', {
+      if (this.checkboxDataInativacao && !this.settingsForm?.inativationDate) {
+        this.snackBar.open('Por favor, selecione uma data de inativação.', 'Fechar', {
           duration: 3000,
           panelClass: ['snackbar-error'],
           horizontalPosition: 'center',
@@ -422,7 +422,7 @@ export class FormEditComponent {
         fieldsDeletedsWithFeedbacks: this.fieldsDeletedsWithFeedbacks,
         fieldsDeleteds: this.fieldsDeleteds,
         logoBase64: this.logoBase64,
-        expirationDate: this.settingsForm?.expirationDate,
+        inativationDate: this.settingsForm?.inativationDate,
       };
 
       this.isLoading = true;
