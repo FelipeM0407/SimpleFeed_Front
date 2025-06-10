@@ -3,7 +3,6 @@ export interface FieldTypes{
     name: string;
     label: string;
     description: string;
-    settingsschema: string;
     fieldType: string;
     ordenation: number;
     planId: number;

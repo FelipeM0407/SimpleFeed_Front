@@ -1,0 +1,222 @@
+.page-container {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  background-color: #f4f6f8;
+}
+
+.card-container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+}
+
+.month-select-container {
+  display: flex;
+  justify-content: flex-end;
+
+  .month-select {
+    width: 250px;
+  }
+}
+
+.total-fatura-card {
+  background-color: #e3f2fd;
+
+  .total-fatura-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    .info {
+      flex: 1;
+
+      .titulo-e-status {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        h2 {
+          margin: 0;
+        }
+
+        .status-fatura {
+          padding: 0.2rem 0.6rem;
+          font-weight: bold;
+          border-radius: 4px;
+          font-size: 0.9rem;
+
+          &.aberta {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+          }
+
+          &.fechada {
+            background-color: #fffde7;
+            color: #f9a825;
+          }
+        }
+      }
+
+      .valor {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #0d47a1;
+        margin: 0.5rem 0;
+      }
+    }
+
+    .acoes {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.5rem;
+
+      .month-select {
+        min-width: 220px;
+      }
+    }
+  }
+
+}
+
+.tabelas-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.tabela {
+  border-radius: 10px;
+  overflow: hidden;
+
+  mat-card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+  }
+
+  .tabela-mat {
+    width: 100%;
+
+    th {
+      background-color: #f5f5f5;
+      font-weight: bold;
+    }
+
+    td,
+    th {
+      padding: 1rem;
+      text-align: left;
+    }
+
+    tr.mat-footer-row {
+      font-weight: bold;
+      background-color: #e0e0e0;
+    }
+  }
+}
+
+tr.mat-mdc-footer-row td {
+  font-weight: bold;
+}
+
+.month-select-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .month-select {
+    min-width: 250px;
+  }
+
+  .status-fatura {
+    font-weight: 600;
+    color: #555;
+    padding: 4px 8px;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+  }
+}
+
+.valor-plano-fixo {
+  margin-top: 1rem;
+  text-align: right;
+  font-weight: 500;
+  font-size: 1rem;
+
+  p {
+    margin: 0;
+    color: #444;
+  }
+}
+
+//trecho para mobile
+@media (max-width: 768px) {
+  .page-container {
+    padding: 10px;
+  }
+
+  .card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 10px;
+  }
+
+  .total-fatura-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .total-fatura-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    .info {
+      flex: 1 1 300px;
+    }
+
+    .acoes {
+      flex: 1 1 250px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .month-select {
+      width: 100%;
+    }
+  }
+
+  .tabelas-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+
+    .tabela {
+      flex: 1 1 100%;
+      max-width: 100%;
+
+      @media (min-width: 768px) {
+        flex: 1 1 48%;
+      }
+    }
+  }
+
+  .valor-plano-fixo {
+    margin-top: 16px;
+    text-align: right;
+  }
+
+}

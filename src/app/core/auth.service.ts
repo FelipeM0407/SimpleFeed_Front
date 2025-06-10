@@ -12,8 +12,6 @@ import jwt_decode from 'jwt-decode';
 export class AuthService {
   private apiUrl = `${environment.apiUrl}`;
   private clientDataSubject = new BehaviorSubject<any>(null); // Mantém e emite os dados do cliente
-
-
   constructor(private http: HttpClient) { }
 
   getDecodedToken() {
@@ -33,7 +31,6 @@ export class AuthService {
     const decodedToken: any = this.getDecodedToken();
     return decodedToken?.id || null;
   }
-
   getUserName() {
     const decodedToken: any = this.getDecodedToken();
     return decodedToken?.name || null;

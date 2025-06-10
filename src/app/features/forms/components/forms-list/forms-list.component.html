@@ -135,10 +135,10 @@
         </button>
 
         <!-- EXCLUIR (somente se inativo) -->
-        <button *ngIf="!selectedForm.status" mat-menu-item (click)="deleteForm(selectedForm.id)">
+        <!-- <button *ngIf="!selectedForm.status" mat-menu-item (click)="deleteForm(selectedForm.id)">
           <mat-icon>delete</mat-icon>
           <span>Excluir</span>
-        </button>
+        </button> -->
 
         <button mat-menu-item (click)="duplicateForm(selectedForm.id)">
           <mat-icon>content_copy</mat-icon>

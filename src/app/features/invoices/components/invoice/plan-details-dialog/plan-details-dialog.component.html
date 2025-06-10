@@ -1,0 +1,127 @@
+<h1 mat-dialog-title>Detalhes dos Planos</h1>
+
+<mat-dialog-content class="dialog-content">
+
+    <mat-tab-group [selectedIndex]="(planoAtual - 1)">
+        <mat-tab *ngFor="let plan of plans" [label]="plan.name">
+            <div class="plan-info">
+
+                <mat-card appearance="outlined" class="plan-card">
+                    <div class="cabecalho-plano">
+                        <div>
+                            <mat-card-title>{{ plan.name }}</mat-card-title>
+                            <mat-card-subtitle>
+                                {{ plan.planType === 'fixed' ? 'Plano Fixo' : 'Sob Demanda' }}
+                            </mat-card-subtitle>
+                        </div>
+
+                        <ng-container *ngIf="plan.id !== 1 && plan.id !== planoAtual">
+                            <button mat-stroked-button color="primary" (click)="migrarParaPlano(plan)">
+                                <mat-icon>change_circle</mat-icon>
+                                Migrar para este plano
+                            </button>
+                        </ng-container>
+                        <ng-container *ngIf="plan.id === planoAtual">
+                            <span class="plano-atual-label">
+                                <mat-icon color="primary">check_circle</mat-icon>
+                                Seu plano atual
+                            </span>
+                        </ng-container>
+
+
+                    </div>
+
+                    <mat-card-content>
+
+                        <div class="detalhes">
+                            <p><mat-icon color="primary">price_check</mat-icon> Preço Base: <strong>{{ plan.basePrice |
+                                    currency:'BRL' }}</strong></p>
+                            <p><mat-icon color="primary">list</mat-icon> Limites:</p>
+                            <ul>
+                                <li>📄 Formulários: <strong>{{ plan.maxForms ?? 'Ilimitado' }}</strong></li>
+                                <li>📨 Respostas: <strong>{{ plan.maxResponses ?? 'Ilimitado' }}</strong></li>
+                                <li>🤖 Total de Relatórios com IA:
+                                    <strong>
+                                        {{
+                                        plan.maxForms && plan.aiReportsPerForm !== null
+                                        ? plan.maxForms * plan.aiReportsPerForm
+                                        : (plan.aiReportsPerForm === 0 ? 'Não disponível' : 'Ilimitado')
+                                        }}
+                                    </strong>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <mat-divider class="my-3"></mat-divider>
+
+                        <ng-container *ngIf="plan.name !== 'Free'; else planoFree">
+                            <p><mat-icon color="warn">attach_money</mat-icon> <strong>Valores Sob Demanda:</strong>
+                            </p>
+
+                            <table mat-table [dataSource]="getPricingRules(plan.id)"
+                                class="mat-elevation-z1 pricing-table">
+
+                                <ng-container matColumnDef="item">
+                                    <th mat-header-cell *matHeaderCellDef>Item</th>
+                                    <td mat-cell *matCellDef="let element">{{ mapItemName(element.item) }}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="unit_size">
+                                    <th mat-header-cell *matHeaderCellDef>Unidade</th>
+                                    <td mat-cell *matCellDef="let element">{{ element.unitSize }}</td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="price">
+                                    <th mat-header-cell *matHeaderCellDef>Valor</th>
+                                    <td mat-cell *matCellDef="let element">{{ element.price | currency:'BRL' }}</td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
+                        </ng-container>
+
+                        <ng-template #planoFree>
+                            <mat-card color="warn" class="alerta-plano-free">
+                                <p><mat-icon color="warn">block</mat-icon> <strong>O plano Free não permite
+                                        sob demanda.</strong></p>
+                            </mat-card>
+                        </ng-template>
+
+                    </mat-card-content>
+                </mat-card>
+
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-footer">
+    <button mat-stroked-button color="primary" mat-dialog-close>
+        <mat-icon>close</mat-icon>
+        Fechar
+    </button>
+</mat-dialog-actions>
+
+<!-- Dialog de confirmação de migração -->
+<ng-template [ngIf]="showConfirmDialog">
+  <div class="confirm-overlay">
+    <mat-card class="confirm-dialog">
+      <mat-card-title>Confirmar Migração</mat-card-title>
+      <mat-card-content>
+        <p>Tem certeza que deseja migrar para o plano <strong>{{ migratingPlan?.name }}</strong>?</p>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button mat-button (click)="showConfirmDialog = false">Cancelar</button>
+        <button mat-flat-button color="primary" [disabled]="loadingMigration"
+          (click)="confirmarMigracao()">Confirmar</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</ng-template>
+
+
+<div *ngIf="loadingMigration" class="spinner-container">
+  <mat-spinner></mat-spinner>
+</div>
