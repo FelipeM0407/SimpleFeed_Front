@@ -156,3 +156,67 @@ tr.mat-mdc-footer-row td {
     color: #444;
   }
 }
+
+//trecho para mobile
+@media (max-width: 768px) {
+  .page-container {
+    padding: 10px;
+  }
+
+  .card-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 10px;
+  }
+
+  .total-fatura-card {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .total-fatura-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+
+    .info {
+      flex: 1 1 300px;
+    }
+
+    .acoes {
+      flex: 1 1 250px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .month-select {
+      width: 100%;
+    }
+  }
+
+  .tabelas-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+
+    .tabela {
+      flex: 1 1 100%;
+      max-width: 100%;
+
+      @media (min-width: 768px) {
+        flex: 1 1 48%;
+      }
+    }
+  }
+
+  .valor-plano-fixo {
+    margin-top: 16px;
+    text-align: right;
+  }
+
+}
