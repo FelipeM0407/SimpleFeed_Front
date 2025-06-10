@@ -100,7 +100,8 @@ export class ActionLogsComponent implements OnInit {
     [7, 'Exclusão de Feedback'],
     [8, 'Duplicação de Formulário'],
     [9, 'Edição do Estilo do Formulário'],
-    [10, 'Inativação de Formulário Agendada']
+    [10, 'Inativação de Formulário Agendada'],
+    [11, 'Migração de Plano']
   ]);
 
 
