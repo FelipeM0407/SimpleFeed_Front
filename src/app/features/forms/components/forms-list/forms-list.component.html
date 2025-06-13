@@ -197,3 +197,28 @@
     <button mat-stroked-button color="primary" (click)="downloadQRCode()">Baixar QR Code</button>
   </mat-dialog-actions>
 </ng-template>
+
+<ng-template #planLimitDialog let-dialogData>
+  <h2 mat-dialog-title>Limite de Formulários Atingido</h2>
+  <mat-dialog-content>
+    <p>Você está no plano <b>{{ dialogData.planoNome }}</b> e atingiu o limite máximo de <b>{{ dialogData.limiteFormularios }}</b> formulário ativo.</p>
+    <p>Para criar mais formulários, faça upgrade do seu plano.</p>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>Fechar</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #planChargeDialog let-dialogData>
+  <h2 mat-dialog-title>Quantidade máxima de formulários dentro do plano atingida!</h2>
+  <mat-dialog-content>
+    <p>Você está no plano <b>{{ dialogData.planoNome }}</b>.</p>
+    <p>Formulários ativos: <b>{{ dialogData.totalFormulariosAtivos }}</b> / <b>{{ dialogData.limiteFormularios }}</b></p>
+    <p>Ao criar um novo formulário, o mesmo será cobrado sob demanda.</p>
+    <p>Deseja continuar?</p>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close="false">Cancelar</button>
+    <button mat-button color="primary" mat-dialog-close="true">Confirmar</button>
+  </mat-dialog-actions>
+</ng-template>

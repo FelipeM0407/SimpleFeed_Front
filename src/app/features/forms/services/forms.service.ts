@@ -8,6 +8,7 @@ import { FormsTemplates } from '../models/FormsTemplates';
 import { FormStructure } from '../models/FormStructure';
 import { FormSettings } from '../models/FormSettings';
 import { FormStyleDto } from '../models/FormStyleDto';
+import { FormCreationStatus } from '../models/FormCreationStatus';
 
 @Injectable({
   providedIn: 'root',
@@ -92,4 +93,7 @@ export class FormsService {
     return this.http.post<void>(`${this.apiUrl}/forms/${formId}/activate`, {});
   }
 
+  getServicesAvailableByPlan(clientId: string): Observable<FormCreationStatus> {
+    return this.http.get<any>(`${this.apiUrl}/plans/${clientId}/services-available`);
+  }
 }
