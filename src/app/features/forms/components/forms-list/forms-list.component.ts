@@ -73,6 +73,10 @@ export class FormsListComponent implements OnInit, OnDestroy {
   isInativo = false;
   isNaoLido = false;
 
+  @ViewChild('planLimitDialog', { static: true }) planLimitDialog!: TemplateRef<any>;
+  @ViewChild('planChargeDialog', { static: true }) planChargeDialog!: TemplateRef<any>;
+
+
   ordenationGroups: OrdenationGroup[] = [
     {
       name: 'Qtd. Respostas',
@@ -110,13 +114,13 @@ export class FormsListComponent implements OnInit, OnDestroy {
       .flatMap(group => group.ordenation) // Achata a lista para buscar diretamente nas opções
       .find(order => order.checked)?.value || ''
   );
-
-
+  clientGuid: string;
 
   constructor(private snackBar: MatSnackBar, private formsService: FormsService, private authService: AuthService, private router: Router,
     public dialog: MatDialog, private sanitizer: DomSanitizer
   ) {
     this.clientId = this.authService.getClientId();
+    this.clientGuid = this.authService.getUserGuid();
   }
 
   ngOnInit(): void {
@@ -132,6 +136,52 @@ export class FormsListComponent implements OnInit, OnDestroy {
     this.loadForms(this.clientId);
   }
   onCreateForm(): void {
+    this.isLoading = true;
+
+    this.formsService.getServicesAvailableByPlan(this.clientGuid).subscribe({
+      next: (services: any) => {
+        
+        if (services.totalFormulariosAtivos == services.limiteFormularios) {
+
+          if (services.planoId === 1 && !services.podeExtenderFormulario) {
+            this.dialog.open(this.planLimitDialog, {
+              data: { planoNome: services.planoNome, limiteFormularios: services.limiteFormularios },
+              width: '400px'
+            });
+            return;
+          }
+
+          if (services.criacaoGeraraCobranca) {
+            const dialogRef = this.dialog.open(this.planChargeDialog, {
+              data: {
+                planoNome: services.planoNome,
+                totalFormulariosAtivos: services.totalFormulariosAtivos,
+                limiteFormularios: services.limiteFormularios
+              },
+              width: '400px'
+            });
+
+            dialogRef.afterClosed().subscribe((confirmed) => {
+              if (confirmed === 'true') {
+                this.openCreateFormDialog();
+              }
+            });
+            return;
+          }
+        }
+
+        this.openCreateFormDialog();
+      },
+      error: () => {
+        this.errorMessage = 'Erro ao verificar o plano do cliente.';
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
+    });
+  }
+
+  openCreateFormDialog() {
     const dialogRef = this.dialog.open(FormCreateDialogComponent, {
       data: { name: 'form_creation_dialog' }
     });
