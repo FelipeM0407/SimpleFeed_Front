@@ -96,4 +96,8 @@ export class FormsService {
   getServicesAvailableByPlan(clientId: string): Observable<FormCreationStatus> {
     return this.http.get<any>(`${this.apiUrl}/plans/${clientId}/services-available`);
   }
+
+  getFormReactivationStatus(formId: number): Observable<FormCreationStatus> {
+    return this.http.get<any>(`${this.apiUrl}/plans/${formId}/reactivation-status`);
+  }
 }

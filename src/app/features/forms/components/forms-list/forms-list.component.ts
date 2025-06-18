@@ -140,8 +140,8 @@ export class FormsListComponent implements OnInit, OnDestroy {
 
     this.formsService.getServicesAvailableByPlan(this.clientGuid).subscribe({
       next: (services: any) => {
-        
-        if (services.totalFormulariosAtivos == services.limiteFormularios) {
+
+        if (services.totalFormulariosAtivosMes >= services.limiteFormularios) {
 
           if (services.planoId === 1 && !services.podeExtenderFormulario) {
             this.dialog.open(this.planLimitDialog, {
@@ -155,7 +155,7 @@ export class FormsListComponent implements OnInit, OnDestroy {
             const dialogRef = this.dialog.open(this.planChargeDialog, {
               data: {
                 planoNome: services.planoNome,
-                totalFormulariosAtivos: services.totalFormulariosAtivos,
+                totalFormulariosAtivosMes: services.totalFormulariosAtivosMes,
                 limiteFormularios: services.limiteFormularios
               },
               width: '400px'
@@ -297,12 +297,63 @@ export class FormsListComponent implements OnInit, OnDestroy {
   }
   //metodo para ativar o formulário
   activateForm(id: number): void {
+    this.isLoading = true;
+
+    this.formsService.getFormReactivationStatus(id).subscribe({
+      next: (services: any) => {
+
+        if (services.totalFormulariosAtivosMes >= services.limiteFormularios) {
+
+          if (services.planoId === 1 && !services.podeExtenderFormulario) {
+            this.dialog.open(this.planLimitDialog, {
+              data: { planoNome: services.planoNome, limiteFormularios: services.limiteFormularios },
+              width: '400px'
+            });
+            return;
+          }
+
+          if (services.criacaoGeraraCobranca) {
+            const dialogRef = this.dialog.open(this.planChargeDialog, {
+              data: {
+                planoNome: services.planoNome,
+                totalFormulariosAtivosMes: services.totalFormulariosAtivosMes,
+                limiteFormularios: services.limiteFormularios
+              },
+              width: '400px'
+            });
+
+            dialogRef.afterClosed().subscribe((confirmed) => {
+              if (confirmed === 'true') {
+                this.ativacaoConfirmada(id);
+              }
+            });
+            return;
+          }
+        }
+
+        this.ativacaoConfirmada(id);
+      },
+      error: () => {
+        this.errorMessage = 'Erro ao verificar o plano do cliente.';
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
+    });
+
+
+
+
+  }
+
+  ativacaoConfirmada(formId: number) {
+
     this.openConfirmDialog(this.confirmDialog, 'Tem certeza de que deseja ativar esse formulário?')
       .subscribe((confirmed: any) => {
         if (confirmed == 'true') {
           this.isLoading = true; // Exibe o loading
 
-          this.formsService.activateForm(id).subscribe({
+          this.formsService.activateForm(formId).subscribe({
             next: () => {
               this.snackBar.open('Formulário ativado com sucesso!', 'Fechar', {
                 duration: 3000,
@@ -326,6 +377,56 @@ export class FormsListComponent implements OnInit, OnDestroy {
   }
 
   duplicateForm(id: number) {
+
+    this.isLoading = true;
+
+    this.formsService.getServicesAvailableByPlan(this.clientGuid).subscribe({
+      next: (services: any) => {
+
+        if (services.totalFormulariosAtivosMes >= services.limiteFormularios) {
+
+          if (services.planoId === 1 && !services.podeExtenderFormulario) {
+            this.dialog.open(this.planLimitDialog, {
+              data: { planoNome: services.planoNome, limiteFormularios: services.limiteFormularios },
+              width: '400px'
+            });
+            return;
+          }
+
+          if (services.criacaoGeraraCobranca) {
+            const dialogRef = this.dialog.open(this.planChargeDialog, {
+              data: {
+                planoNome: services.planoNome,
+                totalFormulariosAtivosMes: services.totalFormulariosAtivosMes,
+                limiteFormularios: services.limiteFormularios
+              },
+              width: '400px'
+            });
+
+            dialogRef.afterClosed().subscribe((confirmed) => {
+              if (confirmed === 'true') {
+                this.duplicacaoConfirmada(id);
+              }
+            });
+            return;
+          }
+        }
+
+        this.duplicacaoConfirmada(id)
+
+      },
+      error: () => {
+        this.errorMessage = 'Erro ao verificar o plano do cliente.';
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
+    });
+
+
+  }
+
+  duplicacaoConfirmada(formId: number) {
     const dialogRef = this.dialog.open(DialogRenameFormComponent, {
       data: { formName: '', title: 'Duplicar Formulário' },
       width: '500px'
@@ -341,7 +442,7 @@ export class FormsListComponent implements OnInit, OnDestroy {
             verticalPosition: 'top'
           });
         } else {
-          this.formsService.duplicateForm(id, result).subscribe({
+          this.formsService.duplicateForm(formId, result).subscribe({
             next: (duplicatedForm) => {
               this.snackBar.open('Formulário duplicado com sucesso!', 'Fechar', {
                 duration: 3000,

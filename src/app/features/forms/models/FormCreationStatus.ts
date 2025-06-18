@@ -1,7 +1,7 @@
 export interface FormCreationStatus {
     planoNome: string;
     planoId: number;
-    totalFormulariosAtivos: number;
+    totalFormulariosAtivosMes: number;
     limiteFormularios: number;
     podeExcederFormulario: boolean;
     criacaoGeraraCobranca: boolean;
