@@ -185,7 +185,13 @@
     </button>
   </div>
   <mat-dialog-content class="pt-0">
-    <qrcode [qrdata]="qrCodeUrl || ''" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+
+
+
+    <app-qr-code-custom [data]="qrCodeUrl || ''"  [logoBase64]="logoBase64 || ''" [filename]="nameForm" [color]="qrCodeColor">
+    </app-qr-code-custom>
+
+
     <div class="d-flex justify-content-center" style="width: 240px;">
       <h1 class="m-0 text-center"
         style="word-wrap: break-word; white-space: normal; max-width: 100%; overflow-wrap: break-word;">
@@ -193,7 +199,7 @@
       </h1>
     </div>
   </mat-dialog-content>
-  <mat-dialog-actions>
+  <mat-dialog-actions style="display: flex; justify-content: center;">
     <button mat-stroked-button color="primary" (click)="downloadQRCode()">Baixar QR Code</button>
   </mat-dialog-actions>
 </ng-template>
@@ -201,7 +207,8 @@
 <ng-template #planLimitDialog let-dialogData>
   <h2 mat-dialog-title>Limite de Formulários Atingido</h2>
   <mat-dialog-content>
-    <p>Você está no plano <b>{{ dialogData.planoNome }}</b> e atingiu o limite máximo de <b>{{ dialogData.limiteFormularios }}</b> formulário ativo.</p>
+    <p>Você está no plano <b>{{ dialogData.planoNome }}</b> e atingiu o limite máximo de <b>{{
+        dialogData.limiteFormularios }}</b> formulário ativo.</p>
     <p>Para criar mais formulários, faça upgrade do seu plano.</p>
   </mat-dialog-content>
   <mat-dialog-actions>
@@ -213,7 +220,8 @@
   <h2 mat-dialog-title>Quantidade máxima de formulários dentro do plano atingida!</h2>
   <mat-dialog-content>
     <p>Você está no plano <b>{{ dialogData.planoNome }}</b>.</p>
-    <p>Formulários ativos: <b>{{ dialogData.totalFormulariosAtivosMes }}</b> / <b>{{ dialogData.limiteFormularios }}</b></p>
+    <p>Formulários ativos: <b>{{ dialogData.totalFormulariosAtivosMes }}</b> / <b>{{ dialogData.limiteFormularios }}</b>
+    </p>
     <p>Ao criar ou ativar um novo formulário, o mesmo será cobrado sob demanda.</p>
     <p>Deseja continuar?</p>
   </mat-dialog-content>

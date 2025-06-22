@@ -30,7 +30,7 @@ import { CdkDrag } from '@angular/cdk/drag-drop';
 import { MAT_RADIO_DEFAULT_OPTIONS, MatRadioModule } from '@angular/material/radio';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
+import { QrCodeCustomComponent } from './qr-code-custom/qr-code-custom.component';
 
 interface Ordenation {
   value: string;
@@ -49,7 +49,7 @@ interface OrdenationGroup {
   templateUrl: './forms-list.component.html',
   styleUrls: ['./forms-list.component.scss',],
   standalone: true,
-  imports: [MatTooltipModule, MatCheckboxModule, MatRadioModule, CdkDrag, MatChipsModule, MatBadgeModule, ReactiveFormsModule, FormsModule, MatSelectModule, MatFormFieldModule, QRCodeModule, MatSnackBarModule, MatDialogModule, MatProgressBarModule, MatDividerModule, CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
+  imports: [QrCodeCustomComponent, MatTooltipModule, MatCheckboxModule, MatRadioModule, CdkDrag, MatChipsModule, MatBadgeModule, ReactiveFormsModule, FormsModule, MatSelectModule, MatFormFieldModule, QRCodeModule, MatSnackBarModule, MatDialogModule, MatProgressBarModule, MatDividerModule, CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
   providers: [{
     provide: MAT_RADIO_DEFAULT_OPTIONS,
     useValue: { color: 'primary' },
@@ -63,6 +63,8 @@ export class FormsListComponent implements OnInit, OnDestroy {
   private clientDataSubscription: Subscription | null = null;
   @ViewChild('confirmDialog', { static: true }) confirmDialog!: TemplateRef<any>;
   qrCodeUrl: string | null = null;
+  qrCodeColor: string = '#000000';
+  logoBase64: string | null = null;
   @ViewChild('qrCodeDialog', { static: true }) qrCodeDialog!: TemplateRef<any>;
   nameForm: string = '';
   formNames: string[] = [];
@@ -72,6 +74,9 @@ export class FormsListComponent implements OnInit, OnDestroy {
   isActive = true;
   isInativo = false;
   isNaoLido = false;
+  isPremiumUser: boolean = false; // Troque depois pela lógica real do plano
+
+  @ViewChild(QrCodeCustomComponent) qrCodeComponent!: QrCodeCustomComponent;
 
   @ViewChild('planLimitDialog', { static: true }) planLimitDialog!: TemplateRef<any>;
   @ViewChild('planChargeDialog', { static: true }) planChargeDialog!: TemplateRef<any>;
@@ -512,24 +517,28 @@ export class FormsListComponent implements OnInit, OnDestroy {
   }
 
   viewQRCode(formId: number, nameForm: string) {
-    const frontUrl = this.formsService.getFrontUrl();
-    const url = `${frontUrl}/feedback-submission/${formId}`;
+    this.formsService.getLogoBase64ByQrCode(formId).subscribe(
+      (result) => {
+        const frontUrl = this.formsService.getFrontUrl();
+        const url = `${frontUrl}/feedback-submission/${formId}`;
 
-    if (url) {
-      this.nameForm = nameForm;
-      this.qrCodeUrl = url;
-      this.dialog.open(this.qrCodeDialog);
-    } else {
-      console.error('URL inválida para o QR Code');
-    }
+        if (result) {
+          this.logoBase64 = result.qrCodeLogoBase64 ?? '';
+          this.qrCodeColor = result.color ?? '#000000';
+        }
+
+        this.nameForm = nameForm;
+        this.qrCodeUrl = url;
+        this.dialog.open(this.qrCodeDialog);
+      },
+      () => {
+        console.error('Erro ao buscar o logo para o QR Code');
+      }
+    );
   }
 
   downloadQRCode() {
-    const canvas = document.querySelector('canvas') as HTMLCanvasElement;
-    const link = document.createElement('a');
-    link.href = canvas.toDataURL('image/png');
-    link.download = `QR Code ${this.nameForm}.png`;
-    link.click();
+    this.qrCodeComponent.download();
   }
 
   copyLink(formId: number) {
@@ -593,6 +602,10 @@ export class FormsListComponent implements OnInit, OnDestroy {
       default:
         break;
     }
+  }
+
+  downloadCustomQRCode() {
+    this.qrCodeComponent.download();
   }
 }
 

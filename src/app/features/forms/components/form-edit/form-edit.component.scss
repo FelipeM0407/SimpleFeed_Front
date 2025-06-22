@@ -342,6 +342,41 @@ input[type="file"] {
   display: none;
 }
 
+.qr-config-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  flex-wrap: wrap;
+
+  .qr-config-left {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex: 1;
+  }
+
+  .qr-config-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 200px;
+  }
+}
+
+::ng-deep .qr-config-left mat-form-field {
+  margin-bottom: 0 !important;
+}
+
+::ng-deep .qr-config-left mat-form-field .mat-mdc-form-field-subscript-wrapper {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+
 
 /* Desktop-specific styles */
 @media (min-width: 769px) {
@@ -445,5 +480,3 @@ input[type="file"] {
     margin-top: 8px;
   }
 }
-
-
