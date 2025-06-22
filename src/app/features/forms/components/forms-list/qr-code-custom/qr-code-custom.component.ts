@@ -16,6 +16,7 @@ export class QrCodeCustomComponent implements OnChanges {
 
   @Input() data!: string;
   @Input() logoBase64!: string;
+  @Input() color: string = '#000000';
   extension = 'svg';
 
   get qrCodeSize(): number {
@@ -34,7 +35,7 @@ export class QrCodeCustomComponent implements OnChanges {
       hideBackgroundDots: true
     },
     dotsOptions: {
-      color: '#000',
+      color: this.color,
       type: 'rounded'
     },
     backgroundOptions: {
@@ -47,6 +48,9 @@ export class QrCodeCustomComponent implements OnChanges {
       this.qrCode.update({
         data: this.data,
         image: this.logoBase64 || '',
+        dotsOptions: {
+          color: this.color
+        },
       });
 
       this.canvas.nativeElement.innerHTML = '';

@@ -188,7 +188,7 @@
 
 
 
-    <app-qr-code-custom [data]="qrCodeUrl || ''"  [logoBase64]="logoBase64 || ''" [filename]="nameForm">
+    <app-qr-code-custom [data]="qrCodeUrl || ''"  [logoBase64]="logoBase64 || ''" [filename]="nameForm" [color]="qrCodeColor">
     </app-qr-code-custom>
 
 
@@ -199,7 +199,7 @@
       </h1>
     </div>
   </mat-dialog-content>
-  <mat-dialog-actions>
+  <mat-dialog-actions style="display: flex; justify-content: center;">
     <button mat-stroked-button color="primary" (click)="downloadQRCode()">Baixar QR Code</button>
   </mat-dialog-actions>
 </ng-template>

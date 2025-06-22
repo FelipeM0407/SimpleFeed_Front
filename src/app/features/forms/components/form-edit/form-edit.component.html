@@ -124,10 +124,40 @@
             <mat-panel-description>Configure o QR Code</mat-panel-description>
           </mat-expansion-panel-header>
 
-          <div style="margin-top: 10px; display: flex; flex-direction: column; align-items: center;">
-            <app-qr-code-custom [data]="qrCodeUrl || ''" [logoBase64]="logoBase64 || ''" [filename]="''"></app-qr-code-custom>
+          <div class="qr-config-panel">
+            <!-- Coluna esquerda: botões -->
+            <div class="qr-config-left">
+              <mat-form-field appearance="outline">
+                <mat-label>Cor do QR Code</mat-label>
+                <input matInput type="color" [(ngModel)]="qrCodeColor" (ngModelChange)="onQrCodeChanged()" />
+              </mat-form-field>
+
+              <button mat-stroked-button color="primary" (click)="logoInputQr.click()">
+                <mat-icon style="font-size: 1rem; margin-right: 4px;">upload</mat-icon>
+                Enviar Logo
+              </button>
+
+              <input #logoInputQr type="file" accept="image/*" (change)="onQrLogoUpload($event)"
+                style="display: none;" />
+
+              <button mat-stroked-button color="warn" (click)="onLogoRemovePending()" [disabled]="!qrCodeTempLogo">
+                <mat-icon>delete</mat-icon> Remover Logo
+              </button>
+
+              <button mat-raised-button color="primary" (click)="salvarQrCode()" [disabled]="!qrCodeAlterado">
+                <mat-icon>save</mat-icon> Salvar QR Code
+              </button>
+            </div>
+
+            <!-- lado direito -->
+            <div class="qr-config-right">
+              <app-qr-code-custom [data]="qrCodeUrl || ''" [logoBase64]="qrCodeTempLogo || ''"
+                [color]="qrCodeColor || '#000000'" [filename]="''">
+              </app-qr-code-custom>
+            </div>
           </div>
         </mat-expansion-panel>
+
 
         <!-- Panel 4: Edição de Campos -->
         <mat-expansion-panel [expanded]="true">

@@ -63,6 +63,7 @@ export class FormsListComponent implements OnInit, OnDestroy {
   private clientDataSubscription: Subscription | null = null;
   @ViewChild('confirmDialog', { static: true }) confirmDialog!: TemplateRef<any>;
   qrCodeUrl: string | null = null;
+  qrCodeColor: string = '#000000';
   logoBase64: string | null = null;
   @ViewChild('qrCodeDialog', { static: true }) qrCodeDialog!: TemplateRef<any>;
   nameForm: string = '';
@@ -520,15 +521,15 @@ export class FormsListComponent implements OnInit, OnDestroy {
       (result) => {
         const frontUrl = this.formsService.getFrontUrl();
         const url = `${frontUrl}/feedback-submission/${formId}`;
-        
-        if (url) {
+
+        if (result) {
           this.logoBase64 = result.qrCodeLogoBase64 ?? '';
-          this.nameForm = nameForm;
-          this.qrCodeUrl = url;
-          this.dialog.open(this.qrCodeDialog);
-        } else {
-          console.error('URL inválida para o QR Code');
+          this.qrCodeColor = result.color ?? '#000000';
         }
+
+        this.nameForm = nameForm;
+        this.qrCodeUrl = url;
+        this.dialog.open(this.qrCodeDialog);
       },
       () => {
         console.error('Erro ao buscar o logo para o QR Code');
@@ -539,14 +540,6 @@ export class FormsListComponent implements OnInit, OnDestroy {
   downloadQRCode() {
     this.qrCodeComponent.download();
   }
-
-  // downloadQRCode() {
-  //   const canvas = document.querySelector('canvas') as HTMLCanvasElement;
-  //   const link = document.createElement('a');
-  //   link.href = canvas.toDataURL('image/png');
-  //   link.download = `QR Code ${this.nameForm}.png`;
-  //   link.click();
-  // }
 
   copyLink(formId: number) {
     const frontUrl = this.formsService.getFrontUrl();

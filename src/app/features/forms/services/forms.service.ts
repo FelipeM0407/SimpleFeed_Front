@@ -105,4 +105,10 @@ export class FormsService {
   getLogoBase64ByQrCode(formId: number): Observable<FormQRCode> {
     return this.http.get<FormQRCode>(`${this.apiUrl}/forms/${formId}/qrcode-settings`);
   }
+
+  saveQrCodeData(payload: any): Observable<boolean> {
+    return this.http.post<boolean>(`${this.apiUrl}/forms/save-qrcode-settings`, payload);
+  }
+  
+
 }

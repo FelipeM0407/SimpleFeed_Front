@@ -78,6 +78,7 @@ export class FormEditComponent {
   fieldsDeleteds: number[] = [];
   isLoading = true;
   logoBase64: string = '';
+  qrcode_logo_Base64: string = '';
   checkboxDataInativacao: boolean = false;
   settingsForm: FormSettings = {
     inativationDate: undefined
@@ -97,6 +98,12 @@ export class FormEditComponent {
     fontSize: '',
     colorTextButton: ''
   };
+
+  qrCodeColor: string = '#000000';
+  qrCodeTempLogo: string | null = '';
+  qrCodeAlterado = false;
+  logoRemovido = false;
+
 
 
   availableFonts: string[] = [
@@ -174,10 +181,15 @@ export class FormEditComponent {
 
         this.formsService.getLogoBase64ByQrCode(numericFormId).subscribe({
           next: (formQRCode: FormQRCode) => {
-            this.logoBase64 = formQRCode.qrCodeLogoBase64 || '';
+            if (formQRCode) {
+              this.qrcode_logo_Base64 = formQRCode.qrCodeLogoBase64 || '';
+              this.qrCodeTempLogo = this.qrcode_logo_Base64;
+            }
+
             const frontUrl = this.formsService.getFrontUrl();
             const url = `${frontUrl}/feedback-submission/${numericFormId}`;
             this.qrCodeUrl = url;
+            this.qrCodeColor = formQRCode.color || '#000000';
           },
           error: () => {
             console.error('Erro ao buscar o FormQRCode');
@@ -268,7 +280,7 @@ export class FormEditComponent {
 
   removerLogo(): void {
     if (confirm('Deseja realmente remover o logo?')) {
-      this.logoBase64 = '';
+      this.qrcode_logo_Base64 = '';
       this.logoInput.nativeElement.value = '';
       this.triggerSave()
     }
@@ -526,6 +538,77 @@ export class FormEditComponent {
       this.reloadKey = Date.now();
     });
   }
+
+  onQrLogoUpload(event: any): void {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const maxSize = 500 * 1024;
+    const img = new Image();
+    const reader = new FileReader();
+
+    reader.onload = (e: any) => {
+      img.onload = () => {
+        if (img.width > 300 || img.height > 300) {
+          alert('A imagem deve ter no máximo 300x300 pixels.');
+          return;
+        }
+
+        if (file.size > maxSize) {
+          alert('A imagem deve ter no máximo 500KB.');
+          return;
+        }
+
+        this.qrCodeTempLogo = e.target.result;
+        this.logoRemovido = false;
+        this.qrCodeAlterado = true;
+      };
+      img.src = e.target.result;
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+  openColorPicker(): void {
+    // Aqui você pode implementar um mat-dialog para escolher a cor ou integrar com o componente existente.
+    console.log('Abrir seletor de cor');
+  }
+
+  salvarQrCode(): void {
+    const payload = {
+      formId: this.form_Id,
+      qrCodeLogoBase64: this.logoRemovido ? null : this.qrCodeTempLogo,
+      color: this.qrCodeColor
+    };
+
+    this.formsService.saveQrCodeData(payload).subscribe({
+      next: () => {
+        this.qrcode_logo_Base64 = this.logoRemovido ? '' : (this.qrCodeTempLogo || '');
+        this.qrCodeAlterado = false;
+        this.logoRemovido = false;
+        this.snackBar.open('QR Code Salvo com sucesso!🎨', 'Fechar', {
+          duration: 3000,
+          panelClass: ['snackbar-success'],
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        });
+      },
+      error: () => alert('Erro ao salvar QR Code.')
+    });
+  }
+
+  onQrCodeChanged(): void {
+    this.qrCodeAlterado = true;
+  }
+
+  onLogoRemovePending(): void {
+    if (confirm('Deseja realmente remover o logo do QR Code?')) {
+      this.qrCodeTempLogo = null; // remove da visualização temporária
+      this.logoRemovido = true;
+      this.qrCodeAlterado = true;
+    }
+  }
+
 
 
 }
