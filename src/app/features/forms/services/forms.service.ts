@@ -9,6 +9,7 @@ import { FormStructure } from '../models/FormStructure';
 import { FormSettings } from '../models/FormSettings';
 import { FormStyleDto } from '../models/FormStyleDto';
 import { FormCreationStatus } from '../models/FormCreationStatus';
+import { FormQRCode } from '../models/FormQRCode';
 
 @Injectable({
   providedIn: 'root',
@@ -99,5 +100,9 @@ export class FormsService {
 
   getFormReactivationStatus(formId: number): Observable<FormCreationStatus> {
     return this.http.get<any>(`${this.apiUrl}/plans/${formId}/reactivation-status`);
+  }
+
+  getLogoBase64ByQrCode(formId: number): Observable<FormQRCode> {
+    return this.http.get<FormQRCode>(`${this.apiUrl}/forms/${formId}/qrcode-settings`);
   }
 }

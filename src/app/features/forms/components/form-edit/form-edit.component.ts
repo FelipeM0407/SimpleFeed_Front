@@ -37,12 +37,14 @@ import { debounceTime } from 'rxjs/operators';
 import { FormStyleDto } from '../../models/FormStyleDto';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
+import { QrCodeCustomComponent } from '../../../forms/components/forms-list/qr-code-custom/qr-code-custom.component';
+import { FormQRCode } from '../../models/FormQRCode';
 
 
 @Component({
   selector: 'app-form-edit',
   standalone: true,
-  imports: [ReactiveFormsModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, FormsModule, MatInputModule, MatFormFieldModule, FormPreviewComponent, MatTooltipModule, MatExpansionModule, MatSnackBarModule, MatProgressSpinnerModule, MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
+  imports: [QrCodeCustomComponent, ReactiveFormsModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, FormsModule, MatInputModule, MatFormFieldModule, FormPreviewComponent, MatTooltipModule, MatExpansionModule, MatSnackBarModule, MatProgressSpinnerModule, MatSlideToggleModule, MatCardModule, MatButtonModule, MatMenuModule, MatTabsModule, MatIconModule, CommonModule, MatDialogModule],
   templateUrl: './form-edit.component.html',
   styleUrls: ['./form-edit.component.scss'],
   providers: [
@@ -80,6 +82,7 @@ export class FormEditComponent {
   settingsForm: FormSettings = {
     inativationDate: undefined
   };
+  qrCodeUrl: string | null = null;
   formName!: string;
   form_Id!: number;
   saveTrigger$ = new Subject<void>();
@@ -167,6 +170,18 @@ export class FormEditComponent {
 
         this.formsService.getLogoBase64ByFormId(numericFormId).subscribe(response => {
           this.logoBase64 = response.logoBase64 || '';
+        });
+
+        this.formsService.getLogoBase64ByQrCode(numericFormId).subscribe({
+          next: (formQRCode: FormQRCode) => {
+            this.logoBase64 = formQRCode.qrCodeLogoBase64 || '';
+            const frontUrl = this.formsService.getFrontUrl();
+            const url = `${frontUrl}/feedback-submission/${numericFormId}`;
+            this.qrCodeUrl = url;
+          },
+          error: () => {
+            console.error('Erro ao buscar o FormQRCode');
+          }
         });
 
         this.formsService.getSettingsByFormIdAsync(numericFormId).subscribe(response => {
