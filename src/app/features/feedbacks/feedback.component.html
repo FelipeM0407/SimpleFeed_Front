@@ -68,7 +68,8 @@
             <mat-card>
               <mat-card-content>
                 <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
-                  <button id="btn-download" *ngIf="!isMobile" mat-raised-button color="primary" (click)="exportToExcel()">
+                  <button id="btn-download" *ngIf="!isMobile" mat-raised-button color="primary"
+                    (click)="exportToExcel()">
                     <mat-icon>download</mat-icon>
                     .xlsx
                   </button>
@@ -136,40 +137,37 @@
 
         </mat-tab>
 
-        <mat-card>
-          <mat-card-content>
-            <mat-tab>
-              <ng-template mat-tab-label>
-                <mat-icon class="example-tab-icon">analytics</mat-icon>
-                Visão Geral
-              </ng-template>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="example-tab-icon">analytics</mat-icon>
+            Visão Geral
+          </ng-template>
 
-              <section class="dashboard-container">
-                <p><mat-icon color="primary" style="vertical-align: middle;">info</mat-icon> Somente os campos Seleção e
-                  Avaliação são elegíveis para dashboards.</p>
-                <div *ngIf="!showDashboard" class="no-dashboard-card">
-                  <mat-icon>info</mat-icon>
-                  <p>Nenhuma informação disponível para exibir.</p>
-                </div>
+          <section class="dashboard-container">
+            <p><mat-icon color="primary" style="vertical-align: middle;">info</mat-icon> Somente os campos Seleção e
+              Avaliação são elegíveis para dashboards.</p>
+            <div *ngIf="!showDashboard" class="no-dashboard-card">
+              <mat-icon>info</mat-icon>
+              <p>Nenhuma informação disponível para exibir.</p>
+            </div>
 
-                <div *ngIf="showDashboard">
-                  <div *ngFor="let field of chartFields" class="dashboard-pair mb-4">
-                    <h3
-                      style="text-align: center; font-size: 20px; font-weight: bold; color: white; margin-bottom: 15px;">
-                      {{ field.label }}
-                    </h3>
-                    <mat-card>
-                      <mat-card-content class="charts-row">
-                        <div class="chart-card">
-                          <canvas baseChart
-                            [datasets]="[{ data: field.chartData, label: field.label, backgroundColor: chartColors }]"
-                            [labels]="field.chartLabels" [type]="'pie'">
-                          </canvas>
-                        </div>
+            <div *ngIf="showDashboard">
+              <div *ngFor="let field of chartFields" class="dashboard-pair mb-4">
+                <h3 style="text-align: center; font-size: 20px; font-weight: bold; color: white; margin-bottom: 15px;">
+                  {{ field.label }}
+                </h3>
+                <mat-card>
+                  <mat-card-content class="charts-row">
+                    <div class="chart-card">
+                      <canvas baseChart
+                        [datasets]="[{ data: field.chartData, label: field.label, backgroundColor: chartColors }]"
+                        [labels]="field.chartLabels" [type]="'pie'">
+                      </canvas>
+                    </div>
 
-                        <div class="chart-card">
-                          <canvas baseChart [datasets]="field.chartDatasets" [labels]="field.chartLabels" [type]="'bar'"
-                            [options]="{
+                    <div class="chart-card">
+                      <canvas baseChart [datasets]="field.chartDatasets" [labels]="field.chartLabels" [type]="'bar'"
+                        [options]="{
                   responsive: true,
                   maintainAspectRatio: false,
                   plugins: {
@@ -193,18 +191,16 @@
                   }
                   }
                   }">
-                          </canvas>
-                        </div>
-                      </mat-card-content>
-                    </mat-card>
-                  </div>
-                </div>
-              </section>
+                      </canvas>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
+          </section>
 
 
-            </mat-tab>
-          </mat-card-content>
-        </mat-card>
+        </mat-tab>
       </mat-tab-group>
 
 
