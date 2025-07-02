@@ -96,12 +96,13 @@ export class ActionLogsComponent implements OnInit {
     [3, 'Ativação de Formulário'],
     [4, 'Inativação de Formulário'],
     // [5, 'Exclusão de Formulário'],
-    // [6, 'Utilização de IA'],
+    [6, 'Utilização de IA'],
     [7, 'Exclusão de Feedback'],
     [8, 'Duplicação de Formulário'],
     [9, 'Edição do Estilo do Formulário'],
     [10, 'Inativação de Formulário Agendada'],
-    [11, 'Migração de Plano']
+    [11, 'Migração de Plano'],
+    [12, 'Edição de QR Code']
   ]);
 
 

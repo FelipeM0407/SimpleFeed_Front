@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { FormsModule, FormBuilder, FormGroup } from '@angular/forms';
+import { FormsModule, FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { FormsService } from '../forms/services/forms.service';
@@ -39,7 +39,11 @@ import {
   MAT_MOMENT_DATE_ADAPTER_OPTIONS,
 } from '@angular/material-moment-adapter';
 import { MatCardModule } from '@angular/material/card';
-
+import { ReportsIA } from './models/ReportsIAs';
+import { AuthService } from 'src/app/core/auth.service';
+import { MatDividerModule } from '@angular/material/divider';
+import { DetailReport } from './models/DetailReport';
+import { ChangeDetectorRef } from '@angular/core';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -83,7 +87,8 @@ export const MY_DATE_FORMATS = {
     DashboardFeedbackComponent,
     MatSortModule,
     NgChartsModule,
-    MatCardModule
+    MatCardModule,
+    MatDividerModule
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
@@ -106,6 +111,7 @@ export class FeedbacksComponent implements OnInit {
   dataSource = new MatTableDataSource<any>([]);
   isMobile = false;
   isLoading = true;
+  loadingRelatorioIa = false;
   errorMessage!: string;
   selection = new SelectionModel<any>(true, []);
   dateRangeForm!: FormGroup;
@@ -120,6 +126,17 @@ export class FeedbacksComponent implements OnInit {
     chartData: number[];
     chartDatasets: { label: string; data: number[]; backgroundColor: string[] }[];
   }[] = [];
+  relatoriosIa: ReportsIA[] = [];
+  relatoriosIaDataSource = new MatTableDataSource<ReportsIA>();
+  relatoriosDisplayedColumns: string[] = ['createdAt', 'rangeDataSolicited', 'actions'];
+  contextoNegocio: string = '';
+  selectedRelatorioIa: any = null;
+  contextoNegocioControl = new FormControl('', [Validators.required, Validators.minLength(15)]);
+
+
+  @ViewChild('dialogNovoRelatorioIa') dialogNovoRelatorioIa!: TemplateRef<any>;
+  @ViewChild('dialogVisualizarRelatorioIa') dialogVisualizarRelatorioIa!: TemplateRef<any>;
+
 
 
   chartColors: string[] = [
@@ -135,8 +152,10 @@ export class FeedbacksComponent implements OnInit {
   @ViewChild('confirmDialogRef') confirmDialogRef!: TemplateRef<any>;
   @ViewChild('viewDialogRef') viewDialogRef!: TemplateRef<any>;
   @ViewChild('mobileMenu') mobileMenu: any;
+  @ViewChild('relatorioIaPaginator') relatorioIaPaginator!: MatPaginator;
 
   showDashboard: boolean = false;
+  clientId: number;
 
   constructor(
     private route: ActivatedRoute,
@@ -148,8 +167,10 @@ export class FeedbacksComponent implements OnInit {
     public dialog: MatDialog,
     private snackBar: MatSnackBar,
     @Inject(MAT_DATE_LOCALE) private _locale: string,
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {
-
+    this.clientId = this.authService.getClientId();
   }
 
   ngAfterViewInit() {
@@ -162,6 +183,7 @@ export class FeedbacksComponent implements OnInit {
   @HostListener('window:resize', ['$event'])
   onResize() {
     this.isMobile = window.innerWidth < 768;
+    // this.cdr.detectChanges();
   }
 
 
@@ -207,26 +229,28 @@ export class FeedbacksComponent implements OnInit {
         this.isLoading = false;
       },
     });
+
+    this.buscarRelatoriosIa();
   }
 
   generateChartData() {
     this.chartFields.forEach((field) => {
       const column = this.dynamicColumns.find(c => c.name === field.name);
       if (!column) return;
-  
+
       const colKey = `col_${column.id}`;
       const counts: { [key: string]: number } = {};
-  
+
       this.dataSource.data.forEach((row: any) => {
         const value = row[colKey];
         if (value !== undefined && value !== null && value !== '') {
           counts[value] = (counts[value] || 0) + 1;
         }
       });
-  
+
       field.chartLabels = Object.keys(counts);
       field.chartData = Object.values(counts);
-  
+
       field.chartDatasets = [{
         label: field.label,
         data: field.chartLabels.map(label => counts[label] || 0),
@@ -430,6 +454,98 @@ export class FeedbacksComponent implements OnInit {
     const blob: Blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
     saveAs(blob, `Formulário_${this.formName.replace(/\s/g, '_')}.xlsx`);
   }
+
+  abrirDialogGerarRelatorio() {
+    this.contextoNegocioControl.reset();
+    const isMobile = window.innerWidth <= 768;
+
+    this.dialog.open(this.dialogNovoRelatorioIa, {
+      maxWidth: isMobile ? '95vw' : '600px'
+    });
+  }
+
+  gerarRelatorioIa() {
+
+    if (this.contextoNegocioControl.invalid) return;
+    const contexto = this.contextoNegocioControl.value;
+
+    const dto = {
+      clientId: this.clientId,
+      formId: this.formId,
+      dataInicio: this.dateRangeForm.value.dateRange.start,
+      dataFim: this.dateRangeForm.value.dateRange.end,
+      contextoNegocio: contexto || ''
+    };
+
+    this.loadingRelatorioIa = true;
+
+    this.feedbacksService.generateIaReport(dto).subscribe({
+      next: (res: DetailReport) => {
+        this.snackBar.open('Relatório gerado com sucesso!', 'Fechar', {
+            duration: 3000,
+            panelClass: ['snackbar-success'],
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
+          });
+        this.buscarRelatoriosIa();
+        this.dialog.closeAll();
+
+        // Processar o relatório gerado e abrir a visualização
+        this.selectedRelatorioIa = {
+          createdAt: res.createdAt,
+          range: res.rangeDataSolicited,
+          ...JSON.parse(res.report)
+        };
+        this.loadingRelatorioIa = false;
+
+        const isMobile = window.innerWidth <= 768;
+        this.dialog.open(this.dialogVisualizarRelatorioIa, {
+          maxWidth: isMobile ? '95vw' : '80vw'
+        });
+      },
+      error: (error) => {
+        this.snackBar.open('Erro ao gerar relatório.', '', { duration: 3000 });
+        this.loadingRelatorioIa = false;
+      }
+    });
+  }
+
+  buscarRelatoriosIa() {
+
+    this.feedbacksService
+      .getReportsIa(this.formId, '', '')
+      .subscribe({
+        next: (response) => {
+          this.relatoriosIa = response ?? [];
+          this.relatoriosIaDataSource.data = this.relatoriosIa;
+          this.relatoriosIaDataSource = new MatTableDataSource(this.relatoriosIa);
+          this.relatoriosIaDataSource.paginator = this.relatorioIaPaginator;
+
+        },
+        error: (error) => {
+          console.error('Erro ao buscar relatórios IA:', error);
+          this.relatoriosIa = [];
+          this.relatoriosIaDataSource.data = [];
+        }
+      });
+  }
+
+
+  visualizarRelatorioIa(id: number): void {
+    const isMobile = window.innerWidth <= 768;
+    this.feedbacksService.getReportIaById(id).subscribe((res) => {
+      this.selectedRelatorioIa = {
+        createdAt: res.createdAt,
+        range: res.rangeDataSolicited,
+        ...JSON.parse(res.report)
+      };
+
+      this.dialog.open(this.dialogVisualizarRelatorioIa, {
+        maxWidth: isMobile ? '95vw' : '80vw'
+      });
+    });
+  }
+
 
 }
 
