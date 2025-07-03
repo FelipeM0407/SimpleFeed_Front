@@ -44,6 +44,7 @@ import { AuthService } from 'src/app/core/auth.service';
 import { MatDividerModule } from '@angular/material/divider';
 import { DetailReport } from './models/DetailReport';
 import { ChangeDetectorRef } from '@angular/core';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -88,7 +89,8 @@ export const MY_DATE_FORMATS = {
     MatSortModule,
     NgChartsModule,
     MatCardModule,
-    MatDividerModule
+    MatDividerModule,
+    MatSlideToggleModule
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
@@ -115,6 +117,7 @@ export class FeedbacksComponent implements OnInit {
   errorMessage!: string;
   selection = new SelectionModel<any>(true, []);
   dateRangeForm!: FormGroup;
+  formIA!: FormGroup;
   selectedCount = 0;
   selectedFeedback: any;
   today = new Date();
@@ -131,7 +134,6 @@ export class FeedbacksComponent implements OnInit {
   relatoriosDisplayedColumns: string[] = ['createdAt', 'rangeDataSolicited', 'actions'];
   contextoNegocio: string = '';
   selectedRelatorioIa: any = null;
-  contextoNegocioControl = new FormControl('', [Validators.required, Validators.minLength(15)]);
 
 
   @ViewChild('dialogNovoRelatorioIa') dialogNovoRelatorioIa!: TemplateRef<any>;
@@ -201,6 +203,26 @@ export class FeedbacksComponent implements OnInit {
         end: [today]
       })
     });
+
+    this.formIA = this.fb.group({
+      todaData: [false],
+      startDate: new FormControl({ value: null, disabled: false }, Validators.required),
+      endDate: new FormControl({ value: null, disabled: false }, Validators.required),
+      contextoNegocio: ['', [Validators.required, Validators.minLength(15)]]
+    });
+
+
+    this.formIA.get('todaData')?.valueChanges.subscribe((checked: boolean) => {
+      if (checked) {
+        this.formIA.get('startDate')?.disable();
+        this.formIA.get('endDate')?.disable();
+      } else {
+        this.formIA.get('startDate')?.enable();
+        this.formIA.get('endDate')?.enable();
+      }
+    });
+
+
 
     this.formService.getFormStructure(this.formId).subscribe({
       next: (structure) => {
@@ -456,24 +478,61 @@ export class FeedbacksComponent implements OnInit {
   }
 
   abrirDialogGerarRelatorio() {
-    this.contextoNegocioControl.reset();
+    this.formIA.reset();
     const isMobile = window.innerWidth <= 768;
 
     this.dialog.open(this.dialogNovoRelatorioIa, {
-      maxWidth: isMobile ? '95vw' : '600px'
+      maxWidth: isMobile ? '95vw' : '750px'
     });
   }
 
   gerarRelatorioIa() {
 
-    if (this.contextoNegocioControl.invalid) return;
-    const contexto = this.contextoNegocioControl.value;
+    const todaData = this.formIA.get('todaData')?.value;
+
+    if (!todaData) {
+      const startControl = this.formIA.get('startDate');
+      const endControl = this.formIA.get('endDate');
+
+      startControl?.markAsTouched();
+      endControl?.markAsTouched();
+
+      // Limpa erro anterior, se houver
+      if (startControl?.hasError('invalidRange')) {
+        const errors = { ...(startControl.errors || {}) };
+        delete errors['invalidRange'];
+        startControl.setErrors(Object.keys(errors).length ? errors : null);
+      }
+
+      if (startControl?.invalid || endControl?.invalid) {
+        return;
+      }
+
+      const startDate = startControl?.value;
+      const endDate = endControl?.value;
+
+      if (startDate && endDate && startDate > endDate) {
+        startControl.setErrors({ ...(startControl.errors || {}), invalidRange: true });
+        return;
+      }
+
+    }
+
+
+    const contextoControl = this.formIA.get('contextoNegocio');
+    contextoControl?.markAsTouched();
+
+    if (contextoControl?.invalid) {
+      return;
+    }
+
+    const contexto = contextoControl?.value;
 
     const dto = {
       clientId: this.clientId,
       formId: this.formId,
-      dataInicio: this.dateRangeForm.value.dateRange.start,
-      dataFim: this.dateRangeForm.value.dateRange.end,
+      dataInicio: todaData ? null : this.formIA.get('startDate')?.value,
+      dataFim: todaData ? null : this.formIA.get('endDate')?.value,
       contextoNegocio: contexto || ''
     };
 
@@ -482,11 +541,11 @@ export class FeedbacksComponent implements OnInit {
     this.feedbacksService.generateIaReport(dto).subscribe({
       next: (res: DetailReport) => {
         this.snackBar.open('Relatório gerado com sucesso!', 'Fechar', {
-            duration: 3000,
-            panelClass: ['snackbar-success'],
-            horizontalPosition: 'center',
-            verticalPosition: 'top'
-          });
+          duration: 3000,
+          panelClass: ['snackbar-success'],
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        });
         this.buscarRelatoriosIa();
         this.dialog.closeAll();
 

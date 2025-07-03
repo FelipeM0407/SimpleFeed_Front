@@ -338,9 +338,9 @@
 
     <h3 style="margin-top: 15px;">Pontos de Melhoria</h3>
     <p style="white-space: pre-line;">{{ selectedRelatorioIa.PontosMelhoria }}</p>
-    
+
     <mat-divider class="my-2"></mat-divider>
-    
+
     <h3 style="margin-top: 15px;">Resumo Geral</h3>
     <p>{{ selectedRelatorioIa.ResumoGeral }}</p>
 
@@ -354,29 +354,79 @@
 
 <ng-template #dialogNovoRelatorioIa>
   <h2 mat-dialog-title>Gerar novo relatório com IA</h2>
-  <mat-dialog-content>
+  <form [formGroup]="formIA">
+    <mat-dialog-content autofocus="false">
 
-    <p style="margin-bottom: 15px; color: gray;">
-      Para que o relatório seja mais preciso, forneça um breve <strong>contexto do seu negócio</strong>.
-      Informe, por exemplo:
-      <br><br>
-      - Qual é o tipo de estabelecimento?<br>
-      - O que é oferecido (produto ou serviço)?<br>
-      - Alguma informação importante sobre o atendimento ou público-alvo?
-    </p>
+      <p style="margin-bottom: 15px; color: gray;">
+        Para que o relatório seja mais preciso, forneça um breve <strong>contexto do seu negócio</strong>.
+        Informe, por exemplo:
+        <br><br>
+        - Qual é o tipo de estabelecimento?<br>
+        - O que é oferecido (produto ou serviço)?<br>
+        - Alguma informação importante sobre o atendimento ou público-alvo?
+      </p>
 
-    <mat-form-field appearance="outline" style="width: 100%;"
-      [color]="contextoNegocioControl.invalid && contextoNegocioControl.touched ? 'warn' : 'primary'">
-      <mat-label>Contexto do Negócio</mat-label>
-      <textarea matInput [formControl]="contextoNegocioControl" rows="6"
-        placeholder="Ex: Tenho uma barbearia que atende homens jovens e adultos. Priorizamos cortes modernos, agilidade e atendimento cordial. Nosso principal serviço é corte masculino, mas também oferecemos barba e hidratação.">
-      </textarea>
-      <mat-error *ngIf="contextoNegocioControl.hasError('minlength')">
-        O contexto deve ter no mínimo 15 caracteres.
-      </mat-error>
-    </mat-form-field>
+      <div style="display: flex; justify-content:space-between; gap: 10px; margin-top: 10px;">
 
-  </mat-dialog-content>
+        <div style="display: flex; flex-direction: column; align-items: flex-start; width: 100%;">
+          <span style="font-size: 13px; color: #666; margin-bottom: 5px;">
+            Informe o período a ser analisado
+          </span>
+          <div style="display: flex; gap: 10px; width: 100%;">
+            <!-- Campo de Data Inicial -->
+            <mat-form-field appearance="outline" class="data-range">
+              <mat-label>Data Inicial</mat-label>
+              <input matInput [matDatepicker]="pickerInicio" formControlName="startDate" readonly
+                (click)="pickerInicio.open()">
+              <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+              <mat-datepicker #pickerInicio></mat-datepicker>
+              <mat-error *ngIf="formIA.get('startDate')?.hasError('invalidRange') && formIA.get('startDate')?.touched">
+                Data inicial superior a final.
+              </mat-error>
+              <mat-error
+                *ngIf="formIA.get('startDate')?.hasError('required') && formIA.get('startDate')?.touched && !formIA.get('startDate')?.hasError('invalidRange')">
+                Data inicial obrigatória.
+              </mat-error>
+
+            </mat-form-field>
+
+            <!-- Campo de Data Final -->
+            <mat-form-field appearance="outline" class="data-range">
+              <mat-label>Data Final</mat-label>
+              <input matInput [matDatepicker]="pickerFim" formControlName="endDate" readonly (click)="pickerFim.open()">
+              <mat-datepicker-toggle matSuffix [for]="pickerFim"></mat-datepicker-toggle>
+              <mat-datepicker #pickerFim></mat-datepicker>
+              <mat-error *ngIf="formIA.get('endDate')?.invalid && formIA.get('endDate')?.touched">
+                Data final obrigatória.
+              </mat-error>
+            </mat-form-field>
+            <mat-slide-toggle formControlName="todaData">Todo o período</mat-slide-toggle>
+          </div>
+        </div>
+
+
+      </div>
+
+
+      <mat-form-field appearance="outline" style="width: 100%;"
+        [color]="formIA.get('contextoNegocio')?.invalid && formIA.get('contextoNegocio')?.touched ? 'warn' : 'primary'">
+        <mat-label>Contexto do Negócio</mat-label>
+        <textarea matInput formControlName="contextoNegocio" rows="5"
+          placeholder="Ex: Tenho uma barbearia que atende homens jovens e adultos. Priorizamos cortes modernos, agilidade e atendimento cordial. Nosso principal serviço é corte masculino, mas também oferecemos barba e hidratação.">
+    </textarea>
+        <mat-error
+          *ngIf="formIA.get('contextoNegocio')?.hasError('required') && formIA.get('contextoNegocio')?.touched">
+          O contexto é obrigatório.
+        </mat-error>
+        <mat-error
+          *ngIf="formIA.get('contextoNegocio')?.hasError('minlength') && formIA.get('contextoNegocio')?.touched">
+          O contexto deve ter no mínimo 15 caracteres.
+        </mat-error>
+
+      </mat-form-field>
+
+    </mat-dialog-content>
+  </form>
   <mat-dialog-actions align="end">
     <button mat-button mat-dialog-close>Cancelar</button>
     <button mat-raised-button color="primary" (click)="gerarRelatorioIa()">
