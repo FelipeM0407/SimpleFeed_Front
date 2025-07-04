@@ -5,6 +5,9 @@
       <li class="breadcrumb-item">
         <a href="/dashboard" class="breadcrumb-link">Início</a>
       </li>
+      <li class="breadcrumb-item">
+        <a href="/dashboard/forms" class="breadcrumb-link">Formulários</a>
+      </li>
       <li class="breadcrumb-item active" aria-current="page">
         Visualização de Respostas - {{formName}}
       </li>
@@ -211,7 +214,8 @@
             Relatório IA
           </ng-template>
 
-          <section class="report-container">
+          <section *ngIf="planId != 1; else planoFreeSection" class="report-container">
+
 
             <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
               <button mat-raised-button color="primary" (click)="abrirDialogGerarRelatorio()">
@@ -254,10 +258,26 @@
               <p>Nenhum relatório IA foi gerado ainda.</p>
             </div>
 
+            <mat-paginator #relatorioIaPaginator [pageSize]="10" [pageSizeOptions]="[10, 25, 100]"
+              showFirstLastButtons></mat-paginator>
           </section>
 
-          <mat-paginator #relatorioIaPaginator [pageSize]="10" [pageSizeOptions]="[10, 25, 100]"
-            showFirstLastButtons></mat-paginator>
+          <!-- Se o usuário estiver no plano free, exibe mensagem -->
+          <ng-template #planoFreeSection>
+            <section class="plano-free-section">
+              <div class="plano-free-card">
+                <mat-icon class="plano-free-icon" color="warn">lock</mat-icon>
+                <h2 class="plano-free-title">Este recurso é exclusivo para planos pagos</h2>
+                <p class="plano-free-description">
+                  Relatórios com inteligência artificial estão disponíveis apenas para usuários com planos
+                  <strong>Basic</strong>, <strong>Intermediário</strong>, <strong>Profissional</strong>
+                  ou <strong>Sob Demanda</strong>.
+                </p>
+              </div>
+            </section>
+          </ng-template>
+
+
 
 
 
@@ -442,3 +462,18 @@
     <span class="dots-anim">.</span>
   </div>
 </div>
+
+<ng-template #planChargeDialog let-dialogData>
+  <h2 mat-dialog-title>Quantidade máxima de relatórios dentro do plano atingida!</h2>
+  <mat-dialog-content>
+    <p>Você está no plano <b>{{ dialogData.planoNome }}</b>.</p>
+    <p>Relatórios gerados: <b>{{ dialogData.totalRelatoriosIAMes }}</b> / <b>{{ dialogData.limiteRelatoriosIAMes }}</b>
+    </p>
+    <p>Ao gerar um novo relatório, o mesmo será cobrado sob demanda.</p>
+    <p>Deseja continuar?</p>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close="false">Cancelar</button>
+    <button mat-button color="primary" mat-dialog-close="true">Confirmar</button>
+  </mat-dialog-actions>
+</ng-template>

@@ -45,6 +45,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { DetailReport } from './models/DetailReport';
 import { ChangeDetectorRef } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { ReportCreationStatus } from '../forms/models/ReportCreationStatus';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -155,9 +156,12 @@ export class FeedbacksComponent implements OnInit {
   @ViewChild('viewDialogRef') viewDialogRef!: TemplateRef<any>;
   @ViewChild('mobileMenu') mobileMenu: any;
   @ViewChild('relatorioIaPaginator') relatorioIaPaginator!: MatPaginator;
+  @ViewChild('planChargeDialog', { static: true }) planChargeDialog!: TemplateRef<any>;
 
   showDashboard: boolean = false;
   clientId: number;
+  clientGuid: string;
+  planId: number = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -173,6 +177,8 @@ export class FeedbacksComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {
     this.clientId = this.authService.getClientId();
+    this.clientGuid = this.authService.getUserGuid();
+    this.planId = this.authService.getPlanId();
   }
 
   ngAfterViewInit() {
@@ -481,9 +487,43 @@ export class FeedbacksComponent implements OnInit {
     this.formIA.reset();
     const isMobile = window.innerWidth <= 768;
 
-    this.dialog.open(this.dialogNovoRelatorioIa, {
-      maxWidth: isMobile ? '95vw' : '750px'
+    this.feedbacksService.getServicesAvailableByPlan(this.clientGuid).subscribe({
+      next: (services: ReportCreationStatus) => {
+
+        if (services.totalRelatoriosIAMes >= services.limiteRelatoriosIAMes) {
+
+          if (services.criacaoGeraraCobranca) {
+            const dialogRef = this.dialog.open(this.planChargeDialog, {
+              data: {
+                planoNome: services.planoNome,
+                totalRelatoriosIAMes: services.totalRelatoriosIAMes,
+                limiteRelatoriosIAMes: services.limiteRelatoriosIAMes
+              },
+              width: '400px'
+            });
+
+            dialogRef.afterClosed().subscribe((confirmed) => {
+              if (confirmed === 'true') {
+                this.dialog.open(this.dialogNovoRelatorioIa, {
+                  maxWidth: isMobile ? '95vw' : '750px'
+                });
+              }
+            });
+            return;
+          }
+        }
+        this.dialog.open(this.dialogNovoRelatorioIa, {
+          maxWidth: isMobile ? '95vw' : '750px'
+        });
+      },
+      error: () => {
+        this.errorMessage = 'Erro ao verificar o plano do cliente.';
+      },
+      complete: () => {
+        this.isLoading = false;
+      }
     });
+
   }
 
   gerarRelatorioIa() {
