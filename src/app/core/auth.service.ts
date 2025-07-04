@@ -22,6 +22,11 @@ export class AuthService {
     return null;
   }
 
+  logout() {
+    localStorage.removeItem('authToken');
+    this.clientDataSubject.next(null); 
+  }
+
   getClientId() {
     const decodedToken: any = this.getDecodedToken();
     return decodedToken?.client_id || null;
@@ -34,6 +39,11 @@ export class AuthService {
   getUserName() {
     const decodedToken: any = this.getDecodedToken();
     return decodedToken?.name || null;
+  }
+
+  getPlanId() {
+    const decodedToken: any = this.getDecodedToken();
+    return decodedToken?.plan_id || null;
   }
 
   getUserEmail() {

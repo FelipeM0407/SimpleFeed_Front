@@ -80,8 +80,8 @@ export class PlanDetailsDialogComponent implements OnInit {
         // Feedback ao usuário
         this.snackBar.open('Plano migrado com sucesso!', 'Fechar', { duration: 3000 });
 
-        // Atualiza a página
-        window.location.reload();
+        //deslogar o usuário
+        this.authService.logout();
       },
       error: (err: any) => {
         this.loadingMigration = false;

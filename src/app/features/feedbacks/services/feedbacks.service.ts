@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ReportsIA } from '../models/ReportsIAs';
 import { DetailReport } from '../models/DetailReport';
+import { ReportCreationStatus } from '../../forms/models/ReportCreationStatus';
 
 @Injectable({
   providedIn: 'root'
@@ -60,6 +61,10 @@ export class FeedbacksService {
 
   getReportIaById(reportId: number): Observable<DetailReport> {
     return this.http.get<DetailReport>(`${this.apiUrl}/reports/report-ia/${reportId}`);
+  }
+
+  getServicesAvailableByPlan(clientId: string): Observable<ReportCreationStatus> {
+    return this.http.get<any>(`${this.apiUrl}/reports/${clientId}/services-available-ia-reports`);
   }
 
 }
