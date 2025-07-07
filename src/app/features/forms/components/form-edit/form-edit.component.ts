@@ -280,7 +280,7 @@ export class FormEditComponent {
 
   removerLogo(): void {
     if (confirm('Deseja realmente remover o logo?')) {
-      this.qrcode_logo_Base64 = '';
+      this.logoBase64 = '';
       this.logoInput.nativeElement.value = '';
       this.triggerSave()
     }
