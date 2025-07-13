@@ -30,8 +30,8 @@ export class QrCodeCustomComponent implements OnChanges {
     image: this.logoBase64 || '',
     imageOptions: {
       crossOrigin: 'anonymous',
-      margin: 5,
-      imageSize: 1.0,
+      margin: 1,
+      imageSize: 0.6,
       hideBackgroundDots: true
     },
     dotsOptions: {
@@ -40,6 +40,9 @@ export class QrCodeCustomComponent implements OnChanges {
     },
     backgroundOptions: {
       color: '#ffffff'
+    },
+    qrOptions: {
+      errorCorrectionLevel: 'H'
     }
   });
 
