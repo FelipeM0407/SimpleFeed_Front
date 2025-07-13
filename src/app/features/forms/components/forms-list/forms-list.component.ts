@@ -517,6 +517,8 @@ export class FormsListComponent implements OnInit, OnDestroy {
   }
 
   viewQRCode(formId: number, nameForm: string) {
+    this.logoBase64 = '';
+    this.qrCodeColor = '#000000';
     this.formsService.getLogoBase64ByQrCode(formId).subscribe(
       (result) => {
         const frontUrl = this.formsService.getFrontUrl();
