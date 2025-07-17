@@ -31,7 +31,7 @@ import { MAT_RADIO_DEFAULT_OPTIONS, MatRadioModule } from '@angular/material/rad
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { QrCodeCustomComponent } from './qr-code-custom/qr-code-custom.component';
-
+import { MatExpansionModule } from '@angular/material/expansion';
 interface Ordenation {
   value: string;
   viewValue: string;
@@ -49,7 +49,7 @@ interface OrdenationGroup {
   templateUrl: './forms-list.component.html',
   styleUrls: ['./forms-list.component.scss',],
   standalone: true,
-  imports: [QrCodeCustomComponent, MatTooltipModule, MatCheckboxModule, MatRadioModule, CdkDrag, MatChipsModule, MatBadgeModule, ReactiveFormsModule, FormsModule, MatSelectModule, MatFormFieldModule, QRCodeModule, MatSnackBarModule, MatDialogModule, MatProgressBarModule, MatDividerModule, CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
+  imports: [MatExpansionModule, QrCodeCustomComponent, MatTooltipModule, MatCheckboxModule, MatRadioModule, CdkDrag, MatChipsModule, MatBadgeModule, ReactiveFormsModule, FormsModule, MatSelectModule, MatFormFieldModule, QRCodeModule, MatSnackBarModule, MatDialogModule, MatProgressBarModule, MatDividerModule, CommonModule, MatCardModule, MatProgressSpinnerModule, MatIconModule, MatTableModule, MatMenuModule, MatButtonModule],
   providers: [{
     provide: MAT_RADIO_DEFAULT_OPTIONS,
     useValue: { color: 'primary' },
@@ -74,7 +74,7 @@ export class FormsListComponent implements OnInit, OnDestroy {
   isActive = true;
   isInativo = false;
   isNaoLido = false;
-  isPremiumUser: boolean = false; // Troque depois pela lógica real do plano
+  isMobile = window.innerWidth <= 768;
 
   @ViewChild(QrCodeCustomComponent) qrCodeComponent!: QrCodeCustomComponent;
 

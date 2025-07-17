@@ -231,6 +231,10 @@ mat-progress-bar {
   margin: 24px auto;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 768px) {
+    padding: 10px 0px;
+  }
 }
 
 .form-table-header {
@@ -338,4 +342,60 @@ mat-progress-bar {
       justify-content: flex-start;
     }
   }
+}
+
+@media (max-width: 768px) {
+
+  mat-expansion-panel.form-card-a,
+  mat-expansion-panel.form-card-b {
+    border-radius: 8px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+
+  mat-expansion-panel.form-card-a {
+    background-color: #bbdefb; // cor da sua classe form-card-a
+  }
+
+  mat-expansion-panel.form-card-b {
+    background-color: #c8e6c9; // cor da sua classe form-card-b
+  }
+
+  .mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .mobile-form-name {
+    font-weight: bold;
+    font-size: 15px;
+    word-break: break-word;
+    flex: 1;
+  }
+
+  .mobile-chip {
+    font-size: 14px;
+    margin-right: 15px;
+  }
+
+  .mat-expansion-panel-header-title,
+  .mat-expansion-panel-header-description {
+    flex: 1 1 auto !important;
+    align-items: center !important;
+  }
+
+  ::ng-deep .mat-badge-content {
+    right: -10px !important;
+    top: 1px !important;
+    width: 19px !important;
+    height: 17px !important;
+    line-height: 19px !important;
+    font-size: 13px !important;
+    padding: 0 !important;
+    position: absolute !important;
+  }
+
 }

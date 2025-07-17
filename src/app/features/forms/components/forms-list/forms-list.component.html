@@ -60,55 +60,110 @@
     </mat-card>
 
     <div class="forms-wrapper" *ngIf="!isLoading && !errorMessage && forms.length > 0">
-      <div class="form-table-header">
-        <span style="visibility: hidden;"></span>
-        <span>Respostas</span>
-        <span>Criado em</span>
-        <span>Status</span>
-        <span>Inativa em</span>
-        <span>Ações</span>
-      </div>
-      <mat-divider></mat-divider>
 
-      <div *ngFor="let form of forms; let i = index"
-        [ngClass]="{ 'form-card-a': i % 2 === 0, 'form-card-b': i % 2 !== 0 }" class="form-table-row mat-elevation-z2">
-        <div class="form-title-column">
-          <div class="form-title-text" matTooltip="{{ form.name }}" [matTooltipPosition]="'above'">
-            {{ form.name.length > 50 ? (form.name | slice:0:45) + '...' : form.name }}
+      <!-- Desktop -->
+      <ng-container *ngIf="!isMobile; else mobileList">
+        <div class="form-table-header">
+          <span style="visibility: hidden;"></span>
+          <span>Respostas</span>
+          <span>Criado em</span>
+          <span>Status</span>
+          <span>Inativa em</span>
+          <span>Ações</span>
+        </div>
+        <mat-divider></mat-divider>
+
+        <div *ngFor="let form of forms; let i = index"
+          [ngClass]="{ 'form-card-a': i % 2 === 0, 'form-card-b': i % 2 !== 0 }"
+          class="form-table-row mat-elevation-z2">
+
+          <div class="form-title-column">
+            <div class="form-title-text" matTooltip="{{ form.name }}" [matTooltipPosition]="'above'">
+              {{ form.name.length > 50 ? (form.name | slice:0:45) + '...' : form.name }}
+            </div>
           </div>
 
+          <div>
+            <ng-container *ngIf="form.newFeedbackCount === 0; else feedbackCount">
+              <mat-chip class="response-chip" (click)="onViewResponses(form.id)">
+                {{ form.responseCount }}
+              </mat-chip>
+            </ng-container>
+            <ng-template #feedbackCount>
+              <mat-chip class="response-chip pulse-badge" matBadge="{{form.newFeedbackCount}}"
+                (click)="onViewResponses(form.id)">
+                {{ form.newFeedbackCount }}
+              </mat-chip>
+            </ng-template>
+          </div>
 
+          <div>{{ form.createdAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+          <div [ngClass]="{'ativo': form.status, 'inativo': !form.status}">
+            {{ form.status ? 'Ativo' : 'Inativo' }}
+          </div>
+          <div>{{ form.inativationDate ? (form.inativationDate | date: 'dd/MM/yyyy') : '—' }}</div>
+          <div class="form-actions">
+            <button mat-icon-button [matMenuTriggerFor]="menu" (click)="selectedForm = form">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+          </div>
         </div>
-        <div>
-          <ng-container *ngIf="form.newFeedbackCount === 0; else feedbackCount">
-            <mat-chip class="response-chip" style="border: 1px solid black;" (click)="onViewResponses(form.id)">
-              {{ form.responseCount }}
-            </mat-chip>
-          </ng-container>
-          <ng-template #feedbackCount>
-            <mat-chip class="response-chip pulse-badge" style="border: 1px solid black;"
-              matBadge="{{form.newFeedbackCount}}" (click)="onViewResponses(form.id)">
-              {{ form.newFeedbackCount }}
-            </mat-chip>
-          </ng-template>
-          <!-- <mat-chip *ngIf="form.newFeedbackCount > 0" class="pulse-badge" cdkDrag>
-            <span>
-              {{ form.newFeedbackCount }}📩
-            </span>
-          </mat-chip> -->
-        </div>
-        <div>{{ form.createdAt | date: 'dd/MM/yyyy HH:mm' }}</div>
-        <div [ngClass]="{'ativo': form.status, 'inativo': !form.status}">
-          {{ form.status ? 'Ativo' : 'Inativo' }}
-        </div>
-        <div>{{ form.inativationDate ? (form.inativationDate | date: 'dd/MM/yyyy') : '—' }}</div>
-        <div class="form-actions">
-          <button mat-icon-button [matMenuTriggerFor]="menu" (click)="selectedForm = form">
-            <mat-icon>more_vert</mat-icon>
-          </button>
-        </div>
-      </div>
+      </ng-container>
+
+      <!-- Mobile -->
+      <ng-template #mobileList>
+        <mat-accordion multi>
+          <mat-expansion-panel *ngFor="let form of forms; let i = index"
+            [ngClass]="{ 'form-card-a': i % 2 === 0, 'form-card-b': i % 2 !== 0 }">
+
+            <mat-expansion-panel-header>
+
+              <div class="mobile-header">
+                <span class="mobile-form-name">
+                  {{ form.name }}
+                </span>
+
+                <!-- <mat-chip class="mobile-chip" [ngClass]="{'pulse-badge': form.newFeedbackCount > 0}"
+                  (click)="onViewResponses(form.id)">
+                  {{ form.newFeedbackCount > 0 ? form.newFeedbackCount : form.responseCount }}
+                </mat-chip> -->
+
+                <div>
+                  <ng-container *ngIf="form.newFeedbackCount === 0; else feedbackCount">
+                    <mat-chip class="mobile-chip" (click)="onViewResponses(form.id)">
+                      {{ form.responseCount }}
+                    </mat-chip>
+                  </ng-container>
+                  <ng-template #feedbackCount>
+                    <mat-chip class="mobile-chip pulse-badge" matBadge="{{form.newFeedbackCount}}"
+                      (click)="onViewResponses(form.id)">
+                      {{ form.responseCount }}
+                    </mat-chip>
+                  </ng-template>
+                </div>
+              </div>
+
+            </mat-expansion-panel-header>
+
+            <div><b>Criado em:</b> {{ form.createdAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+            <div><b>Status:</b> {{ form.status ? 'Ativo' : 'Inativo' }}</div>
+            <div><b>Inativa em:</b> {{ form.inativationDate ? (form.inativationDate | date: 'dd/MM/yyyy') : '—' }}</div>
+            <br />
+            <mat-divider></mat-divider>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 12px;">
+              <button mat-icon-button [matMenuTriggerFor]="menu" (click)="selectedForm = form">
+                <mat-icon>more_vert</mat-icon>
+              </button>
+            </div>
+
+          </mat-expansion-panel>
+
+        </mat-accordion>
+      </ng-template>
+
     </div>
+
 
     <mat-menu #menu="matMenu">
       <ng-container *ngIf="selectedForm">
@@ -135,10 +190,10 @@
         </button>
 
         <!-- EXCLUIR (somente se inativo) -->
-        <!-- <button *ngIf="!selectedForm.status" mat-menu-item (click)="deleteForm(selectedForm.id)">
+        <button *ngIf="!selectedForm.status" mat-menu-item (click)="deleteForm(selectedForm.id)">
           <mat-icon>delete</mat-icon>
           <span>Excluir</span>
-        </button> -->
+        </button>
 
         <button mat-menu-item (click)="duplicateForm(selectedForm.id)">
           <mat-icon>content_copy</mat-icon>
@@ -188,7 +243,8 @@
 
 
 
-    <app-qr-code-custom [data]="qrCodeUrl || ''"  [logoBase64]="logoBase64 || ''" [filename]="nameForm" [color]="qrCodeColor">
+    <app-qr-code-custom [data]="qrCodeUrl || ''" [logoBase64]="logoBase64 || ''" [filename]="nameForm"
+      [color]="qrCodeColor">
     </app-qr-code-custom>
 
 
