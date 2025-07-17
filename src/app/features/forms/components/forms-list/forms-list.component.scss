@@ -354,11 +354,25 @@ mat-progress-bar {
   }
 
   mat-expansion-panel.form-card-a {
-    background-color: #bbdefb; // cor da sua classe form-card-a
+    background-color: #bbdefb !important; // cor da sua classe form-card-a
   }
 
   mat-expansion-panel.form-card-b {
-    background-color: #c8e6c9; // cor da sua classe form-card-b
+    background-color: #c8e6c9 !important; // cor da sua classe form-card-b
+  }
+
+  // Garante que mesmo abertos mantenham a cor
+  mat-expansion-panel.form-card-a.mat-expanded {
+    background-color: #bbdefb !important;
+  }
+
+  mat-expansion-panel.form-card-b.mat-expanded {
+    background-color: #c8e6c9 !important;
+  }
+
+  // Corrige o header do painel também (opcional)
+  mat-expansion-panel-header {
+    background: transparent !important;
   }
 
   .mobile-header {
