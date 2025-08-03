@@ -50,13 +50,13 @@
 
             <div class="qr-toggle-container" *ngIf="form">
               <div class="qr-toggle-header">
-                <span class="toggle-label">Associar a QR Code impresso</span>
+                <span class="toggle-label">Associar a um QR Code impresso</span>
                 <mat-slide-toggle [(ngModel)]="useQrCode" [ngModelOptions]="{ standalone: true }"
                   (change)="toggleQrInput()">
                 </mat-slide-toggle>
               </div>
 
-              <mat-form-field appearance="outline" class="qr-id-input" *ngIf="useQrCode">
+              <mat-form-field appearance="outline" class="qr-id-input">
                 <mat-label>Número do QR Code impresso</mat-label>
                 <input matInput type="number" formControlName="manualFormId" placeholder="Ex: 185" />
                 <mat-error *ngIf="form.get('manualFormId')?.hasError('required')">
