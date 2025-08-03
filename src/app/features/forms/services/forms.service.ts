@@ -62,8 +62,8 @@ export class FormsService {
     return this.http.delete<void>(`${this.apiUrl}/forms/${formId}`);
   }
 
-  duplicateForm(formId: number, formName: string): Observable<FormStructure> {
-    return this.http.post<FormStructure>(`${this.apiUrl}/forms/${formId}/duplicate`, { formName: formName });
+  duplicateForm(formId: number, formName: string, qrCodeId: number): Observable<FormStructure> {
+    return this.http.post<FormStructure>(`${this.apiUrl}/forms/${formId}/duplicate`, { formName: formName, qrCodeId: qrCodeId });
   }
 
   renameForm(formId: number, name: string): Observable<void> {

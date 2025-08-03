@@ -5,13 +5,13 @@
     justify-content: center;
     gap: 0.5rem;
     font-size: 1.75rem;
-    color: #2C3E50 ;
+    color: #2C3E50;
     margin-bottom: 1rem;
 }
 
 .dialog-icon {
     font-size: 2.5rem;
-    color: #2C3E50 ;
+    color: #2C3E50;
 }
 
 .dialog-form {
@@ -62,6 +62,45 @@ mat-form-field {
     width: 70%;
 }
 
+.compact-selection-footer {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0.5rem 0;
+}
+
+.qr-toggle-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  gap: 12px;
+
+  .qr-toggle-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+
+    .toggle-label {
+      font-size: 14px;
+      color: #555;
+      white-space: nowrap;
+    }
+  }
+
+  .qr-id-input {
+    width: 260px;
+    margin: 0 auto;
+  }
+}
+
+.snackbar-warning {
+  background-color: #ff9800;
+  color: #fff;
+  font-weight: 500;
+}
+
 
 
 /* Estilo geral para a lista */
@@ -97,7 +136,7 @@ mat-form-field {
 
 .field-icon {
     font-size: 1.5rem;
-    color: #2C3E50 ;
+    color: #2C3E50;
 }
 
 .list-item-description {
@@ -139,13 +178,13 @@ mat-form-field {
 }
 
 .template-card.selected {
-    border: 2px solid #2C3E50 ;
+    border: 2px solid #2C3E50;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .template-image {
     height: 120px;
-    background-color: #2C3E50 ;
+    background-color: #2C3E50;
     border-radius: 4px;
     margin-bottom: 1rem;
 }

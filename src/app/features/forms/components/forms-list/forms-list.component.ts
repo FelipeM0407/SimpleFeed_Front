@@ -194,13 +194,32 @@ export class FormsListComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.formsService.createForm(result).subscribe({
-          next: (formIdCreated: any) => {
-            this.router.navigate(['/dashboard/form-edit', formIdCreated.formId]);
+          next: (response: any) => {
+            this.snackBar.open('Formulário criado com sucesso!', 'Fechar', {
+              duration: 3000,
+              panelClass: ['snackbar-success'],
+              horizontalPosition: 'center',
+              verticalPosition: 'top'
+            });
+            this.loadForms(this.clientId);
           },
-          error: () => {
-            this.errorMessage = 'Erro ao criar o formulário.';
+          error: (error: { error: { message: string; }; }) => {
+            let errorMessage = error?.error?.message || 'Erro ao criar formulário.';
+            const qrCodeUnavailable = errorMessage.includes('QR Code ID is not available.');
+
+            if (errorMessage.includes('QR Code ID is not available.')) {
+              errorMessage = 'QR Code informado não está disponível.';
+            }
+
+            this.snackBar.open(errorMessage, 'Fechar', {
+              duration: 3000,
+              panelClass: ['snackbar-warning'],
+              horizontalPosition: 'center',
+              verticalPosition: 'top'
+            });
           }
         });
+
       }
     });
   }
@@ -381,18 +400,19 @@ export class FormsListComponent implements OnInit, OnDestroy {
       });
   }
 
-  duplicateForm(id: number) {
-
+  duplicateForm(id: number): void {
     this.isLoading = true;
 
     this.formsService.getServicesAvailableByPlan(this.clientGuid).subscribe({
       next: (services: any) => {
-
         if (services.totalFormulariosAtivosMes >= services.limiteFormularios) {
 
           if (services.planoId === 1 && !services.podeExtenderFormulario) {
             this.dialog.open(this.planLimitDialog, {
-              data: { planoNome: services.planoNome, limiteFormularios: services.limiteFormularios },
+              data: {
+                planoNome: services.planoNome,
+                limiteFormularios: services.limiteFormularios
+              },
               width: '400px'
             });
             return;
@@ -410,7 +430,7 @@ export class FormsListComponent implements OnInit, OnDestroy {
 
             dialogRef.afterClosed().subscribe((confirmed) => {
               if (confirmed === 'true') {
-                this.duplicacaoConfirmada(id);
+                this.duplicacaoConfirmada(id)
               }
             });
             return;
@@ -418,7 +438,6 @@ export class FormsListComponent implements OnInit, OnDestroy {
         }
 
         this.duplicacaoConfirmada(id)
-
       },
       error: () => {
         this.errorMessage = 'Erro ao verificar o plano do cliente.';
@@ -427,14 +446,17 @@ export class FormsListComponent implements OnInit, OnDestroy {
         this.isLoading = false;
       }
     });
-
-
   }
+
 
   duplicacaoConfirmada(formId: number) {
     const dialogRef = this.dialog.open(DialogRenameFormComponent, {
-      data: { formName: '', title: 'Duplicar Formulário' },
-      width: '500px'
+      width: '500px',
+      data: {
+        title: '',
+        isDuplicate: true,
+        formId: formId
+      }
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
@@ -447,7 +469,8 @@ export class FormsListComponent implements OnInit, OnDestroy {
             verticalPosition: 'top'
           });
         } else {
-          this.formsService.duplicateForm(formId, result).subscribe({
+          const qrCodeId = result.qrCodeId || 0;
+          this.formsService.duplicateForm(formId, result.name, qrCodeId).subscribe({
             next: (duplicatedForm) => {
               this.snackBar.open('Formulário duplicado com sucesso!', 'Fechar', {
                 duration: 3000,
@@ -457,8 +480,12 @@ export class FormsListComponent implements OnInit, OnDestroy {
               });
               this.loadForms(this.clientId);
             },
-            error: () => {
-              this.snackBar.open('Erro ao duplicar formulário!', 'Fechar', {
+            error: (error) => {
+              let errorMessage = 'Erro ao duplicar formulário!';
+              if (error?.error?.message?.includes('QR Code ID is not available.')) {
+                errorMessage = 'QR Code informado não está disponível!';
+              }
+              this.snackBar.open(errorMessage, 'Fechar', {
                 duration: 3000,
                 panelClass: ['snackbar-error'],
                 horizontalPosition: 'center',
@@ -479,9 +506,9 @@ export class FormsListComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        this.isLoading = true;
+        this.isLoading = true; 
 
-        this.formsService.renameForm(formId, result).subscribe({
+        this.formsService.renameForm(formId, result.name).subscribe({
           next: () => {
             this.snackBar.open('Formulário renomeado com sucesso!', 'Fechar', {
               duration: 3000,

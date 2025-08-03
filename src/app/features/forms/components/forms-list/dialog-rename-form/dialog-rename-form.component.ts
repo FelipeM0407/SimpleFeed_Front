@@ -1,30 +1,57 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialog, MatDialogModule, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, Validators, FormsModule, ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { NgIf } from '@angular/common';
 import { FormsService } from '../../../services/forms.service';
-
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 @Component({
   selector: 'app-dialog-rename-form',
   templateUrl: './dialog-rename-form.component.html',
   styleUrls: ['./dialog-rename-form.component.scss'],
   standalone: true,
-  imports: [NgIf, MatFormFieldModule, MatInputModule, FormsModule, ReactiveFormsModule, MatDialogModule, MatButtonModule]
+  imports: [MatSlideToggleModule, NgIf, MatFormFieldModule, MatInputModule, FormsModule, ReactiveFormsModule, MatDialogModule, MatButtonModule]
 })
 export class DialogRenameFormComponent {
   name = new FormControl('', [Validators.required, Validators.maxLength(100), Validators.minLength(5)]);
   formNames: string[] = [];
   title: string;
+  isDuplicate = false;
+  showQrField = false;
+  qrCodeId: number = 0;
+  form!: FormGroup;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { formName: string, title: string; }, public dialog: MatDialog,
-    private formsService: FormsService,
-    private dialogRef: MatDialogRef<DialogRenameFormComponent>) {
-    this.name.setValue(data.formName);
-    this.title = data.title;
-    this.formNames = this.formsService.formNames;
+  constructor(
+    private fb: FormBuilder,
+    public dialogRef: MatDialogRef<DialogRenameFormComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any
+  ) {
+    this.title = data?.title || 'Formulário';
+    this.isDuplicate = data?.isDuplicate || false;
+
+    this.form = this.fb.group({
+      name: ['', Validators.required],
+      enableQrCode: [false],
+      manualFormId: [{ value: '', disabled: true }, []]
+    });
+  }
+
+  ngOnInit(): void {
+    // Habilita/desabilita o campo do QR Code dinamicamente
+    this.form.get('enableQrCode')?.valueChanges.subscribe(enabled => {
+      const qrControl = this.form.get('manualFormId');
+      if (enabled) {
+        qrControl?.setValidators([Validators.required]);
+        qrControl?.enable();
+      } else {
+        qrControl?.clearValidators();
+        qrControl?.setValue('');
+        qrControl?.disable();
+      }
+      qrControl?.updateValueAndValidity();
+    });
   }
 
   getErrorMessage() {
@@ -40,12 +67,21 @@ export class DialogRenameFormComponent {
     return this.name.hasError('maxlength') ? 'Name cannot be more than 100 characters' : '';
   }
 
-  saveForm(nameForm: any) {
-    if (this.name.value && this.formNames.includes(this.name.value)) {
-      // seta um erro do tipo alreadyExists
-      this.name.setErrors({ alreadyExists: true });
+  saveForm(): void {
+    const name = this.form.get('name')?.value?.trim();
+    const enableQrCode = this.form.get('enableQrCode')?.value;
+    const manualFormId = this.form.get('manualFormId')?.value;
+
+    // Validação extra caso o campo esteja habilitado
+    if (enableQrCode && (!manualFormId || manualFormId <= 0)) {
+      this.form.get('manualFormId')?.setErrors({ required: true });
       return;
     }
-    this.dialogRef.close(nameForm);
+
+    this.dialogRef.close({
+      name,
+      qrCodeId: enableQrCode ? manualFormId : 0
+    });
   }
+
 }

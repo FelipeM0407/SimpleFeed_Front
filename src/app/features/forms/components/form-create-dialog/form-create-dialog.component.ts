@@ -20,13 +20,15 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatRadioModule } from '@angular/material/radio';
 import { FormStructure } from '../../models/FormStructure';
 import { FormStyleDto } from '../../models/FormStyleDto';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-form-create-dialog',
   templateUrl: './form-create-dialog.component.html',
   styleUrls: ['./form-create-dialog.component.scss'],
   standalone: true,
-  imports: [MatRadioModule, MatCheckboxModule, FormsModule, MatButtonModule, MatTooltipModule, MatListModule, CommonModule, MatGridListModule, MatTabsModule, MatCardModule, MatIconModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule]
+  imports: [MatSnackBarModule, MatSlideToggleModule, MatRadioModule, MatCheckboxModule, FormsModule, MatButtonModule, MatTooltipModule, MatListModule, CommonModule, MatGridListModule, MatTabsModule, MatCardModule, MatIconModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule]
 })
 export class FormCreateDialogComponent {
   form: FormGroup;
@@ -37,6 +39,7 @@ export class FormCreateDialogComponent {
   clientId: number | null = null;
   formStructure: FormStructure | null = null;
   selectedFieldsOrder: FieldTypes[] = []; // Lista para rastrear a ordem de seleção
+  useQrCode = false;
 
   //Estilo padrão do formulário
   formStyle: FormStyleDto = {
@@ -56,7 +59,8 @@ export class FormCreateDialogComponent {
     private fb: FormBuilder,
     private formsService: FormsService,
     private authService: AuthService,
-    private el: ElementRef
+    private el: ElementRef,
+    private snackBar: MatSnackBar
   ) {
     this.form = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]]
@@ -82,6 +86,12 @@ export class FormCreateDialogComponent {
         selected: false // Adiciona propriedade para controle de seleção
       }));
     });
+
+    this.form = this.fb.group({
+      name: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
+      manualFormId: [{ value: null, disabled: !this.useQrCode }]
+    });
+
   }
 
   getSelectedFieldsCount(): number {
@@ -128,6 +138,17 @@ export class FormCreateDialogComponent {
   }
 
   continue(): void {
+
+    if (this.useQrCode && !this.form.get('manualFormId')?.value) {
+      this.snackBar.open('Por favor, insira o número do QR Code antes de continuar.', 'Fechar', {
+        duration: 3000,
+        panelClass: ['snackbar-warning'],
+        horizontalPosition: 'center',
+        verticalPosition: 'top'
+      });
+      return;
+    }
+
     if (this.form.valid) {
       //validar se o formulário é válido ja existe no formNames do service
       if (this.formsService.formNames.includes(this.form.value.name)) {
@@ -178,7 +199,7 @@ export class FormCreateDialogComponent {
       // };
 
       this.dialogRef.close({
-
+        QrCodeId: this.useQrCode ? this.form.get('manualFormId')?.value : 0,
         Name: this.form.value.name,
         Client_Id: this.clientId || 0,
         Is_Active: true,
@@ -239,5 +260,14 @@ export class FormCreateDialogComponent {
   canContinue(): boolean {
     const selectedFields = this.formFields.filter(field => field.selected);
     return this.form.valid && (selectedFields.length > 0 || this.selectedTemplateId !== null);
+  }
+
+  toggleQrInput() {
+    if (this.useQrCode) {
+      this.form.get('manualFormId')?.enable();
+    } else {
+      this.form.get('manualFormId')?.disable();
+      this.form.get('manualFormId')?.setValue(null);
+    }
   }
 }

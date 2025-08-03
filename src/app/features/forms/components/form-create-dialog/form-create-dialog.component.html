@@ -39,15 +39,35 @@
                 <strong>{{ field.label }}</strong>
               </div>
               <div mat-line class="list-item-description">
-                {{ field.description }} 
+                {{ field.description }}
               </div>
             </mat-list-option>
           </mat-selection-list>
+          <div class="compact-selection-footer">
+            <p class="selected-count">
+              Campos selecionados: {{ getSelectedFieldsCount() }}
+            </p>
 
-          <p class="selected-count">
-            Campos selecionados: {{ getSelectedFieldsCount() }}
-          </p>
+            <div class="qr-toggle-container" *ngIf="form">
+              <div class="qr-toggle-header">
+                <span class="toggle-label">Associar a QR Code impresso</span>
+                <mat-slide-toggle [(ngModel)]="useQrCode" [ngModelOptions]="{ standalone: true }"
+                  (change)="toggleQrInput()">
+                </mat-slide-toggle>
+              </div>
 
+              <mat-form-field appearance="outline" class="qr-id-input" *ngIf="useQrCode">
+                <mat-label>Número do QR Code impresso</mat-label>
+                <input matInput type="number" formControlName="manualFormId" placeholder="Ex: 185" />
+                <mat-error *ngIf="form.get('manualFormId')?.hasError('required')">
+                  O número é obrigatório
+                </mat-error>
+              </mat-form-field>
+            </div>
+
+
+
+          </div>
 
         </mat-tab>
 
