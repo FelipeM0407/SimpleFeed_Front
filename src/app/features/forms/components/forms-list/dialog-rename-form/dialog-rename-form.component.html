@@ -1,15 +1,39 @@
-<h1 mat-dialog-title>{{title}}</h1>
-<div mat-dialog-content>
-    <mat-form-field style="width: 100%;">
-        <mat-label>Entre com o nome do Formulário</mat-label>
-        <input matInput placeholder="Nome do formulário" [formControl]="name" maxlength="100" required>
-        <mat-error *ngIf="name.invalid">{{getErrorMessage()}}</mat-error>
-        <mat-error *ngIf="name.get('name')?.hasError('alreadyExists')">
-            Já existe um formulário com este nome
-          </mat-error>
-    </mat-form-field>
-</div>
-<div mat-dialog-actions>
-    <button mat-raised-button color="warn" mat-dialog-close>Cancelar</button>
-    <button mat-raised-button color="primary" [disabled]="name.invalid" (click)="saveForm(name.value)">Salvar</button>
-</div>
+<h1 mat-dialog-title>{{ title }}</h1>
+
+<form [formGroup]="form">
+    <div mat-dialog-content>
+
+        <mat-form-field appearance="outline" style="width: 100%;">
+            <mat-label>Entre com o nome do Formulário</mat-label>
+            <input matInput formControlName="name" maxlength="100" required placeholder="Nome do formulário">
+            <mat-error *ngIf="form.get('name')?.hasError('required')">O nome é obrigatório</mat-error>
+            <mat-error *ngIf="form.get('name')?.hasError('alreadyExists')">Já existe um formulário com este
+                nome</mat-error>
+        </mat-form-field>
+
+        <div *ngIf="isDuplicate" class="qr-toggle-wrapper">
+            <mat-slide-toggle formControlName="enableQrCode">
+                Associar a QR Code já impresso
+            </mat-slide-toggle>
+
+            <div *ngIf="form.get('enableQrCode')?.value" class="qr-code-field-wrapper">
+                <mat-form-field appearance="outline" class="qr-code-field">
+                    <mat-label>Número do QR Code impresso</mat-label>
+                    <input matInput type="number" formControlName="manualFormId" placeholder="Ex: 123">
+                    <mat-error *ngIf="form.get('manualFormId')?.hasError('required')">
+                        O número é obrigatório
+                    </mat-error>
+                    <mat-error *ngIf="form.get('manualFormId')?.hasError('qrCodeUnavailable')">
+                        O QR Code informado já está em uso ou não existe.
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </div>
+
+    </div>
+
+    <div mat-dialog-actions>
+        <button mat-raised-button color="warn" mat-dialog-close>Cancelar</button>
+        <button mat-raised-button color="primary" [disabled]="form.invalid" (click)="saveForm()">Salvar</button>
+    </div>
+</form>

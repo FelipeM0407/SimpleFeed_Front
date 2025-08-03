@@ -1,6 +1,7 @@
 import { FormStyleDto } from "./FormStyleDto";
 
 export interface FormStructure {
+    QrCodeId: number
     Name: string;
     Client_Id: number;
     Is_Active: boolean;
