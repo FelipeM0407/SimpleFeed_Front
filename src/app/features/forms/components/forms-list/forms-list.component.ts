@@ -506,7 +506,7 @@ export class FormsListComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        this.isLoading = true;
+        this.isLoading = true; 
 
         this.formsService.renameForm(formId, result.name).subscribe({
           next: () => {
