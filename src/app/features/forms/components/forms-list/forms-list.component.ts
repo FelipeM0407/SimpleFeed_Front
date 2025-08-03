@@ -194,14 +194,14 @@ export class FormsListComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.formsService.createForm(result).subscribe({
-          next: (response: any) => {
+          next: (formIdCreated: any) => {
             this.snackBar.open('Formulário criado com sucesso!', 'Fechar', {
               duration: 3000,
               panelClass: ['snackbar-success'],
               horizontalPosition: 'center',
               verticalPosition: 'top'
             });
-            this.loadForms(this.clientId);
+            this.router.navigate(['/dashboard/form-edit', formIdCreated.formId]);
           },
           error: (error: { error: { message: string; }; }) => {
             let errorMessage = error?.error?.message || 'Erro ao criar formulário.';
