@@ -100,16 +100,17 @@ export class FeedbackFormComponent {
 
       if (!this.isPreview) {
 
-        if (!this.checkIfCanRespond()) {
-          this.exibirForm = false;
-          this.dialog.open(ThankYouDialogComponent, {
-            width: '300px',
-            panelClass: 'thank-you-dialog',
-            disableClose: true
-          });
-          this.isLoading = false;
-          return;
-        }
+        //Tempo de teste, desabilitado para temporariamente permitir múltiplas respostas
+        // if (!this.checkIfCanRespond()) {
+        //   this.exibirForm = false;
+        //   this.dialog.open(ThankYouDialogComponent, {
+        //     width: '300px',
+        //     panelClass: 'thank-you-dialog',
+        //     disableClose: true
+        //   });
+        //   this.isLoading = false;
+        //   return;
+        // }
 
         // Nova chamada para buscar dados de configuração (incluindo expiration_date)
         this.formsService.getSettingsByFormIdAsync(parseInt(this.formId, 10)).subscribe(settings => {
